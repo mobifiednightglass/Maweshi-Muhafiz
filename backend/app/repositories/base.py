@@ -92,3 +92,35 @@ class UserRepository(ABC):
         The returned dict MUST include ``password_hash`` so that the
         authentication layer can verify the password.
         """
+
+
+# ---------------------------------------------------------------------------
+# Health-assessment repository interface
+# ---------------------------------------------------------------------------
+
+class HealthAssessmentRepository(ABC):
+    """Interface that all health-assessment repositories must satisfy."""
+
+    @abstractmethod
+    def create(self, data: dict) -> dict:
+        """Persist a new health-assessment record and return it as a dict.
+
+        The repository is responsible for assigning an ``id`` and setting
+        ``created_at`` / ``updated_at`` timestamps.
+        """
+
+    @abstractmethod
+    def get_by_id(self, assessment_id: EntityId) -> Optional[dict]:
+        """Return a single health assessment by its id, or ``None``."""
+
+    @abstractmethod
+    def get_by_animal_id(self, animal_id: EntityId) -> list[dict]:
+        """Return all health assessments for a given animal (may be empty)."""
+
+    @abstractmethod
+    def update(self, assessment_id: EntityId, data: dict) -> Optional[dict]:
+        """Update an existing health-assessment record.
+
+        Returns the updated dict, or ``None`` if the id does not exist.
+        The repository must refresh ``updated_at``.
+        """

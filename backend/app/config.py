@@ -13,8 +13,9 @@ class BaseConfig:
     MONGODB_URI = os.environ.get("MONGODB_URI", "")
     MONGODB_DB_NAME = os.environ.get("MONGODB_DB_NAME", "maweshi_muhafiz")
 
-    # External API keys placeholder
+    # External API keys
     QWEN_API_KEY = os.environ.get("QWEN_API_KEY", "")
+    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 
 class DevelopmentConfig(BaseConfig):

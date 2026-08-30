@@ -16,10 +16,12 @@ def _register_blueprints(app):
     from app.routes.health import health_bp
     from app.routes.animals import animals_bp
     from app.routes.auth import auth_bp
+    from app.routes.health_assessments import health_assessments_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(animals_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api")
+    app.register_blueprint(health_assessments_bp, url_prefix="/api")
 
 
 def _wire_dependencies(app):
@@ -53,3 +55,35 @@ def _wire_dependencies(app):
 
     app.animal_service = AnimalService(animal_repo)
     app.auth_service = AuthService(user_repo, app.config["SECRET_KEY"])
+
+    # -- Health-assessment dependencies ------------------------------------
+    from app.services.image_storage import ImageStorageService
+    from app.services.health_assessment_service import HealthAssessmentService
+
+    if app.config.get("TESTING"):
+        from app.repositories.in_memory_health import InMemoryHealthAssessmentRepository
+        health_assessment_repo = InMemoryHealthAssessmentRepository()
+
+        # Testing: use a stub provider that returns safe_fallback immediately
+        from app.services.vision_provider import safe_fallback
+
+        class _StubVisionProvider:
+            def assess(self, image_bytes, image_content_type, symptoms):
+                return safe_fallback("Stub provider — testing mode.")
+
+        vision_provider = _StubVisionProvider()
+        image_storage_service = None  # not needed in tests (image save is skipped)
+    else:
+        from app.repositories.mongo_health import MongoHealthAssessmentRepository
+        from app.services.vision_provider import GeminiVisionProvider
+
+        uri = app.config["MONGODB_URI"]
+        db_name = app.config["MONGODB_DB_NAME"]
+
+        health_assessment_repo = MongoHealthAssessmentRepository(uri=uri, db_name=db_name)
+        vision_provider = GeminiVisionProvider(api_key=app.config["GEMINI_API_KEY"])
+        image_storage_service = ImageStorageService(uri=uri, db_name=db_name)
+
+    app.health_assessment_repo = health_assessment_repo
+    app.health_assessment_service = HealthAssessmentService(vision_provider)
+    app.image_storage_service = image_storage_service
