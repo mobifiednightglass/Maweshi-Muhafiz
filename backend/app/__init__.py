@@ -59,6 +59,7 @@ def _wire_dependencies(app):
     # -- Health-assessment dependencies ------------------------------------
     from app.services.image_storage import ImageStorageService
     from app.services.health_assessment_service import HealthAssessmentService
+    from app.services.image_quality import ImageQualityService
 
     if app.config.get("TESTING"):
         from app.repositories.in_memory_health import InMemoryHealthAssessmentRepository
@@ -87,3 +88,4 @@ def _wire_dependencies(app):
     app.health_assessment_repo = health_assessment_repo
     app.health_assessment_service = HealthAssessmentService(vision_provider)
     app.image_storage_service = image_storage_service
+    app.image_quality_service = ImageQualityService()

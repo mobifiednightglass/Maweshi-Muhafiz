@@ -89,7 +89,25 @@ def create_assessment(animal_id):
     if errors:
         return _error("Validation failed.", error_detail=errors, status=400)
 
-    # -- 4. Save the image via ImageStorageService --------------------------
+    # -- 4. Check image quality BEFORE saving --------------------------------
+    try:
+        image_data = image_file.stream.read()
+        quality_result = current_app.image_quality_service.check_quality(image_data)
+
+        if not quality_result["is_acceptable"]:
+            return _error(
+                "Image quality check failed.",
+                error_detail=quality_result["issues"],
+                status=400,
+            )
+
+        # Reset stream position so save_image can read it again
+        image_file.stream.seek(0)
+    except Exception:
+        logger.exception("Unexpected error during image quality check for animal %s", animal_id)
+        return _error("An unexpected error occurred while checking image quality.", status=500)
+
+    # -- 5. Save the image via ImageStorageService --------------------------
     try:
         file_id = current_app.image_storage_service.save_image(
             file_stream=image_file.stream,
@@ -102,7 +120,7 @@ def create_assessment(animal_id):
         logger.exception("Unexpected error saving image for animal %s", animal_id)
         return _error("An unexpected error occurred while storing the image.", status=500)
 
-    # -- 5. Create a pending HealthAssessment record ------------------------
+    # -- 6. Create a pending HealthAssessment record ------------------------
     try:
         record = current_app.health_assessment_repo.create({
             "animal_id": animal_id,
@@ -114,16 +132,8 @@ def create_assessment(animal_id):
         logger.exception("Unexpected error creating assessment record")
         return _error("An unexpected error occurred.", status=500)
 
-    # -- 6. Run the AI assessment -------------------------------------------
+    # -- 7. Run the AI assessment -------------------------------------------
     try:
-        image_data = image_file.stream.read()
-        # If the stream was already consumed by save_image, re-read from
-        # the stored file via ImageStorageService.
-        if not image_data:
-            stored = current_app.image_storage_service.get_image(file_id)
-            if stored:
-                image_data, _ = stored
-
         diagnosis_result = current_app.health_assessment_service.run_assessment(
             image_bytes=image_data,
             image_content_type=image_file.content_type,
@@ -133,7 +143,7 @@ def create_assessment(animal_id):
         logger.exception("Unexpected error running AI assessment")
         diagnosis_result = None
 
-    # -- 7. Determine final status and update the record --------------------
+    # -- 8. Determine final status and update the record --------------------
     if diagnosis_result is None:
         status_value = "failed"
         diagnosis_result = {
