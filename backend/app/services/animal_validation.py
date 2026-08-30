@@ -10,7 +10,7 @@ Usage:
     if errors:
         # return 400 with errors
 """
-
+# server-side validation for animal data
 # ---------------------------------------------------------------------------
 # Field constraints — single source of truth, mirrors app/models/animal.py
 # ---------------------------------------------------------------------------

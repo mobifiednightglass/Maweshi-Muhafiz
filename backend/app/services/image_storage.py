@@ -1,4 +1,4 @@
-"""
+"""Image storage service for health-assessment photos.
 ImageStorageService — GridFS-backed storage for health-assessment photos.
 
 Uses the same MongoDB connection already configured (MONGODB_URI /

@@ -18,12 +18,12 @@ import cv2
 import numpy as np
 
 logger = logging.getLogger(__name__)
-
+#image quality ko analyze krta hai
 # ---------------------------------------------------------------------------
 # Tunable thresholds (module-level constants for easy adjustment)
 # ---------------------------------------------------------------------------
 
-BLUR_THRESHOLD = 100.0
+BLUR_THRESHOLD = 25.0
 """Minimum Laplacian variance. Lower values = more blur tolerance."""
 
 DARKNESS_THRESHOLD = 50.0
@@ -83,6 +83,9 @@ class ImageQualityService:
             # Check blur (Laplacian variance)
             laplacian = cv2.Laplacian(gray, cv2.CV_64F)
             blur_score = float(laplacian.var())
+            # DEBUG: log actual blur score vs threshold for every image
+            print(f"[DEBUG] Image blur_score: {blur_score:.4f}, threshold: {BLUR_THRESHOLD}", flush=True)
+            logger.info("Image blur_score: %.4f, threshold: %s", blur_score, BLUR_THRESHOLD)
             if blur_score < BLUR_THRESHOLD:
                 issues.append("Image is too blurry")
 

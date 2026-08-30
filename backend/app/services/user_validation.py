@@ -9,7 +9,7 @@ Provides two validators:
 Both return a list of human-readable error strings; an empty list means
 the data is valid.
 """
-
+# server-side validation for user data (signup and login)
 import re
 
 # ---------------------------------------------------------------------------

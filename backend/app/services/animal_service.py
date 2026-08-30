@@ -4,7 +4,7 @@ AnimalService — business logic for animal CRUD operations.
 Receives an AnimalRepository via constructor injection so the storage
 backend can be swapped (in-memory → MongoDB) without touching this code.
 """
-
+#This file is handling the business logic for the animal CRUD operations
 from app.repositories.base import AnimalRepository
 from app.services.animal_validation import validate_animal_data
 

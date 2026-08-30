@@ -34,7 +34,7 @@ ALLOWED_FIELDS = {
 
 
 # ---------------------------------------------------------------------------
-# Public API
+# Public API, for health assessment data validation and image upload
 # ---------------------------------------------------------------------------
 
 

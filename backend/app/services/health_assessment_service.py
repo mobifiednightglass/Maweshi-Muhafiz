@@ -18,7 +18,7 @@ Usage:
     service  = HealthAssessmentService(provider)
     result   = service.run_assessment(image_bytes, "image/jpeg", "Limping, swollen leg")
 """
-
+#basic flow of the health assessment service is route, HealthAssessmentService, GeminiVisionProvider, Gemini AI 
 import logging
 
 from app.services.vision_provider import VisionAssessmentProvider, safe_fallback

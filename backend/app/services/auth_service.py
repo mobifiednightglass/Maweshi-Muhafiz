@@ -15,7 +15,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app.repositories.base import UserRepository
 from app.services.user_validation import validate_login_data, validate_signup_data
 
-
+# handles the logic of login/signup(API endpoints)
 # ---------------------------------------------------------------------------
 # Custom exceptions — routes catch these and map to HTTP status codes
 # ---------------------------------------------------------------------------
