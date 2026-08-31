@@ -17,11 +17,13 @@ def _register_blueprints(app):
     from app.routes.animals import animals_bp
     from app.routes.auth import auth_bp
     from app.routes.health_assessments import health_assessments_bp
+    from app.routes.vet_summary import vet_summary_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(animals_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(health_assessments_bp, url_prefix="/api")
+    app.register_blueprint(vet_summary_bp, url_prefix="/api")
 
 
 def _wire_dependencies(app):
@@ -65,7 +67,9 @@ def _wire_dependencies(app):
 
     if app.config.get("TESTING"):
         from app.repositories.in_memory_health import InMemoryHealthAssessmentRepository
+        from app.repositories.in_memory_vet_summary import InMemoryVetCaseSummaryRepository
         health_assessment_repo = InMemoryHealthAssessmentRepository()
+        vet_summary_repo = InMemoryVetCaseSummaryRepository()
 
         # Testing: use a stub provider that returns safe_fallback immediately
         from app.services.vision_provider import safe_fallback
@@ -78,16 +82,19 @@ def _wire_dependencies(app):
         image_storage_service = None  # not needed in tests (image save is skipped)
     else:
         from app.repositories.mongo_health import MongoHealthAssessmentRepository
+        from app.repositories.mongo_vet_summary import MongoVetCaseSummaryRepository
         from app.services.vision_provider import GeminiVisionProvider
 
         uri = app.config["MONGODB_URI"]
         db_name = app.config["MONGODB_DB_NAME"]
 
         health_assessment_repo = MongoHealthAssessmentRepository(uri=uri, db_name=db_name)
+        vet_summary_repo = MongoVetCaseSummaryRepository(uri=uri, db_name=db_name)
         vision_provider = GeminiVisionProvider(api_key=app.config["GEMINI_API_KEY"])
         image_storage_service = ImageStorageService(uri=uri, db_name=db_name)
 
     app.health_assessment_repo = health_assessment_repo
+    app.vet_summary_repo = vet_summary_repo
     app.health_assessment_service = HealthAssessmentService(vision_provider)
     app.image_storage_service = image_storage_service
     app.image_quality_service = ImageQualityService()

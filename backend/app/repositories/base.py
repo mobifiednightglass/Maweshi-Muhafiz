@@ -116,3 +116,59 @@ class HealthAssessmentRepository(ABC):
         Returns the updated dict, or ``None`` if the id does not exist.
         The repository must refresh ``updated_at``.
         """
+
+
+# ---------------------------------------------------------------------------
+# Vet-ready case summary repository interface
+# ---------------------------------------------------------------------------
+
+class VetCaseSummaryRepository(ABC):
+    """Interface for persisting Vet-Ready Case Summaries.
+
+    A summary is a snapshot of a completed health assessment, owned by
+    the authenticated user who created it.  Every lookup is scoped to
+    ``user_id`` so users can only access their own summaries.
+    """
+
+    @abstractmethod
+    def create(self, data: dict) -> dict:
+        """Persist a new vet case summary and return it as a dict.
+
+        ``data`` must contain ``user_id``, ``animal_id``, and
+        ``assessment_id``.  The repository assigns ``id`` and
+        ``created_at``.
+        """
+
+    @abstractmethod
+    def get_by_id(
+        self, summary_id: EntityId, user_id: EntityId,
+    ) -> Optional[dict]:
+        """Return a single summary only if it belongs to *user_id*."""
+
+    @abstractmethod
+    def get_by_user_id(self, user_id: EntityId) -> list[dict]:
+        """Return all summaries belonging to *user_id* (may be empty)."""
+
+    @abstractmethod
+    def get_by_assessment_id(
+        self, assessment_id: EntityId, user_id: EntityId,
+    ) -> Optional[dict]:
+        """Return the summary for a specific assessment, scoped to *user_id*."""
+
+    @abstractmethod
+    def update_animal(
+        self, assessment_id: EntityId, user_id: EntityId, animal: dict,
+    ) -> Optional[dict]:
+        """Update the animal snapshot on an existing summary.
+
+        Returns the updated summary, or ``None`` if not found.
+        """
+
+    @abstractmethod
+    def delete(
+        self, summary_id: EntityId, user_id: EntityId,
+    ) -> bool:
+        """Delete a summary only if it belongs to *user_id*.
+
+        Returns ``True`` if a document was deleted, ``False`` otherwise.
+        """

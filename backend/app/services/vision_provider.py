@@ -124,11 +124,20 @@ reported by the farmer:
 
 \"\"\"{symptoms}\"\"\"
 
-Return a **JSON object** with exactly these seven keys:
+Return a **JSON object** with exactly these seven keys.
 
-- "possible_conditions": a list of strings naming plausible health conditions (in English)
-- "explanation": a brief paragraph explaining your reasoning (in English)
-- "confidence_note": a short statement about your confidence level (in English).
+IMPORTANT LANGUAGE RULES:
+- The fields "possible_conditions", "explanation", "confidence_note", and
+  "urgency_level" MUST be written in English ONLY. Do NOT include any Urdu
+  words, phrases, or script in these fields.
+- The fields "explanation_urdu", "possible_conditions_urdu", and
+  "confidence_note_urdu" MUST be written in Urdu ONLY (Urdu script).
+
+Keys:
+
+- "possible_conditions": a list of strings naming plausible health conditions (English ONLY, no Urdu)
+- "explanation": a brief paragraph explaining your reasoning (English ONLY, no Urdu)
+- "confidence_note": a short statement about your confidence level (English ONLY, no Urdu).
   It MUST explicitly say this is an AI-assisted preliminary assessment,
   not a medical diagnosis, and that uncertainty should be acknowledged.
 - "urgency_level": one of "low", "medium", or "high"
@@ -145,12 +154,16 @@ Analyse the attached livestock photo and the following symptoms:
 
 \"\"\"{symptoms}\"\"\"
 
+LANGUAGE RULES:
+- "possible_conditions", "explanation", "confidence_note" MUST be in English ONLY. No Urdu text.
+- "explanation_urdu", "possible_conditions_urdu", "confidence_note_urdu" MUST be in Urdu script ONLY.
+
 Return this exact JSON structure:
 
 {{
   "possible_conditions": ["condition 1", "condition 2"],
-  "explanation": "Your reasoning here in English.",
-  "confidence_note": "Explicitly state this is an AI-assisted preliminary assessment, not a diagnosis, and acknowledge uncertainty.",
+  "explanation": "Your reasoning here in English only. No Urdu.",
+  "confidence_note": "State in English only that this is an AI-assisted preliminary assessment, not a diagnosis, and acknowledge uncertainty.",
   "urgency_level": "low" | "medium" | "high",
   "explanation_urdu": "یہاں آسان اردو میں وضاحت لکھیں۔ اگر فوری ضرورت ہے تو واضح طور پر بتائیں کہ فوری ڈاکٹر سے ملنا ضروری ہے۔",
   "possible_conditions_urdu": ["حالت 1", "حالت 2"],
