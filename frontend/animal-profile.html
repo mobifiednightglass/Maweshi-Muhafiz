@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="View and manage an animal record in Maweshi Muhafiz.">
+  <title>Maweshi Muhafiz | Animal Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', leaf: '#6d8d72', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body class="min-h-screen bg-cream text-ink antialiased">
+  <a class="skip-link" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="border-b border-sand bg-paper">
+    <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M11 13c3.7 0 6.3 1.8 9 5 2.7-3.2 5.3-5 9-5v7.5c0 6-3.8 10.5-9 10.5s-9-4.5-9-10.5V13Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 14 8 10m19 4 5-4M16 23h.01M24 23h.01M17 27c1.8 1.3 4.2 1.3 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span>
+          <span class="block text-[1.05rem] font-bold leading-tight tracking-tight text-forest">Maweshi Muhafiz</span>
+          <span class="block text-xs font-medium text-stone-500" lang="ur" dir="rtl">مویشی محافظ</span>
+        </span>
+      </a>
+      <div class="authenticated-nav-actions">
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+        <button type="button" class="logout-button" data-logout data-i18n="logout">لاگ آؤٹ</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="profile-shell">
+    <a href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="backToAnimals">جانوروں کی فہرست پر واپس جائیں</span>
+    </a>
+
+    <div id="page-feedback" class="page-feedback hidden" role="status" aria-live="polite"></div>
+
+    <section id="profile-loading" class="profile-loading" aria-label="جانور کا ریکارڈ لوڈ ہو رہا ہے" data-i18n-aria-label="loadingLabel">
+      <div class="profile-loading-line profile-loading-line--short"></div>
+      <div class="profile-loading-block"></div>
+      <div class="profile-loading-grid"><span></span><span></span><span></span></div>
+    </section>
+
+    <section id="profile-error" class="profile-page-state hidden" aria-live="polite">
+      <span class="profile-state-icon" aria-hidden="true">!</span>
+      <h1 id="profile-error-title"></h1>
+      <p id="profile-error-message"></p>
+      <div class="mt-5 flex flex-wrap justify-center gap-3">
+        <button id="retry-profile" type="button" class="btn btn-primary" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+        <a href="index.html" class="btn btn-secondary" data-i18n="backToAnimalsShort">جانوروں کی فہرست</a>
+      </div>
+    </section>
+
+    <div id="profile-content" class="hidden">
+      <section class="profile-hero" aria-labelledby="animal-name">
+        <div class="animal-type-mark" id="animal-type-icon" aria-hidden="true">🐾</div>
+        <div class="min-w-0 flex-1">
+          <div class="mb-2 flex flex-wrap items-center gap-2">
+            <span id="animal-health-badge" class="health-badge health-badge--unknown"></span>
+            <span id="animal-id-label" class="record-id"></span>
+          </div>
+          <h1 id="animal-name" class="profile-name"></h1>
+          <p id="animal-kind" class="profile-kind"></p>
+        </div>
+        <button type="button" class="btn btn-secondary profile-edit-button" data-open-edit>
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14.7 5.3 4 4M4 20l4.6-1 10.1-10.1a2.1 2.1 0 0 0-3-3L5.6 16 4 20Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="editAnimal">جانور کی معلومات بدلیں</span>
+        </button>
+      </section>
+
+      <div class="profile-layout">
+        <div class="profile-main-column">
+          <section class="profile-section" aria-labelledby="basic-info-heading">
+            <div class="section-heading-row">
+              <div>
+                <p class="section-kicker" data-i18n="profileDetails">جانور کی تفصیل</p>
+                <h2 id="basic-info-heading" data-i18n="basicInformation">بنیادی معلومات</h2>
+              </div>
+              <p id="updated-date" class="section-date"></p>
+            </div>
+            <dl class="profile-info-grid">
+              <div><dt data-i18n="animalType">جانور کی قسم</dt><dd id="info-type"></dd></div>
+              <div><dt data-i18n="breed">نسل</dt><dd id="info-breed"></dd></div>
+              <div><dt data-i18n="gender">جنس</dt><dd id="info-gender"></dd></div>
+              <div><dt data-i18n="age">عمر</dt><dd id="info-age"></dd></div>
+              <div><dt data-i18n="weight">وزن</dt><dd id="info-weight"></dd></div>
+              <div><dt data-i18n="color">رنگ</dt><dd id="info-color"></dd></div>
+              <div><dt data-i18n="healthStatus">موجودہ صحت</dt><dd id="info-health"></dd></div>
+              <div><dt data-i18n="recordCreated">ریکارڈ بنایا گیا</dt><dd id="created-date"></dd></div>
+            </dl>
+          </section>
+
+          <section class="profile-section" aria-labelledby="notes-heading">
+            <p class="section-kicker" data-i18n="careNotes">دیکھ بھال کی باتیں</p>
+            <h2 id="notes-heading" data-i18n="notes">نوٹس</h2>
+            <p id="animal-notes" class="notes-copy"></p>
+          </section>
+
+          <section id="health-activity" class="profile-section" aria-labelledby="activity-heading">
+            <div class="section-heading-row">
+              <div>
+                <p class="section-kicker" data-i18n="healthRecord">صحت کا ریکارڈ</p>
+                <h2 id="activity-heading" data-i18n="recentActivity">حالیہ صحت کی سرگرمی</h2>
+              </div>
+              <button id="refresh-activity" type="button" class="text-action" data-i18n="refresh">تازہ کریں</button>
+            </div>
+            <div id="activity-loading" class="activity-loading" data-i18n="loadingActivity">صحت کا ریکارڈ دیکھا جا رہا ہے…</div>
+            <div id="activity-list" class="hidden activity-list"></div>
+            <div id="activity-empty" class="activity-empty hidden">
+              <p data-i18n="noAssessments">ابھی تک صحت کا کوئی معائنہ موجود نہیں ہے۔</p>
+              <button type="button" class="btn btn-primary mt-4" data-open-assessment data-i18n="startFirstAssessment">پہلا معائنہ شروع کریں</button>
+            </div>
+            <div id="activity-error" class="activity-empty hidden">
+              <p data-i18n="activityUnavailable">صحت کا ریکارڈ ابھی نہیں دکھایا جا سکتا۔</p>
+              <button type="button" class="btn btn-secondary mt-4" data-retry-activity data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+            </div>
+          </section>
+        </div>
+
+        <aside class="profile-side-column" aria-labelledby="quick-actions-heading">
+          <section class="profile-section quick-actions-section">
+            <p class="section-kicker" data-i18n="animalHealth">جانور کی صحت</p>
+            <h2 id="quick-actions-heading" data-i18n="quickActions">فوری کام</h2>
+            <button type="button" class="health-primary-action" data-open-assessment>
+              <span class="action-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <span><strong data-i18n="startAssessment">صحت کا معائنہ شروع کریں</strong><small data-i18n="assessmentHelp">تصویر اور علامات کے ساتھ</small></span>
+            </button>
+            <a id="health-history-link" href="index.html" class="quick-action">
+              <span data-i18n="healthHistory">صحت کی پچھلی تفصیل</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <button type="button" class="quick-action quick-action--placeholder" disabled>
+              <span data-i18n="preventiveCare">بیماری سے بچاؤ</span><small data-i18n="comingSoon">جلد آرہا ہے</small>
+            </button>
+            <button type="button" class="quick-action quick-action--placeholder" disabled>
+              <span data-i18n="followUp">دوبارہ جانچ</span><small data-i18n="comingSoon">جلد آرہا ہے</small>
+            </button>
+            <button type="button" class="quick-action quick-action--placeholder" disabled>
+              <span data-i18n="healthPassport">صحت پاسپورٹ</span><small data-i18n="comingSoon">جلد آرہا ہے</small>
+            </button>
+          </section>
+
+          <section class="danger-section" aria-labelledby="delete-heading">
+            <h2 id="delete-heading" data-i18n="recordSettings">ریکارڈ کی ترتیب</h2>
+            <p data-i18n="deleteHelp">اگر یہ ریکارڈ مزید نہیں چاہیے تو اسے حذف کر سکتے ہیں۔</p>
+            <button type="button" class="danger-button" data-open-delete data-i18n="deleteAnimal">جانور کا ریکارڈ حذف کریں</button>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-10 border-t border-sand bg-paper">
+    <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm text-stone-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+      <p data-i18n="footerCare">مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔</p>
+      <p data-i18n="footerDisclaimer">AI کی رائے ابتدائی رہنمائی ہے، ڈاکٹر کا متبادل نہیں۔</p>
+    </div>
+  </footer>
+
+  <dialog id="edit-dialog" class="animal-dialog" aria-labelledby="edit-dialog-title">
+    <form id="edit-form" class="dialog-panel" novalidate>
+      <div class="dialog-header"><div><p class="section-kicker" data-i18n="editRecord">ریکارڈ میں تبدیلی</p><h2 id="edit-dialog-title" class="mt-1 text-2xl font-bold" data-i18n="editAnimal">جانور کی معلومات بدلیں</h2></div><button type="button" class="icon-button" data-close-dialog aria-label="فارم بند کریں" data-i18n-aria-label="closeFormLabel"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+      <div id="edit-alert" class="form-alert hidden" role="alert"></div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="field"><span><span data-i18n="name">نام</span> <b>*</b></span><input name="name" type="text" maxlength="100" required></label>
+        <label class="field"><span><span data-i18n="animalType">جانور کی قسم</span> <b>*</b></span><input name="animal_type" type="text" maxlength="50" required></label>
+        <label class="field"><span data-i18n="breed">نسل</span><input name="breed" type="text" maxlength="100"></label>
+        <label class="field"><span data-i18n="gender">جنس</span><select name="gender"><option value="" data-i18n="notRecorded">درج نہیں</option><option value="Female" data-i18n="female">مادہ</option><option value="Male" data-i18n="male">نر</option></select></label>
+        <label class="field"><span data-i18n="ageYears">عمر (سال)</span><input name="age" type="number" min="0" step="0.1" inputmode="decimal"></label>
+        <label class="field"><span data-i18n="weightKg">وزن (کلو)</span><input name="weight" type="number" min="0.1" step="0.1" inputmode="decimal"></label>
+        <label class="field"><span data-i18n="color">رنگ</span><input name="color" type="text" maxlength="50"></label>
+        <label class="field"><span data-i18n="healthStatus">موجودہ صحت</span><select name="health_status"><option value="" data-i18n="notRecorded">درج نہیں</option><option value="Healthy" data-i18n="healthy">صحت مند</option><option value="Needs attention" data-i18n="needsAttention">توجہ درکار</option><option value="Under treatment" data-i18n="underTreatment">علاج جاری ہے</option></select></label>
+        <label class="field sm:col-span-2"><span data-i18n="notes">نوٹس</span><textarea name="notes" maxlength="2000" rows="4"></textarea></label>
+      </div>
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><button type="button" class="btn btn-secondary justify-center" data-close-dialog data-i18n="cancel">منسوخ کریں</button><button id="save-edit" type="submit" class="btn btn-primary justify-center" data-i18n="saveChanges">تبدیلی محفوظ کریں</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="assessment-dialog" class="animal-dialog" aria-labelledby="assessment-dialog-title">
+    <form id="assessment-form" class="dialog-panel" novalidate>
+      <div class="dialog-header"><div><p class="section-kicker" data-i18n="animalHealth">جانور کی صحت</p><h2 id="assessment-dialog-title" class="mt-1 text-2xl font-bold" data-i18n="startAssessment">صحت کا معائنہ شروع کریں</h2></div><button type="button" class="icon-button" data-close-dialog aria-label="فارم بند کریں" data-i18n-aria-label="closeFormLabel"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+      <p class="mb-5 text-sm leading-6 text-stone-600" data-i18n="assessmentInstructions">جانور کی صاف تصویر اور نظر آنے والی علامات لکھیں۔</p>
+      <div id="assessment-alert" class="form-alert hidden" role="alert"></div>
+      <div class="grid gap-4">
+        <label class="field"><span><span data-i18n="animalPhoto">جانور کی تصویر</span> <b>*</b></span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required><small data-i18n="imageHelp">JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB</small></label>
+        <label class="field"><span><span data-i18n="symptoms">علامات</span> <b>*</b></span><textarea name="symptoms" maxlength="5000" rows="5" required data-i18n-placeholder="symptomsPlaceholder" placeholder="مثلاً جانور کھانا نہیں کھا رہا اور سست ہے"></textarea></label>
+      </div>
+      <div class="assessment-safety-note" data-i18n="assessmentSafety">یہ ابتدائی AI رہنمائی ہے۔ ہنگامی حالت میں فوراً جانوروں کے ڈاکٹر سے رابطہ کریں۔</div>
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><button type="button" class="btn btn-secondary justify-center" data-close-dialog data-i18n="cancel">منسوخ کریں</button><button id="submit-assessment" type="submit" class="btn btn-primary justify-center" data-i18n="beginAssessment">معائنہ کریں</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="delete-dialog" class="confirm-dialog" aria-labelledby="delete-dialog-title">
+    <div class="confirm-panel">
+      <span class="delete-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16m-10 4v5m4-5v5M9 7l1-3h4l1 3m3 0-1 13H7L6 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <h2 id="delete-dialog-title" data-i18n="deleteQuestion">کیا یہ جانور حذف کرنا ہے؟</h2>
+      <p data-i18n="deleteWarning">اس جانور کا ریکارڈ ختم ہو جائے گا۔ یہ عمل واپس نہیں ہو سکتا۔</p>
+      <div id="delete-alert" class="form-alert hidden mt-4" role="alert"></div>
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><button type="button" class="btn btn-secondary justify-center" data-close-dialog data-i18n="keepAnimal">ریکارڈ رہنے دیں</button><button id="confirm-delete" type="button" class="danger-confirm-button" data-i18n="confirmDelete">ہاں، حذف کریں</button></div>
+    </div>
+  </dialog>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/animal-profile.js" defer></script>
+</body>
+</html>

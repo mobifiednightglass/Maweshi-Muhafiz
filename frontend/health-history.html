@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="View an animal's complete health assessment history in Maweshi Muhafiz.">
+  <title>Maweshi Muhafiz | صحت کی پچھلی تفصیل</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', leaf: '#6d8d72', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/health-history.css">
+</head>
+<body class="min-h-screen bg-cream text-ink antialiased">
+  <a class="skip-link" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="border-b border-sand bg-paper">
+    <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M11 13c3.7 0 6.3 1.8 9 5 2.7-3.2 5.3-5 9-5v7.5c0 6-3.8 10.5-9 10.5s-9-4.5-9-10.5V13Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 14 8 10m19 4 5-4M16 23h.01M24 23h.01M17 27c1.8 1.3 4.2 1.3 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span>
+          <span class="block text-[1.05rem] font-bold leading-tight tracking-tight text-forest">Maweshi Muhafiz</span>
+          <span class="block text-xs font-medium text-stone-500" lang="ur" dir="rtl">مویشی محافظ</span>
+        </span>
+      </a>
+      <div class="authenticated-nav-actions">
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+        <button type="button" class="logout-button" data-logout data-i18n="logout">لاگ آؤٹ</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="history-shell">
+    <a id="profile-link" href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</span>
+    </a>
+
+    <section id="history-loading" class="history-loading" data-i18n-aria-label="loadingLabel" aria-label="صحت کی پچھلی تفصیل دیکھی جا رہی ہے">
+      <div class="history-loading-head"></div>
+      <div class="history-loading-line"></div>
+      <div class="history-loading-line"></div>
+      <div class="history-loading-line"></div>
+    </section>
+
+    <section id="history-error" class="history-state hidden" aria-live="polite">
+      <span class="history-state-icon" aria-hidden="true">!</span>
+      <h1 id="history-error-title"></h1>
+      <p id="history-error-message"></p>
+      <div class="history-state-actions">
+        <button id="retry-history" type="button" class="btn btn-primary" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+        <a id="error-profile-link" href="index.html" class="btn btn-secondary" data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</a>
+      </div>
+    </section>
+
+    <div id="history-page" class="hidden">
+      <section class="history-heading" aria-labelledby="history-title">
+        <span id="animal-icon" class="history-animal-icon" aria-hidden="true">🐾</span>
+        <div class="min-w-0 flex-1">
+          <p id="animal-summary" class="history-animal-summary" dir="auto"></p>
+          <h1 id="history-title" data-i18n="historyTitle">صحت کی پچھلی تفصیل</h1>
+          <p data-i18n="historySubtitle">اس جانور کے پچھلے صحت معائنے ایک جگہ دیکھیں۔</p>
+        </div>
+      </section>
+
+      <section id="history-empty" class="history-state history-state--empty hidden">
+        <span class="empty-history-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M7 3h10v4H7V3Zm-2 4h14v14H5V7Zm4 4h6m-6 4h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <h2 data-i18n="noAssessments">ابھی تک صحت کا کوئی معائنہ موجود نہیں ہے۔</h2>
+        <p data-i18n="emptyHelp">پہلا معائنہ شروع کرنے کے لیے جانور کے پروفائل پر جائیں۔</p>
+        <a id="start-assessment-link" href="index.html" class="btn btn-primary" data-i18n="startAssessment">صحت کا معائنہ شروع کریں</a>
+      </section>
+
+      <section id="history-content" class="hidden" aria-labelledby="all-assessments-heading">
+        <div class="history-toolbar">
+          <div>
+            <p class="section-kicker" data-i18n="healthRecord">صحت کا ریکارڈ</p>
+            <h2 id="all-assessments-heading" data-i18n="allAssessments">تمام صحت معائنے</h2>
+          </div>
+          <div class="history-filters" role="group" data-i18n-aria-label="filterLabel" aria-label="فوری توجہ کے مطابق ریکارڈ دیکھیں">
+            <button type="button" class="history-filter is-active" data-history-filter="all" aria-pressed="true" data-i18n="filterAll">تمام</button>
+            <button type="button" class="history-filter" data-history-filter="low" aria-pressed="false" data-i18n="filterLow">کم</button>
+            <button type="button" class="history-filter" data-history-filter="medium" aria-pressed="false" data-i18n="filterMedium">توجہ درکار</button>
+            <button type="button" class="history-filter" data-history-filter="high" aria-pressed="false" data-i18n="filterHigh">فوری</button>
+          </div>
+        </div>
+
+        <div id="malformed-notice" class="history-notice hidden" role="status" data-i18n="someUnavailable">کچھ ریکارڈ کی مکمل معلومات نہیں دکھائی جا سکیں۔</div>
+        <div id="history-list" class="history-list"></div>
+        <div id="filter-empty" class="filter-empty hidden" data-i18n="noFilterMatches">اس انتخاب میں کوئی معائنہ موجود نہیں ہے۔</div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="history-footer">
+    <p data-i18n="footerCare">مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔</p>
+    <p data-i18n="footerDisclaimer">AI کی رائے ابتدائی رہنمائی ہے، ڈاکٹر کا متبادل نہیں۔</p>
+  </footer>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/health-history.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="Maweshi Muhafiz helps farmers recognize livestock health concerns earlier with Urdu-first AI-assisted guidance.">
+  <title>Maweshi Muhafiz | مویشیوں کی بہتر دیکھ بھال</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', leaf: '#6d8d72', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/landing.css">
+</head>
+<body class="landing-body bg-cream text-ink antialiased">
+  <a class="skip-link" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="landing-header">
+    <nav class="landing-nav" data-i18n-aria-label="mainNavigation" aria-label="مرکزی فہرست">
+      <a href="#home" class="landing-brand" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M11 13c3.7 0 6.3 1.8 9 5 2.7-3.2 5.3-5 9-5v7.5c0 6-3.8 10.5-9 10.5s-9-4.5-9-10.5V13Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 14 8 10m19 4 5-4M16 23h.01M24 23h.01M17 27c1.8 1.3 4.2 1.3 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span><strong>Maweshi Muhafiz</strong><small lang="ur" dir="rtl">مویشی محافظ</small></span>
+      </a>
+
+      <button id="menu-toggle" type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" data-i18n-aria-label="openMenu" aria-label="فہرست کھولیں">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <div id="nav-links" class="nav-links">
+        <div class="nav-page-links">
+          <a href="#home" data-i18n="home">مرکزی صفحہ</a>
+          <a href="#how-it-works" data-i18n="howItWorks">یہ کیسے کام کرتا ہے</a>
+          <a href="#features" data-i18n="features">خاص باتیں</a>
+        </div>
+        <div class="nav-actions">
+          <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+            <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+            <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+          </div>
+          <a href="auth.html?view=login" class="nav-login" data-i18n="login">لاگ اِن</a>
+          <a href="auth.html?view=signup" class="nav-start" data-i18n="getStarted">شروع کریں</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section id="home" class="hero-section">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow" data-i18n="eyebrow">مویشیوں کی صحت، آسان زبان میں</p>
+          <h1 data-i18n="heroTitle">بیماری کی علامات جلد پہچانیں، بروقت قدم اٹھائیں۔</h1>
+          <p class="hero-support" data-i18n="heroSupport">جانور کی تصویر شامل کریں، علامات بتائیں، اور ممکنہ بیماری اور فوری توجہ کی ضرورت کے بارے میں آسان AI رہنمائی حاصل کریں۔</p>
+          <p class="hero-caution" data-i18n="heroCaution">یہ ابتدائی رہنمائی ہے، حتمی تشخیص نہیں۔</p>
+          <div class="hero-actions">
+            <a href="auth.html?view=signup" class="landing-button landing-button--primary" data-i18n="getStarted">شروع کریں</a>
+            <a href="#how-it-works" class="landing-button landing-button--secondary" data-i18n="seeHowItWorks">دیکھیں یہ کیسے کام کرتا ہے</a>
+          </div>
+
+          <div class="hero-journey" data-i18n-aria-label="journeyLabel" aria-label="صحت کی جانچ کا طریقہ">
+            <span><b aria-hidden="true">📷</b><small data-i18n="journeyPhoto">تصویر اور علامات</small></span>
+            <i aria-hidden="true">←</i>
+            <span><b aria-hidden="true">⚠️</b><small data-i18n="journeyUrgency">فوری توجہ کی پہچان</small></span>
+            <i aria-hidden="true">←</i>
+            <span><b aria-hidden="true">🔊</b><small data-i18n="journeyUrdu">آسان اردو رہنمائی</small></span>
+          </div>
+        </div>
+
+        <figure class="hero-visual">
+          <img class="hero-photo" src="static/images/farmer-livestock-hero.jpg" alt="" width="2624" height="1632" fetchpriority="high">
+          <figcaption class="sr-only" data-i18n="heroVisualLabel">پاکستانی کسان اپنے جانور کے ساتھ مویشی محافظ استعمال کرتے ہوئے</figcaption>
+          <div class="hero-mini-check" aria-hidden="true">
+            <div class="mini-check-head"><span></span><strong data-i18n="healthCheck">صحت کی جانچ</strong></div>
+            <div class="mini-check-result"><b>!</b><div><small data-i18n="attentionLevel">توجہ کی سطح</small><strong data-i18n="vetReviewAdvised">ڈاکٹر سے جلد مشورہ کریں</strong></div></div>
+            <p data-i18n="preliminaryOnly">ابتدائی AI رہنمائی</p>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="landing-section how-section" aria-labelledby="how-heading">
+      <div class="section-intro">
+        <p class="eyebrow" data-i18n="simpleProcess">سادہ طریقہ</p>
+        <h2 id="how-heading" data-i18n="howHeading">چار آسان قدم</h2>
+        <p data-i18n="howSupport">جانور کا ریکارڈ بنانے سے لے کر صحت کی پچھلی تفصیل محفوظ رکھنے تک۔</p>
+      </div>
+      <ol class="steps-list">
+        <li><span>01</span><div><strong data-i18n="stepOneTitle">اپنا جانور شامل کریں</strong><p data-i18n="stepOneText">نام، قسم اور بنیادی معلومات محفوظ کریں۔</p></div></li>
+        <li><span>02</span><div><strong data-i18n="stepTwoTitle">تصویر اور علامات دیں</strong><p data-i18n="stepTwoText">صاف تصویر کے ساتھ جو علامات نظر آئیں وہ لکھیں۔</p></div></li>
+        <li><span>03</span><div><strong data-i18n="stepThreeTitle">ابتدائی AI رہنمائی پائیں</strong><p data-i18n="stepThreeText">ممکنہ بیماری اور توجہ کی ضرورت سمجھیں۔</p></div></li>
+        <li><span>04</span><div><strong data-i18n="stepFourTitle">ریکارڈ محفوظ رکھیں</strong><p data-i18n="stepFourText">نتیجہ محفوظ کریں اور وقت کے ساتھ صحت دیکھیں۔</p></div></li>
+      </ol>
+    </section>
+
+    <section id="features" class="landing-section difference-section" aria-labelledby="difference-heading">
+      <div class="difference-heading-wrap">
+        <p class="eyebrow" data-i18n="builtForFarmers">کسانوں کے لیے بنایا گیا</p>
+        <h2 id="difference-heading" data-i18n="differenceHeading">مویشی محافظ کیوں مختلف ہے؟</h2>
+        <p data-i18n="differenceSupport">صرف ضروری مدد—تاکہ کسان جلد سمجھ سکے اور محفوظ قدم اٹھا سکے۔</p>
+      </div>
+      <div class="capability-list">
+        <article><span aria-hidden="true">◉</span><div><h3 data-i18n="screeningTitle">تصویر اور علامات کی مشترکہ جانچ</h3><p data-i18n="screeningText">AI کی مدد سے دونوں معلومات کو ایک ساتھ سمجھنے کی ابتدائی کوشش۔</p></div></article>
+        <article><span class="capability-warning" aria-hidden="true">!</span><div><h3 data-i18n="redFlagTitle">خطرے کی علامات پر توجہ</h3><p data-i18n="redFlagText">فوری مدد کی ضرورت کو واضح انداز میں نمایاں کرنا۔</p></div></article>
+        <article><span aria-hidden="true">ا</span><div><h3 data-i18n="urduTitle">اردو پہلے، آواز کے لیے تیار</h3><p data-i18n="urduText">سادہ زبان جو موبائل پر پڑھنے اور سننے میں آسان ہو۔</p></div></article>
+        <article><span aria-hidden="true">✓</span><div><h3 data-i18n="recordsTitle">بچاؤ اور صحت کا ریکارڈ</h3><p data-i18n="recordsText">صحت کی اہم معلومات منظم رکھنے کے لیے ایک واضح جگہ۔</p></div></article>
+      </div>
+    </section>
+
+    <section class="passport-section" aria-labelledby="passport-heading">
+      <div class="passport-inner">
+        <div class="passport-copy">
+          <p class="eyebrow" data-i18n="healthPassportLabel">ہیلتھ پاسپورٹ</p>
+          <h2 id="passport-heading" data-i18n="passportHeading">بہتر ریکارڈ۔ بہتر دیکھ بھال۔ زیادہ بھروسا۔</h2>
+          <p data-i18n="passportText">مویشی محافظ ہر جانور کی صحت کی تفصیل منظم رکھتا ہے۔ مستقبل میں کسان ایک آسان ہیلتھ کارڈ اپنی مرضی سے خریدار کے ساتھ بھی شیئر کر سکے گا۔</p>
+          <p class="passport-note" data-i18n="passportFuture">یہ حصہ آئندہ ہیلتھ پاسپورٹ کے تصور کی نمائشی جھلک ہے۔</p>
+        </div>
+        <div class="passport-demo" aria-label="نمائشی ہیلتھ پاسپورٹ" data-i18n-aria-label="passportDemoLabel">
+          <div class="passport-demo-head">
+            <span class="demo-animal" aria-hidden="true">🐄</span>
+            <div><small data-i18n="healthPassportLabel">ہیلتھ پاسپورٹ</small><strong>Rani · <span data-i18n="demoCow">گائے</span></strong></div>
+            <span class="demo-label" data-i18n="demoLabel">نمونہ</span>
+          </div>
+          <ul>
+            <li><span aria-hidden="true">✓</span><strong data-i18n="vaccinationStatus">ویکسین کی حالت</strong><small data-i18n="demoRecorded">ریکارڈ موجود</small></li>
+            <li><span aria-hidden="true">✓</span><strong data-i18n="dewormingStatus">کیڑوں کی دوا</strong><small data-i18n="demoRecorded">ریکارڈ موجود</small></li>
+            <li><span aria-hidden="true">✓</span><strong data-i18n="previousAssessments">پچھلے معائنے</strong><small data-i18n="demoHistory">محفوظ تاریخ</small></li>
+            <li><span aria-hidden="true">✓</span><strong data-i18n="followUpStatus">دوبارہ جانچ کی حالت</strong><small data-i18n="demoUpToDate">معلومات مکمل</small></li>
+            <li class="passport-alert"><span aria-hidden="true">!</span><strong data-i18n="activeWarnings">موجودہ صحت کی تنبیہ</strong><small data-i18n="demoNoWarning">کوئی تنبیہ نہیں</small></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-section" aria-labelledby="final-heading">
+      <div class="safety-note">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8v4m0 4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg>
+        <p data-i18n="safetyText">مویشی محافظ ابتدائی صحت جانچ اور آگاہی میں مدد دیتا ہے۔ نتائج ممکنہ بیماریوں کی نشاندہی کرتے ہیں اور جانوروں کے ماہر ڈاکٹر کا متبادل نہیں۔</p>
+      </div>
+      <div class="final-cta">
+        <p class="eyebrow" data-i18n="readyLabel">بہتر دیکھ بھال کی شروعات</p>
+        <h2 id="final-heading" data-i18n="finalHeading">اپنے جانوروں کا صحت ریکارڈ آج سے سنبھالیں۔</h2>
+        <div class="hero-actions hero-actions--center">
+          <a href="auth.html?view=signup" class="landing-button landing-button--primary" data-i18n="getStarted">شروع کریں</a>
+          <a href="auth.html?view=login" class="landing-button landing-button--secondary" data-i18n="login">لاگ اِن</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="landing-footer">
+    <a href="#home" class="footer-brand">Maweshi Muhafiz · <span lang="ur" dir="rtl">مویشی محافظ</span></a>
+    <p data-i18n="footerLine">مویشیوں کی صحت کے لیے آسان، محفوظ اور ذمہ دار رہنمائی۔</p>
+  </footer>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/landing.js" defer></script>
+</body>
+</html>

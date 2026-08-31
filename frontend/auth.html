@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="Login or create a Maweshi Muhafiz account.">
+  <title>Maweshi Muhafiz | لاگ اِن</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/auth.css">
+</head>
+<body class="auth-body bg-cream text-ink antialiased">
+  <a class="skip-link" href="#auth-main" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="auth-header">
+    <nav class="auth-nav" data-i18n-aria-label="mainNavigation" aria-label="مرکزی فہرست">
+      <a href="landing.html" class="auth-brand" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کے مرکزی صفحے پر جائیں">
+        <span class="auth-brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M11 13c3.7 0 6.3 1.8 9 5 2.7-3.2 5.3-5 9-5v7.5c0 6-3.8 10.5-9 10.5s-9-4.5-9-10.5V13Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 14 8 10m19 4 5-4M16 23h.01M24 23h.01M17 27c1.8 1.3 4.2 1.3 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span><strong>Maweshi Muhafiz</strong><small lang="ur" dir="rtl">مویشی محافظ</small></span>
+      </a>
+      <div class="auth-nav-actions">
+        <a href="landing.html" class="auth-home-link" data-i18n="backHome">مرکزی صفحہ</a>
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="auth-main" class="auth-main">
+    <section class="auth-intro" aria-labelledby="auth-intro-heading">
+      <p class="auth-eyebrow" data-i18n="eyebrow">مویشیوں کی دیکھ بھال، ایک محفوظ جگہ پر</p>
+      <h1 id="auth-intro-heading" data-i18n="introTitle">اپنے جانوروں کا ریکارڈ آسانی سے سنبھالیں۔</h1>
+      <p data-i18n="introText">لاگ اِن کریں یا نیا اکاؤنٹ بنائیں تاکہ جانوروں کی معلومات اور صحت کا ریکارڈ ایک جگہ محفوظ رہے۔</p>
+      <ul class="auth-benefits">
+        <li><span aria-hidden="true">✓</span><span data-i18n="benefitRecords">ہر جانور کا منظم ریکارڈ</span></li>
+        <li><span aria-hidden="true">✓</span><span data-i18n="benefitGuidance">سادہ اردو میں صحت کی رہنمائی</span></li>
+        <li><span aria-hidden="true">✓</span><span data-i18n="benefitHistory">صحت کی پچھلی معلومات ایک جگہ</span></li>
+      </ul>
+      <p class="auth-safety" data-i18n="safetyNote">اپنا پاس ورڈ کسی دوسرے شخص کے ساتھ شیئر نہ کریں۔</p>
+    </section>
+
+    <section class="auth-panel" aria-labelledby="auth-heading">
+      <div class="auth-tabs" role="tablist" data-i18n-aria-label="authOptions" aria-label="اکاؤنٹ کے اختیارات">
+        <button id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-view" data-auth-view="login" data-i18n="login">لاگ اِن</button>
+        <button id="signup-tab" type="button" role="tab" aria-selected="false" aria-controls="signup-view" data-auth-view="signup" data-i18n="createAccount">اکاؤنٹ بنائیں</button>
+      </div>
+
+      <div id="auth-feedback" class="auth-feedback hidden" role="alert" aria-live="polite"></div>
+
+      <div id="login-view" role="tabpanel" aria-labelledby="login-tab">
+        <div class="auth-panel-heading">
+          <p class="auth-eyebrow" data-i18n="welcomeBack">خوش آمدید</p>
+          <h2 id="auth-heading" data-i18n="loginHeading">اپنے اکاؤنٹ میں لاگ اِن کریں</h2>
+          <p data-i18n="loginHelp">اپنے جانوروں کے ریکارڈ تک پہنچنے کے لیے معلومات درج کریں۔</p>
+        </div>
+        <form id="login-form" class="auth-form" novalidate>
+          <label class="auth-field">
+            <span><span data-i18n="email">ای میل</span> <b aria-hidden="true">*</b></span>
+            <input name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" required data-i18n-placeholder="emailPlaceholder" placeholder="name@example.com">
+          </label>
+          <label class="auth-field">
+            <span><span data-i18n="password">پاس ورڈ</span> <b aria-hidden="true">*</b></span>
+            <span class="password-control">
+              <input name="password" type="password" autocomplete="current-password" required data-i18n-placeholder="passwordPlaceholder" placeholder="اپنا پاس ورڈ لکھیں">
+              <button type="button" class="password-toggle" data-toggle-password data-i18n-aria-label="showPassword" aria-label="پاس ورڈ دکھائیں"><span data-i18n="show">دکھائیں</span></button>
+            </span>
+          </label>
+          <button id="login-submit" type="submit" class="auth-submit" data-i18n="login">لاگ اِن</button>
+        </form>
+        <p class="auth-switch-copy"><span data-i18n="newHere">نئے صارف ہیں؟</span> <button type="button" data-switch-view="signup" data-i18n="createAccount">اکاؤنٹ بنائیں</button></p>
+      </div>
+
+      <div id="signup-view" class="hidden" role="tabpanel" aria-labelledby="signup-tab">
+        <div class="auth-panel-heading">
+          <p class="auth-eyebrow" data-i18n="startToday">آج ہی شروعات کریں</p>
+          <h2 data-i18n="signupHeading">اپنا اکاؤنٹ بنائیں</h2>
+          <p data-i18n="signupHelp">صرف ضروری معلومات درج کریں۔</p>
+        </div>
+        <form id="signup-form" class="auth-form" novalidate>
+          <label class="auth-field">
+            <span><span data-i18n="name">نام</span> <b aria-hidden="true">*</b></span>
+            <input name="name" type="text" maxlength="100" autocomplete="name" required data-i18n-placeholder="namePlaceholder" placeholder="اپنا نام لکھیں">
+          </label>
+          <label class="auth-field">
+            <span><span data-i18n="email">ای میل</span> <b aria-hidden="true">*</b></span>
+            <input name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" required data-i18n-placeholder="emailPlaceholder" placeholder="name@example.com">
+          </label>
+          <label class="auth-field">
+            <span><span data-i18n="password">پاس ورڈ</span> <b aria-hidden="true">*</b></span>
+            <span class="password-control">
+              <input name="password" type="password" minlength="8" autocomplete="new-password" required data-i18n-placeholder="newPasswordPlaceholder" placeholder="کم از کم 8 حروف">
+              <button type="button" class="password-toggle" data-toggle-password data-i18n-aria-label="showPassword" aria-label="پاس ورڈ دکھائیں"><span data-i18n="show">دکھائیں</span></button>
+            </span>
+            <small data-i18n="passwordHelp">پاس ورڈ کم از کم 8 حروف کا ہونا چاہیے۔</small>
+          </label>
+          <label class="auth-field">
+            <span><span data-i18n="confirmPassword">پاس ورڈ دوبارہ لکھیں</span> <b aria-hidden="true">*</b></span>
+            <span class="password-control">
+              <input name="confirm_password" type="password" minlength="8" autocomplete="new-password" required data-i18n-placeholder="confirmPasswordPlaceholder" placeholder="وہی پاس ورڈ دوبارہ لکھیں">
+              <button type="button" class="password-toggle" data-toggle-password data-i18n-aria-label="showPassword" aria-label="پاس ورڈ دکھائیں"><span data-i18n="show">دکھائیں</span></button>
+            </span>
+          </label>
+          <button id="signup-submit" type="submit" class="auth-submit" data-i18n="createAccount">اکاؤنٹ بنائیں</button>
+        </form>
+        <p class="auth-switch-copy"><span data-i18n="alreadyAccount">پہلے سے اکاؤنٹ ہے؟</span> <button type="button" data-switch-view="login" data-i18n="login">لاگ اِن</button></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="auth-footer">
+    <p>Maweshi Muhafiz · <span lang="ur" dir="rtl">مویشی محافظ</span></p>
+    <p data-i18n="footerLine">مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔</p>
+  </footer>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/auth-page.js" defer></script>
+</body>
+</html>
