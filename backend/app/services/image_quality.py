@@ -23,9 +23,6 @@ logger = logging.getLogger(__name__)
 # Tunable thresholds (module-level constants for easy adjustment)
 # ---------------------------------------------------------------------------
 
-BLUR_THRESHOLD = 25.0
-"""Minimum Laplacian variance. Lower values = more blur tolerance."""
-
 DARKNESS_THRESHOLD = 50.0
 """Minimum mean pixel brightness (0-255 scale). Lower values = darker tolerance."""
 
@@ -80,15 +77,6 @@ class ImageQualityService:
             # Convert to grayscale for analysis
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-            # Check blur (Laplacian variance)
-            laplacian = cv2.Laplacian(gray, cv2.CV_64F)
-            blur_score = float(laplacian.var())
-            # DEBUG: log actual blur score vs threshold for every image
-            print(f"[DEBUG] Image blur_score: {blur_score:.4f}, threshold: {BLUR_THRESHOLD}", flush=True)
-            logger.info("Image blur_score: %.4f, threshold: %s", blur_score, BLUR_THRESHOLD)
-            if blur_score < BLUR_THRESHOLD:
-                issues.append("Image is too blurry")
-
             # Check darkness (mean brightness)
             mean_brightness = float(gray.mean())
             if mean_brightness < DARKNESS_THRESHOLD:
@@ -97,7 +85,6 @@ class ImageQualityService:
             return {
                 "is_acceptable": len(issues) == 0,
                 "issues": issues,
-                "blur_score": blur_score,
             }
 
         except Exception as e:

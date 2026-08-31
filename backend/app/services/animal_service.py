@@ -1,17 +1,10 @@
 """
 AnimalService — business logic for animal CRUD operations.
-
-Receives an AnimalRepository via constructor injection so the storage
-backend can be swapped (in-memory → MongoDB) without touching this code.
 """
-#This file is handling the business logic for the animal CRUD operations
+
 from app.repositories.base import AnimalRepository
 from app.services.animal_validation import validate_animal_data
 
-
-# ---------------------------------------------------------------------------
-# Custom exceptions — routes catch these and map to HTTP status codes
-# ---------------------------------------------------------------------------
 
 class ValidationError(Exception):
     """Raised when incoming data fails validation rules."""
@@ -22,16 +15,12 @@ class ValidationError(Exception):
 
 
 class AnimalNotFoundError(Exception):
-    """Raised when a requested animal id does not exist."""
+    """Raised when a requested animal does not exist or is not owned by the user."""
 
     def __init__(self, animal_id):
         self.animal_id = animal_id
         super().__init__(f"Animal with id {animal_id} not found.")
 
-
-# ---------------------------------------------------------------------------
-# Service
-# ---------------------------------------------------------------------------
 
 class AnimalService:
     """Encapsulates all animal-related business logic."""
@@ -41,40 +30,58 @@ class AnimalService:
 
     # ---- Create ---------------------------------------------------------
 
-    def create(self, data: dict) -> dict:
+    def create(self, data: dict, user_id) -> dict:
         errors = validate_animal_data(data)
+
         if errors:
             raise ValidationError(errors)
-        return self._repo.create(data)
+
+        # Never trust user_id coming from the client.
+        # Always use the authenticated user's ID.
+        animal_data = dict(data)
+        animal_data["user_id"] = user_id
+
+        return self._repo.create(animal_data)
 
     # ---- Read -----------------------------------------------------------
 
-    def get_all(self) -> list[dict]:
-        return self._repo.get_all()
+    def get_all(self, user_id=None) -> list[dict]:
+        return self._repo.get_all(user_id=user_id)
 
-    def get_by_id(self, animal_id) -> dict:
-        record = self._repo.get_by_id(animal_id)
+    def get_by_id(self, animal_id, user_id) -> dict:
+        record = self._repo.get_by_id(animal_id, user_id=user_id)
+
         if record is None:
             raise AnimalNotFoundError(animal_id)
+
         return record
 
     # ---- Update ---------------------------------------------------------
 
-    def update(self, animal_id, data: dict) -> dict:
-        # Validate only the fields that are present (partial update)
+    def update(self, animal_id, data: dict, user_id) -> dict:
         errors = validate_animal_data(data, partial=True)
+
         if errors:
             raise ValidationError(errors)
 
-        # Check existence before delegating to the repository
-        if self._repo.get_by_id(animal_id) is None:
+        # Check that this animal belongs to the logged-in user.
+        if self._repo.get_by_id(animal_id, user_id=user_id) is None:
             raise AnimalNotFoundError(animal_id)
 
-        return self._repo.update(animal_id, data)
+        # Never allow the client to change ownership.
+        update_data = dict(data)
+        update_data.pop("user_id", None)
+
+        return self._repo.update(
+            animal_id,
+            update_data,
+            user_id=user_id
+        )
 
     # ---- Delete ---------------------------------------------------------
 
-    def delete(self, animal_id) -> bool:
-        if not self._repo.delete(animal_id):
+    def delete(self, animal_id, user_id) -> bool:
+        if not self._repo.delete(animal_id, user_id=user_id):
             raise AnimalNotFoundError(animal_id)
+
         return True

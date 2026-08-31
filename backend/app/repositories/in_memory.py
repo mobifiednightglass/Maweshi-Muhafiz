@@ -47,6 +47,7 @@ class InMemoryAnimalRepository(AnimalRepository):
         now = self._utcnow()
         record = {
             "id": self._next_id,
+            "user_id": str(data["user_id"]) if data.get("user_id") is not None else None,
             "name": data["name"],
             "animal_type": data["animal_type"],
             "breed": data.get("breed"),
@@ -63,24 +64,38 @@ class InMemoryAnimalRepository(AnimalRepository):
         self._next_id += 1
         return self._to_dict(record)
 
-    def get_all(self) -> list[dict]:
-        return [self._to_dict(r) for r in self._store.values()]
+    def _matches_owner(self, record: dict, user_id) -> bool:
+        """Return True if the record belongs to the given user (or no filter)."""
+        if user_id is None:
+            return True
+        return str(record.get("user_id")) == str(user_id)
 
-    def get_by_id(self, animal_id: AnimalId) -> Optional[dict]:
+    def get_all(self, user_id=None) -> list[dict]:
+        return [
+            self._to_dict(r)
+            for r in self._store.values()
+            if self._matches_owner(r, user_id)
+        ]
+
+    def get_by_id(self, animal_id: AnimalId, user_id=None) -> Optional[dict]:
         int_id = self._to_int_id(animal_id)
         if int_id is None:
             return None
         record = self._store.get(int_id)
         if record is None:
+            return None
+        if not self._matches_owner(record, user_id):
             return None
         return self._to_dict(record)
 
-    def update(self, animal_id: AnimalId, data: dict) -> Optional[dict]:
+    def update(self, animal_id: AnimalId, data: dict, user_id=None) -> Optional[dict]:
         int_id = self._to_int_id(animal_id)
         if int_id is None:
             return None
         record = self._store.get(int_id)
         if record is None:
+            return None
+        if not self._matches_owner(record, user_id):
             return None
         # Only overwrite fields that were explicitly provided
         for key in (
@@ -99,11 +114,14 @@ class InMemoryAnimalRepository(AnimalRepository):
         record["updated_at"] = self._utcnow()
         return self._to_dict(record)
 
-    def delete(self, animal_id: AnimalId) -> bool:
+    def delete(self, animal_id: AnimalId, user_id=None) -> bool:
         int_id = self._to_int_id(animal_id)
         if int_id is None:
             return False
-        if int_id not in self._store:
+        record = self._store.get(int_id)
+        if record is None:
+            return False
+        if not self._matches_owner(record, user_id):
             return False
         del self._store[int_id]
         return True

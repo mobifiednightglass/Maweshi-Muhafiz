@@ -25,39 +25,31 @@ AnimalId = EntityId
 # ---------------------------------------------------------------------------
 
 class AnimalRepository(ABC):
-    """Interface that all animal repositories must satisfy."""
 
     @abstractmethod
     def create(self, data: dict) -> dict:
-        """Persist a new animal record and return the created entity as a dict.
-
-        The repository is responsible for assigning an ``id`` and setting
-        ``created_at`` / ``updated_at`` timestamps.
-        """
+        """Create an animal."""
 
     @abstractmethod
-    def get_all(self) -> list[dict]:
-        """Return every animal record as a list of dicts."""
+    def get_all(self, user_id=None) -> list[dict]:
+        """Return animals belonging to the specified user."""
 
     @abstractmethod
-    def get_by_id(self, animal_id: EntityId) -> Optional[dict]:
-        """Return a single animal by its id, or ``None`` if not found."""
+    def get_by_id(self, animal_id: EntityId, user_id=None) -> Optional[dict]:
+        """Return an animal only if it belongs to the specified user."""
 
     @abstractmethod
-    def update(self, animal_id: EntityId, data: dict) -> Optional[dict]:
-        """Update an existing animal record.
-
-        Returns the updated dict, or ``None`` if the id does not exist.
-        The repository must refresh ``updated_at``.
-        """
+    def update(
+        self,
+        animal_id: EntityId,
+        data: dict,
+        user_id=None
+    ) -> Optional[dict]:
+        """Update an animal only if it belongs to the specified user."""
 
     @abstractmethod
-    def delete(self, animal_id: EntityId) -> bool:
-        """Delete an animal record.
-
-        Returns ``True`` if a record was removed, ``False`` if the id
-        did not exist.
-        """
+    def delete(self, animal_id: EntityId, user_id=None) -> bool:
+        """Delete an animal only if it belongs to the specified user."""
 
 
 # ---------------------------------------------------------------------------

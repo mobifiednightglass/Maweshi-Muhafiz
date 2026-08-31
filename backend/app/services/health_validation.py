@@ -30,6 +30,8 @@ ALLOWED_FIELDS = {
     "image_ids",
     "diagnosis_result",
     "status",
+    "is_red_flag",
+    "red_flag_reasons",
 }
 
 
@@ -130,5 +132,23 @@ def validate_assessment_data(
             errors.append(
                 f"'status' must be one of: {', '.join(ALLOWED_STATUSES)}."
             )
+
+    # --- is_red_flag ------------------------------------------------------
+    is_red_flag = data.get("is_red_flag")
+    if is_red_flag is not None:
+        if not isinstance(is_red_flag, bool):
+            errors.append("'is_red_flag' must be a boolean.")
+
+    # --- red_flag_reasons -------------------------------------------------
+    red_flag_reasons = data.get("red_flag_reasons")
+    if red_flag_reasons is not None:
+        if not isinstance(red_flag_reasons, list):
+            errors.append("'red_flag_reasons' must be a list.")
+        else:
+            for idx, item in enumerate(red_flag_reasons):
+                if not isinstance(item, str):
+                    errors.append(
+                        f"'red_flag_reasons[{idx}]' must be a string."
+                    )
 
     return errors

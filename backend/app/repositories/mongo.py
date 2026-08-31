@@ -30,6 +30,7 @@ _MUTABLE_FIELDS = (
     "color",
     "health_status",
     "notes",
+    "user_id",
 )
 
 
@@ -70,6 +71,7 @@ class MongoAnimalRepository(AnimalRepository):
             return None
         return {
             "id": str(doc["_id"]),
+            "user_id": str(doc.get("user_id")) if doc.get("user_id") is not None else None,
             "name": doc.get("name"),
             "animal_type": doc.get("animal_type"),
             "breed": doc.get("breed"),
@@ -97,17 +99,33 @@ class MongoAnimalRepository(AnimalRepository):
         doc["_id"] = result.inserted_id
         return self._doc_to_dict(doc)
 
-    def get_all(self) -> list[dict]:
-        return [self._doc_to_dict(doc) for doc in self._collection.find()]
+    def get_all(self, user_id=None) -> list[dict]:
+        query = {}
 
-    def get_by_id(self, animal_id) -> Optional[dict]:
+        if user_id is not None:
+            query["user_id"] = str(user_id)
+
+        return [
+            self._doc_to_dict(doc)
+            for doc in self._collection.find(query)
+        ]
+
+    def get_by_id(self, animal_id, user_id=None) -> Optional[dict]:
         oid = self._to_object_id(animal_id)
+
         if oid is None:
             return None
-        doc = self._collection.find_one({"_id": oid})
+
+        query = {"_id": oid}
+
+        if user_id is not None:
+            query["user_id"] = str(user_id)
+
+        doc = self._collection.find_one(query)
+
         return self._doc_to_dict(doc) if doc else None
 
-    def update(self, animal_id, data: dict) -> Optional[dict]:
+    def update(self, animal_id, data: dict, user_id=None) -> Optional[dict]:
         oid = self._to_object_id(animal_id)
         if oid is None:
             return None
@@ -116,22 +134,30 @@ class MongoAnimalRepository(AnimalRepository):
         for key in _MUTABLE_FIELDS:
             if key in data:
                 set_fields[key] = data[key]
-        set_fields["updated_at"] = self._utcnow()
 
         if not set_fields:
             # Nothing to update — just return current state
-            return self.get_by_id(animal_id)
+            return self.get_by_id(animal_id, user_id=user_id)
+
+        set_fields["updated_at"] = self._utcnow()
+
+        query = {"_id": oid}
+        if user_id is not None:
+            query["user_id"] = str(user_id)
 
         result = self._collection.find_one_and_update(
-            {"_id": oid},
+            query,
             {"$set": set_fields},
             return_document=True,
         )
         return self._doc_to_dict(result) if result else None
 
-    def delete(self, animal_id) -> bool:
+    def delete(self, animal_id, user_id=None) -> bool:
         oid = self._to_object_id(animal_id)
         if oid is None:
             return False
-        result = self._collection.delete_one({"_id": oid})
+        query = {"_id": oid}
+        if user_id is not None:
+            query["user_id"] = str(user_id)
+        result = self._collection.delete_one(query)
         return result.deleted_count > 0

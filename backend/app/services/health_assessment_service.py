@@ -14,6 +14,7 @@ Usage:
     from app.services.vision_provider import GeminiVisionProvider
     from app.services.health_assessment_service import HealthAssessmentService
 
+
     provider = GeminiVisionProvider(api_key=...)
     service  = HealthAssessmentService(provider)
     result   = service.run_assessment(image_bytes, "image/jpeg", "Limping, swollen leg")
@@ -22,7 +23,7 @@ Usage:
 import logging
 
 from app.services.vision_provider import VisionAssessmentProvider, safe_fallback
-
+from app.utils.auth_middleware import require_auth
 logger = logging.getLogger(__name__)
 
 
@@ -67,7 +68,9 @@ class HealthAssessmentService:
 
         The returned dict always contains:
         ``possible_conditions`` (list[str]), ``explanation`` (str),
-        ``confidence_note`` (str), ``urgency_level`` ("low"|"medium"|"high").
+        ``confidence_note`` (str), ``urgency_level`` ("low"|"medium"|"high"),
+        ``possible_conditions_urdu`` (list[str]), ``explanation_urdu`` (str),
+        ``confidence_note_urdu`` (str).
 
         If the underlying provider raises any exception, the safe fallback
         dict is returned instead — the caller never sees an unhandled error.

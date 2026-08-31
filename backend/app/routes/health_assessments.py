@@ -14,10 +14,11 @@ All responses follow a consistent envelope:
 
 import logging
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, g, jsonify, request
 
 from app.services.animal_service import AnimalNotFoundError
 from app.services.image_storage import ImageValidationError
+from app.utils.auth_middleware import require_auth
 
 health_assessments_bp = Blueprint("health_assessments", __name__)
 logger = logging.getLogger(__name__)
@@ -48,6 +49,7 @@ def _error(message, error_detail=None, status=400):
 @health_assessments_bp.route(
     "/animals/<animal_id>/assessments", methods=["POST"],
 )
+@require_auth
 def create_assessment(animal_id):
     """Create a health assessment from an uploaded image + symptoms text.
 
@@ -58,7 +60,7 @@ def create_assessment(animal_id):
 
     # -- 1. Verify the animal exists ----------------------------------------
     try:
-        current_app.animal_service.get_by_id(animal_id)
+        current_app.animal_service.get_by_id(animal_id, g.user_id)
     except AnimalNotFoundError:
         return _error(
             f"Animal with id {animal_id} not found.",
@@ -120,19 +122,26 @@ def create_assessment(animal_id):
         logger.exception("Unexpected error saving image for animal %s", animal_id)
         return _error("An unexpected error occurred while storing the image.", status=500)
 
-    # -- 6. Create a pending HealthAssessment record ------------------------
+    # -- 6. Run red-flag keyword check on symptoms -------------------------
+    red_flag_result = current_app.red_flag_service.check_red_flags(symptoms)
+    keyword_matched = red_flag_result["is_red_flag"]
+    matched_keywords = red_flag_result["matched_keywords"]
+
+    # -- 7. Create a pending HealthAssessment record ------------------------
     try:
         record = current_app.health_assessment_repo.create({
             "animal_id": animal_id,
             "symptoms": symptoms,
             "image_ids": [file_id],
             "status": "pending",
+            "is_red_flag": keyword_matched,
+            "red_flag_reasons": list(matched_keywords),
         })
     except Exception:
         logger.exception("Unexpected error creating assessment record")
         return _error("An unexpected error occurred.", status=500)
 
-    # -- 7. Run the AI assessment -------------------------------------------
+    # -- 8. Run the AI assessment -------------------------------------------
     try:
         diagnosis_result = current_app.health_assessment_service.run_assessment(
             image_bytes=image_data,
@@ -143,7 +152,7 @@ def create_assessment(animal_id):
         logger.exception("Unexpected error running AI assessment")
         diagnosis_result = None
 
-    # -- 8. Determine final status and update the record --------------------
+    # -- 9. Determine final status and red-flag state ----------------------
     if diagnosis_result is None:
         status_value = "failed"
         diagnosis_result = {
@@ -151,26 +160,53 @@ def create_assessment(animal_id):
             "explanation": "Assessment could not be completed due to an internal error.",
             "confidence_note": "Manual veterinary review is strongly recommended.",
             "urgency_level": "medium",
+            # Urdu fallback fields
+            "possible_conditions_urdu": [],
+            "explanation_urdu": (
+                "خودکار تشخیص مکمل نہیں ہو سکی۔ "
+                "براہ کرم تجربہ کار ڈاکٹر (ویٹرنری) سے جانور کا معائنہ کروائیں۔"
+            ),
+            "confidence_note_urdu": (
+                "خودکار تشخیص مکمل نہیں ہو سکی۔ "
+                "براہ کرم تجربہ کار ڈاکٹر (ویٹرنری) سے جانور کا معائنہ کروائیں۔"
+            ),
         }
     elif _FALLBACK_MARKER in diagnosis_result.get("confidence_note", ""):
         status_value = "failed"
     else:
         status_value = "completed"
 
+    # Combine keyword matches with AI urgency to determine final red-flag state
+    ai_urgency_high = diagnosis_result.get("urgency_level") == "high"
+    final_is_red_flag = keyword_matched or ai_urgency_high
+    print(f"[DEBUG] keyword_matched={keyword_matched}, ai_urgency_high={ai_urgency_high}, urgency_level={diagnosis_result.get('urgency_level')!r}, final={final_is_red_flag}", flush=True)
+    red_flag_reasons = list(matched_keywords)
+    if ai_urgency_high:
+        red_flag_reasons.append("AI assessed urgency as high")
+
     try:
         updated = current_app.health_assessment_repo.update(
             record["id"],
-            {"diagnosis_result": diagnosis_result, "status": status_value},
+            {
+                "diagnosis_result": diagnosis_result,
+                "status": status_value,
+                "is_red_flag": final_is_red_flag,
+                "red_flag_reasons": red_flag_reasons,
+            },
         )
         if updated is not None:
             record = updated
         else:
             record["diagnosis_result"] = diagnosis_result
             record["status"] = status_value
+            record["is_red_flag"] = final_is_red_flag
+            record["red_flag_reasons"] = red_flag_reasons
     except Exception:
         logger.exception("Unexpected error updating assessment record %s", record["id"])
         record["diagnosis_result"] = diagnosis_result
         record["status"] = status_value
+        record["is_red_flag"] = final_is_red_flag
+        record["red_flag_reasons"] = red_flag_reasons
 
     # Always return 200 — fallback is a valid safe response, not a request error.
     return _success(
@@ -187,12 +223,13 @@ def create_assessment(animal_id):
 @health_assessments_bp.route(
     "/animals/<animal_id>/assessments", methods=["GET"],
 )
+@require_auth
 def list_assessments(animal_id):
     """List all health assessments for a given animal."""
 
     # Verify the animal exists first
     try:
-        current_app.animal_service.get_by_id(animal_id)
+            current_app.animal_service.get_by_id(animal_id, g.user_id)
     except AnimalNotFoundError:
         return _error(
             f"Animal with id {animal_id} not found.",
@@ -223,6 +260,7 @@ def list_assessments(animal_id):
 @health_assessments_bp.route(
     "/assessments/<assessment_id>", methods=["GET"],
 )
+@require_auth
 def get_assessment(assessment_id):
     """Retrieve a single health assessment by its id."""
     try:

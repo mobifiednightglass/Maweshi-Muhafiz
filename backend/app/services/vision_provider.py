@@ -47,10 +47,15 @@ def safe_fallback(reason: str | None = None) -> dict:
     Used as a last-resort result when the AI provider is unreachable or
     returns unparseable output.  Always flags ``urgency_level`` as
     ``"medium"`` and recommends manual vet review.
+    Includes both English and Urdu fields.
     """
     note = (
         "Automated assessment could not be completed. "
         "Manual veterinary review is strongly recommended."
+    )
+    note_urdu = (
+        "خودکار تشخیص مکمل نہیں ہو سکی۔ "
+        "براہ کرم تجربہ کار ڈاکٹر (ویٹرنری) سے جانور کا معائنہ کروائیں۔"
     )
     if reason:
         note = f"{note} Reason: {reason}"
@@ -62,6 +67,13 @@ def safe_fallback(reason: str | None = None) -> dict:
         ),
         "confidence_note": note,
         "urgency_level": "medium",
+        # Urdu translations
+        "possible_conditions_urdu": [],
+        "explanation_urdu": (
+            "خودکار تصویری تشخیص کا نتیجہ دستیاب نہیں ہو سکا۔ "
+            "براہ کرم تجربہ کار ڈاکٹر (ویٹرنری) سے جانور کا معائنہ کروائیں۔"
+        ),
+        "confidence_note_urdu": note_urdu,
     }
 
 
@@ -96,7 +108,14 @@ _SYSTEM_INSTRUCTION = (
     "assessments for livestock based on photos and symptom descriptions. "
     "You are NOT a substitute for professional veterinary diagnosis. "
     "Always acknowledge uncertainty and recommend consulting a qualified "
-    "veterinarian."
+    "veterinarian. "
+    "You must respond in both English and Urdu. The Urdu text should be "
+    "natural, simple, and easy for a farmer to understand. "
+    "For high-urgency or emergency cases, the Urdu explanation and "
+    "confidence note must clearly communicate that immediate veterinary "
+    "attention is required. "
+    "Do not include treatment instructions or medication dosages in any "
+    "language."
 )
 
 _BASE_PROMPT = """\
@@ -105,14 +124,17 @@ reported by the farmer:
 
 \"\"\"{symptoms}\"\"\"
 
-Return a **JSON object** with exactly these four keys:
+Return a **JSON object** with exactly these seven keys:
 
-- "possible_conditions": a list of strings naming plausible health conditions
-- "explanation": a brief paragraph explaining your reasoning
-- "confidence_note": a short statement about your confidence level.
+- "possible_conditions": a list of strings naming plausible health conditions (in English)
+- "explanation": a brief paragraph explaining your reasoning (in English)
+- "confidence_note": a short statement about your confidence level (in English).
   It MUST explicitly say this is an AI-assisted preliminary assessment,
   not a medical diagnosis, and that uncertainty should be acknowledged.
 - "urgency_level": one of "low", "medium", or "high"
+- "explanation_urdu": the same explanation translated into natural, simple Urdu that a farmer can easily understand. Use Urdu script.
+- "possible_conditions_urdu": a list of the same conditions translated into simple Urdu
+- "confidence_note_urdu": the same confidence note translated into simple Urdu. If urgency is "high", clearly state in Urdu that فوری طور پر ڈاکٹر (ویٹرنری) سے رجوع کرنا ضروری ہے (immediate veterinary attention is required).
 """
 
 _STRICT_PROMPT = """\
@@ -127,9 +149,12 @@ Return this exact JSON structure:
 
 {{
   "possible_conditions": ["condition 1", "condition 2"],
-  "explanation": "Your reasoning here.",
+  "explanation": "Your reasoning here in English.",
   "confidence_note": "Explicitly state this is an AI-assisted preliminary assessment, not a diagnosis, and acknowledge uncertainty.",
-  "urgency_level": "low" | "medium" | "high"
+  "urgency_level": "low" | "medium" | "high",
+  "explanation_urdu": "یہاں آسان اردو میں وضاحت لکھیں۔ اگر فوری ضرورت ہے تو واضح طور پر بتائیں کہ فوری ڈاکٹر سے ملنا ضروری ہے۔",
+  "possible_conditions_urdu": ["حالت 1", "حالت 2"],
+  "confidence_note_urdu": "یہاں آسان اردو میں اعتماد کی وضاحت لکھیں۔"
 }}
 """
 
@@ -290,5 +315,15 @@ class GeminiVisionProvider(VisionAssessmentProvider):
         # Ensure possible_conditions is a list
         if not isinstance(data["possible_conditions"], list):
             data["possible_conditions"] = [str(data["possible_conditions"])]
+
+        # Populate optional Urdu fields with safe defaults when absent
+        # (keeps the API response shape consistent for all clients)
+        data.setdefault("explanation_urdu", "")
+        data.setdefault("possible_conditions_urdu", [])
+        data.setdefault("confidence_note_urdu", "")
+
+        # Ensure possible_conditions_urdu is a list
+        if not isinstance(data["possible_conditions_urdu"], list):
+            data["possible_conditions_urdu"] = [str(data["possible_conditions_urdu"])]
 
         return data

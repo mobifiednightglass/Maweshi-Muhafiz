@@ -8,9 +8,10 @@ All responses follow a consistent envelope:
 
 import logging
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, g, jsonify, request
 
 from app.services.animal_service import AnimalNotFoundError, ValidationError
+from app.utils.auth_middleware import require_auth
 
 animals_bp = Blueprint("animals", __name__)
 logger = logging.getLogger(__name__)
@@ -35,6 +36,7 @@ def _error(message, error_detail=None, status=400):
 # ---------------------------------------------------------------------------
 
 @animals_bp.route("/animals", methods=["POST"])
+@require_auth
 def create_animal():
     data = request.get_json(silent=True)
     if data is None:
@@ -42,7 +44,7 @@ def create_animal():
 
     try:
         from flask import current_app
-        animal = current_app.animal_service.create(data)
+        animal = current_app.animal_service.create(data, user_id=g.user_id)
     except ValidationError as exc:
         return _error("Validation failed.", error_detail=exc.errors, status=400)
     except Exception:
@@ -53,10 +55,11 @@ def create_animal():
 
 
 @animals_bp.route("/animals", methods=["GET"])
+@require_auth
 def list_animals():
     try:
         from flask import current_app
-        animals = current_app.animal_service.get_all()
+        animals = current_app.animal_service.get_all(user_id=g.user_id)
     except Exception:
         logger.exception("Unexpected error listing animals")
         return _error("An unexpected error occurred.", status=500)
@@ -65,10 +68,11 @@ def list_animals():
 
 
 @animals_bp.route("/animals/<animal_id>", methods=["GET"])
+@require_auth
 def get_animal(animal_id):
     try:
         from flask import current_app
-        animal = current_app.animal_service.get_by_id(animal_id)
+        animal = current_app.animal_service.get_by_id(animal_id, user_id=g.user_id)
     except AnimalNotFoundError:
         return _error(f"Animal with id {animal_id} not found.", status=404)
     except Exception:
@@ -79,6 +83,7 @@ def get_animal(animal_id):
 
 
 @animals_bp.route("/animals/<animal_id>", methods=["PUT"])
+@require_auth
 def update_animal(animal_id):
     data = request.get_json(silent=True)
     if data is None:
@@ -86,7 +91,7 @@ def update_animal(animal_id):
 
     try:
         from flask import current_app
-        animal = current_app.animal_service.update(animal_id, data)
+        animal = current_app.animal_service.update(animal_id, data, user_id=g.user_id)
     except ValidationError as exc:
         return _error("Validation failed.", error_detail=exc.errors, status=400)
     except AnimalNotFoundError:
@@ -99,10 +104,11 @@ def update_animal(animal_id):
 
 
 @animals_bp.route("/animals/<animal_id>", methods=["DELETE"])
+@require_auth
 def delete_animal(animal_id):
     try:
         from flask import current_app
-        current_app.animal_service.delete(animal_id)
+        current_app.animal_service.delete(animal_id, user_id=g.user_id)
     except AnimalNotFoundError:
         return _error(f"Animal with id {animal_id} not found.", status=404)
     except Exception:

@@ -10,13 +10,14 @@ All responses follow a consistent envelope:
 
 import logging
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, g, jsonify, request
 
 from app.services.auth_service import (
     AuthenticationError,
     DuplicateEmailError,
     ValidationError,
 )
+from app.utils.auth_middleware import require_auth
 
 auth_bp = Blueprint("auth", __name__)
 logger = logging.getLogger(__name__)
@@ -84,4 +85,27 @@ def login():
     return _success(
         data=result,
         message="Login successful.",
+    )
+
+
+# ---------------------------------------------------------------------------
+# GET /auth/me — Current authenticated user
+# ---------------------------------------------------------------------------
+
+@auth_bp.route("/auth/me", methods=["GET"])
+@require_auth
+def me():
+    """Return the current authenticated user's id, name, and email."""
+    try:
+        user = current_app.user_repo.get_by_id(g.user_id)
+    except Exception:
+        logger.exception("Unexpected error fetching current user")
+        return _error("An unexpected error occurred.", status=500)
+
+    if user is None:
+        return _error("User not found.", status=404)
+
+    return _success(
+        data={"id": user["id"], "name": user["name"], "email": user["email"]},
+        message="Current user retrieved successfully.",
     )

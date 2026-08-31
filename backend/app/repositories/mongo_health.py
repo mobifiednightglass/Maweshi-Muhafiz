@@ -80,6 +80,11 @@ class MongoHealthAssessmentRepository(HealthAssessmentRepository):
             "status": doc.get("status", "pending"),
             "created_at": doc.get("created_at"),
             "updated_at": doc.get("updated_at"),
+            # Red-flag assessment fields
+            "is_red_flag": doc.get("is_red_flag", False),
+            "red_flag_reasons": doc.get("red_flag_reasons", []),
+            "created_at": doc.get("created_at"),
+            "updated_at": doc.get("updated_at"),
         }
 
     # ------------------------------------------------------------------
@@ -89,7 +94,8 @@ class MongoHealthAssessmentRepository(HealthAssessmentRepository):
     def create(self, data: dict) -> dict:
         now = self._utcnow()
         doc = {field: data.get(field) for field in _MUTABLE_FIELDS}
-
+        doc["is_red_flag"] = data.get("is_red_flag", False)
+        doc["red_flag_reasons"] = data.get("red_flag_reasons", [])
         # Defaults
         if doc.get("image_ids") is None:
             doc["image_ids"] = []
@@ -125,10 +131,11 @@ class MongoHealthAssessmentRepository(HealthAssessmentRepository):
             if key in data:
                 set_fields[key] = data[key]
         set_fields["updated_at"] = self._utcnow()
-
+        set_fields["is_red_flag"] = data.get("is_red_flag", False)
+        set_fields["red_flag_reasons"] = data.get("red_flag_reasons", [])
         if not set_fields:
             # Nothing to update — just return current state
-            return self.get_by_id(assessment_id)
+            return self.get_by_id(assessment_id, user_id=data.get("user_id"))
 
         result = self._collection.find_one_and_update(
             {"_id": oid},
