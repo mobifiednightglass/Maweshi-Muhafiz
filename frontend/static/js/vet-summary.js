@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const API_BASE = '';
+  const API_BASE = 'http://127.0.0.1:5000';
   const params = new URLSearchParams(window.location.search);
   const animalId = params.get('animal_id');
   const assessmentId = params.get('assessment_id');

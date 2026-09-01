@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const API_BASE = '';
+  const API_BASE = 'http://127.0.0.1:5000';
   const animalId = new URLSearchParams(window.location.search).get('id');
 
   const copy = {

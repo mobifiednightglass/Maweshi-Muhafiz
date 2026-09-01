@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const API_BASE = '';
+  const API_BASE = 'http://127.0.0.1:5000';
   const ANIMALS_ENDPOINT = `${API_BASE}/api/animals`;
 
   const translations = {
