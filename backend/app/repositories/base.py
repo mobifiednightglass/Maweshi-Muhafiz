@@ -110,6 +110,10 @@ class HealthAssessmentRepository(ABC):
         """Return all health assessments for a given animal (may be empty)."""
 
     @abstractmethod
+    def get_by_image_id(self, image_id: str) -> Optional[dict]:
+        """Return the first health assessment referencing *image_id*, or ``None``."""
+
+    @abstractmethod
     def update(self, assessment_id: EntityId, data: dict) -> Optional[dict]:
         """Update an existing health-assessment record.
 

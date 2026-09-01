@@ -121,6 +121,10 @@ class MongoHealthAssessmentRepository(HealthAssessmentRepository):
         cursor = self._collection.find({"animal_id": str(animal_id)})
         return [self._doc_to_dict(doc) for doc in cursor]
 
+    def get_by_image_id(self, image_id: str) -> Optional[dict]:
+        doc = self._collection.find_one({"image_ids": str(image_id)})
+        return self._doc_to_dict(doc) if doc else None
+
     def update(self, assessment_id, data: dict) -> Optional[dict]:
         oid = self._to_object_id(assessment_id)
         if oid is None:

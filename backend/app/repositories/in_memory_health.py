@@ -75,6 +75,12 @@ class InMemoryHealthAssessmentRepository(HealthAssessmentRepository):
             if str(r.get("animal_id")) == str(animal_id)
         ]
 
+    def get_by_image_id(self, image_id: str) -> Optional[dict]:
+        for r in self._store.values():
+            if str(image_id) in [str(i) for i in r.get("image_ids", [])]:
+                return self._to_dict(r)
+        return None
+
     def update(self, assessment_id: EntityId, data: dict) -> Optional[dict]:
         int_id = self._to_int_id(assessment_id)
         if int_id is None:

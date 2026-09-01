@@ -5,16 +5,20 @@ Endpoints
 ---------
 POST   /api/animals/<animal_id>/assessments   — create assessment (multipart)
 GET    /api/animals/<animal_id>/assessments   — list assessments for animal
-GET    /api/assessments/<assessment_id>       — get single assessment
+GET    /api/assessments/<assessment_id>       — get single assessment (ownership verified)
+GET    /api/images/<image_id>                 — get raw image bytes (ownership verified)
 
 All responses follow a consistent envelope:
     Success → {"success": true,  "message": "...", "data": ...}
     Error   → {"success": false, "message": "...", "error":  "..."}
+
+Exception: GET /images/<image_id> returns raw binary bytes with the
+appropriate Content-Type header instead of the JSON envelope.
 """
 
 import logging
 
-from flask import Blueprint, current_app, g, jsonify, request
+from flask import Blueprint, Response, current_app, g, jsonify, request
 
 from app.services.animal_service import AnimalNotFoundError
 from app.services.image_storage import ImageValidationError
@@ -275,7 +279,75 @@ def get_assessment(assessment_id):
             status=404,
         )
 
+    # -- Ownership verification: the assessment's animal must belong to
+    #    the requesting user.  Return 404 (not 403) to hide existence
+    #    from non-owners, consistent with the animal ownership pattern.
+    try:
+        current_app.animal_service.get_by_id(record["animal_id"], g.user_id)
+    except AnimalNotFoundError:
+        return _error(
+            f"Assessment with id {assessment_id} not found.",
+            status=404,
+        )
+    except Exception:
+        logger.exception("Unexpected error verifying ownership of assessment %s", assessment_id)
+        return _error("An unexpected error occurred.", status=500)
+
     return _success(
         data=record,
         message="Assessment retrieved successfully.",
     )
+
+
+# ---------------------------------------------------------------------------
+# GET /images/<image_id>
+# ---------------------------------------------------------------------------
+
+@health_assessments_bp.route(
+    "/images/<image_id>", methods=["GET"],
+)
+@require_auth
+def get_image(image_id):
+    """Retrieve a stored assessment image by its file id.
+
+    Returns the raw image bytes with the correct Content-Type header
+    (NOT wrapped in the JSON envelope).  Access is restricted to the
+    user who owns the health assessment that references this image.
+    """
+    image_storage = getattr(current_app, "image_storage_service", None)
+    if image_storage is None:
+        return _error("Image retrieval is not available in this environment.", status=503)
+
+    # -- 1. Look up the image in storage -----------------------------------
+    try:
+        result = image_storage.get_image(image_id)
+    except Exception:
+        logger.exception("Unexpected error retrieving image %s from storage", image_id)
+        return _error("An unexpected error occurred.", status=500)
+
+    if result is None:
+        return _error(f"Image with id {image_id} not found.", status=404)
+
+    image_data, content_type = result
+
+    # -- 2. Authorize: find the assessment referencing this image, then
+    #    verify the assessment's animal belongs to g.user_id. -------------
+    try:
+        assessment = current_app.health_assessment_repo.get_by_image_id(image_id)
+    except Exception:
+        logger.exception("Unexpected error looking up assessment for image %s", image_id)
+        return _error("An unexpected error occurred.", status=500)
+
+    if assessment is None:
+        return _error(f"Image with id {image_id} not found.", status=404)
+
+    try:
+        current_app.animal_service.get_by_id(assessment["animal_id"], g.user_id)
+    except AnimalNotFoundError:
+        return _error(f"Image with id {image_id} not found.", status=404)
+    except Exception:
+        logger.exception("Unexpected error verifying ownership of image %s", image_id)
+        return _error("An unexpected error occurred.", status=500)
+
+    # -- 3. Return raw bytes with correct Content-Type ---------------------
+    return Response(image_data, mimetype=content_type)

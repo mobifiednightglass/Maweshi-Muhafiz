@@ -1,9 +1,15 @@
 from flask import Flask
+from flask_cors import CORS
 from app.config import get_config
 
 
 def create_app(config_name=None):
     app = Flask(__name__)
+    CORS(app, origins=[
+        "http://localhost:5500",
+        "http://127.0.0.1:5500"
+    ])
+    
     app.config.from_object(get_config(config_name))
 
     _register_blueprints(app)
