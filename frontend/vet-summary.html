@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="A structured vet-ready livestock assessment summary from Maweshi Muhafiz.">
+  <title>Maweshi Muhafiz | ڈاکٹر کے لیے خلاصہ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', leaf: '#6d8d72', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/vet-summary.css">
+</head>
+<body class="min-h-screen bg-cream text-ink antialiased">
+  <a class="skip-link" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="border-b border-sand bg-paper print-hidden">
+    <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M11 13c3.7 0 6.3 1.8 9 5 2.7-3.2 5.3-5 9-5v7.5c0 6-3.8 10.5-9 10.5s-9-4.5-9-10.5V13Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 14 8 10m19 4 5-4M16 23h.01M24 23h.01M17 27c1.8 1.3 4.2 1.3 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span>
+          <span class="block text-[1.05rem] font-bold leading-tight tracking-tight text-forest">Maweshi Muhafiz</span>
+          <span class="block text-xs font-medium text-stone-500" lang="ur" dir="rtl">مویشی محافظ</span>
+        </span>
+      </a>
+      <div class="authenticated-nav-actions">
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+        <button type="button" class="logout-button" data-logout data-i18n="logout">لاگ آؤٹ</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="vet-summary-shell">
+    <div class="summary-top-actions print-hidden">
+      <a id="back-result-link" href="index.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="backToResult">معائنے کے نتیجے پر واپس جائیں</span>
+      </a>
+      <button id="print-summary" type="button" class="btn btn-secondary hidden" data-i18n="printSummary">خلاصہ پرنٹ کریں</button>
+    </div>
+
+    <section id="summary-loading" class="summary-loading" data-i18n-aria-label="loadingLabel" aria-label="ڈاکٹر کے لیے خلاصہ تیار ہو رہا ہے">
+      <div class="summary-loading-head"></div>
+      <div class="summary-loading-block"></div>
+      <div class="summary-loading-block"></div>
+    </section>
+
+    <section id="summary-error" class="summary-state hidden" aria-live="polite">
+      <span class="summary-state-icon" aria-hidden="true">!</span>
+      <h1 id="summary-error-title"></h1>
+      <p id="summary-error-message"></p>
+      <div class="summary-state-actions">
+        <button id="retry-summary" type="button" class="btn btn-primary" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+        <a id="error-result-link" href="index.html" class="btn btn-secondary" data-i18n="backToResult">معائنے کے نتیجے پر واپس جائیں</a>
+      </div>
+    </section>
+
+    <article id="summary-document" class="vet-document hidden" aria-labelledby="summary-title">
+      <header class="document-header">
+        <div class="document-brand">
+          <span class="document-brand-mark" aria-hidden="true">MM</span>
+          <div>
+            <p class="document-product">Maweshi Muhafiz</p>
+            <p data-i18n="documentLabel">جانوروں کی صحت کا منظم ریکارڈ</p>
+          </div>
+        </div>
+        <div class="document-heading">
+          <p class="section-kicker" data-i18n="clinicalRecord">ڈاکٹر کے لیے ریکارڈ</p>
+          <h1 id="summary-title" data-i18n="pageTitle">ڈاکٹر کے لیے صحت کا خلاصہ</h1>
+          <p data-i18n="pageSubtitle">جانور کی معلومات اور صحت کے ایک معائنے کا محفوظ خلاصہ</p>
+        </div>
+        <dl class="document-meta">
+          <div><dt data-i18n="summaryReference">خلاصہ نمبر</dt><dd id="summary-reference" dir="ltr"></dd></div>
+          <div><dt data-i18n="createdDate">بننے کی تاریخ</dt><dd id="summary-date"></dd></div>
+          <div><dt data-i18n="assessmentStatus">معائنے کی حالت</dt><dd><span id="summary-status" class="document-status"></span></dd></div>
+        </dl>
+      </header>
+
+      <aside id="summary-red-flag" class="summary-red-flag hidden" role="alert" aria-labelledby="summary-red-flag-title">
+        <span aria-hidden="true">!</span>
+        <div>
+          <p data-i18n="redFlagLabel">ہنگامی علامت</p>
+          <h2 id="summary-red-flag-title" data-i18n="redFlagTitle">فوری توجہ درکار ہے</h2>
+          <ul id="summary-red-reasons" class="summary-red-reasons"></ul>
+        </div>
+      </aside>
+
+      <section class="document-section" aria-labelledby="animal-heading">
+        <div class="document-section-heading">
+          <span id="summary-animal-icon" class="document-animal-icon" aria-hidden="true">🐾</span>
+          <div><p class="section-kicker" data-i18n="animalRecord">جانور کا ریکارڈ</p><h2 id="animal-heading" data-i18n="animalInformation">جانور کی معلومات</h2></div>
+        </div>
+        <div id="animal-details" class="document-detail-grid"></div>
+      </section>
+
+      <section class="document-section" aria-labelledby="assessment-heading">
+        <div class="document-section-title"><p class="section-kicker" data-i18n="farmerReport">کسان کی دی ہوئی معلومات</p><h2 id="assessment-heading" data-i18n="assessmentInformation">معائنے کی معلومات</h2></div>
+        <div class="assessment-overview">
+          <div><p class="document-field-label" data-i18n="urgency">فوری توجہ</p><span id="summary-urgency" class="document-urgency"></span></div>
+          <div><p class="document-field-label" data-i18n="reportedSymptoms">بتائی گئی علامات</p><p id="summary-symptoms" class="document-long-copy" dir="auto"></p></div>
+        </div>
+      </section>
+
+      <section id="findings-section" class="document-section" aria-labelledby="findings-heading">
+        <div class="document-section-title"><p class="section-kicker" data-i18n="assessmentFindings">معائنے کی معلومات</p><h2 id="findings-heading" data-i18n="possibleFindings">ممکنہ حالتیں اور وضاحت</h2></div>
+        <div class="findings-layout">
+          <div>
+            <p class="document-field-label" data-i18n="possibleConditions">ممکنہ حالتیں</p>
+            <ul id="summary-conditions" class="summary-conditions"></ul>
+            <p id="summary-conditions-empty" class="document-empty hidden" data-i18n="noConditions">کوئی ممکنہ حالت درج نہیں ہے۔</p>
+          </div>
+          <div><p class="document-field-label" data-i18n="explanation">وضاحت</p><p id="summary-explanation" class="document-long-copy" dir="auto"></p></div>
+          <div class="confidence-record"><p class="document-field-label" data-i18n="confidenceNote">غیر یقینی بات</p><p id="summary-confidence" class="document-long-copy" dir="auto"></p></div>
+        </div>
+      </section>
+
+      <section id="no-findings" class="document-section document-empty-section hidden">
+        <h2 data-i18n="findingsUnavailable">معائنے کی مکمل معلومات موجود نہیں ہیں</h2>
+        <p data-i18n="findingsUnavailableHelp">اس خلاصے میں محفوظ تشخیصی معلومات دستیاب نہیں ہیں۔</p>
+      </section>
+
+      <footer class="document-footer">
+        <p data-i18n="safetyMessage">یہ AI کی مدد سے تیار شدہ ابتدائی صحت ریکارڈ ہے اور مستند جانوروں کے ڈاکٹر کی تشخیص کا متبادل نہیں۔</p>
+        <p class="document-identifiers"><span data-i18n="animalId">جانور نمبر</span>: <b id="animal-id" dir="ltr"></b> · <span data-i18n="assessmentId">معائنہ نمبر</span>: <b id="assessment-id" dir="ltr"></b></p>
+      </footer>
+    </article>
+  </main>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/vet-summary.js" defer></script>
+</body>
+</html>

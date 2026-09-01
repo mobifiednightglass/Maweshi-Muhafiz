@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="View a livestock health assessment result in Maweshi Muhafiz.">
+  <title>Maweshi Muhafiz | صحت کے معائنے کا نتیجہ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', leaf: '#6d8d72', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/assessment-result.css">
+</head>
+<body class="min-h-screen bg-cream text-ink antialiased">
+  <a class="skip-link" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="border-b border-sand bg-paper">
+    <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M11 13c3.7 0 6.3 1.8 9 5 2.7-3.2 5.3-5 9-5v7.5c0 6-3.8 10.5-9 10.5s-9-4.5-9-10.5V13Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 14 8 10m19 4 5-4M16 23h.01M24 23h.01M17 27c1.8 1.3 4.2 1.3 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span>
+          <span class="block text-[1.05rem] font-bold leading-tight tracking-tight text-forest">Maweshi Muhafiz</span>
+          <span class="block text-xs font-medium text-stone-500" lang="ur" dir="rtl">مویشی محافظ</span>
+        </span>
+      </a>
+      <div class="authenticated-nav-actions">
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+        <button type="button" class="logout-button" data-logout data-i18n="logout">لاگ آؤٹ</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="result-shell">
+    <a id="top-profile-link" href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</span>
+    </a>
+
+    <section class="result-page-heading" aria-labelledby="page-heading">
+      <div>
+        <p class="section-kicker" data-i18n="healthAssessment">صحت کا معائنہ</p>
+        <h1 id="page-heading" data-i18n="pageTitle">صحت کے معائنے کا نتیجہ</h1>
+      </div>
+      <div id="assessment-meta" class="result-meta hidden">
+        <p id="animal-summary" dir="auto"></p>
+        <time id="assessment-date"></time>
+      </div>
+    </section>
+
+    <section id="result-loading" class="result-loading" data-i18n-aria-label="loadingLabel" aria-label="نتیجہ دیکھا جا رہا ہے">
+      <div class="result-loading-hero"></div>
+      <div class="result-loading-grid"><span></span><span></span></div>
+    </section>
+
+    <section id="result-error" class="result-state hidden" aria-live="polite">
+      <span class="result-state-icon" aria-hidden="true">!</span>
+      <h2 id="result-error-title"></h2>
+      <p id="result-error-message"></p>
+      <div class="result-state-actions">
+        <button id="retry-result" type="button" class="btn btn-primary" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+        <a id="error-profile-link" href="index.html" class="btn btn-secondary" data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</a>
+      </div>
+    </section>
+
+    <section id="result-pending" class="result-state result-state--pending hidden" aria-live="polite">
+      <span class="processing-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <p class="section-kicker" data-i18n="processingLabel">جائزہ جاری ہے</p>
+      <h2 data-i18n="pendingTitle">صحت کا معائنہ مکمل ہو رہا ہے</h2>
+      <p data-i18n="pendingMessage">نتیجہ ابھی تیار نہیں۔ کچھ دیر بعد صحت کی پچھلی تفصیل سے دوبارہ دیکھیں۔</p>
+      <a id="pending-profile-link" href="index.html" class="btn btn-primary" data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</a>
+    </section>
+
+    <section id="result-failed" class="result-state result-state--failed hidden" aria-live="polite">
+      <span class="result-state-icon" aria-hidden="true">!</span>
+      <p class="section-kicker" data-i18n="notCompletedLabel">معائنہ مکمل نہیں ہوا</p>
+      <h2 data-i18n="failedTitle">ہم یہ صحت کا معائنہ مکمل نہیں کر سکے</h2>
+      <p data-i18n="failedMessage">براہِ کرم دوبارہ کوشش کریں۔ صاف تصویر اور واضح علامات بہتر مدد دے سکتی ہیں۔</p>
+      <div class="result-state-actions">
+        <a id="retry-assessment-link" href="index.html" class="btn btn-primary" data-i18n="tryAssessmentAgain">دوبارہ معائنہ کریں</a>
+        <a id="failed-profile-link" href="index.html" class="btn btn-secondary" data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</a>
+      </div>
+    </section>
+
+    <aside id="red-flag-panel" class="red-flag-panel hidden" role="alert" aria-labelledby="red-flag-heading">
+        <span class="red-flag-icon" aria-hidden="true">!</span>
+        <div>
+          <p class="red-flag-label" data-i18n="redFlagLabel">ہنگامی علامت</p>
+          <h2 id="red-flag-heading" data-i18n="redFlagTitle">فوری جانوروں کے ڈاکٹر سے رابطہ کریں</h2>
+          <p data-i18n="redFlagMessage">اس معائنے میں ہنگامی توجہ کی علامت سامنے آئی ہے۔</p>
+          <div id="red-flag-reasons-wrap" class="red-flag-reasons-wrap hidden">
+            <p data-i18n="redFlagReasons">سامنے آنے والی علامات</p>
+            <ul id="red-flag-reasons" class="red-flag-reasons"></ul>
+          </div>
+        </div>
+    </aside>
+
+    <div id="result-content" class="hidden">
+      <section id="urgency-panel" class="urgency-panel" aria-labelledby="urgency-heading">
+        <span id="urgency-icon" class="urgency-icon" aria-hidden="true"></span>
+        <div>
+          <p id="urgency-label" class="urgency-label-main"></p>
+          <h2 id="urgency-heading"></h2>
+          <p id="urgency-message"></p>
+        </div>
+      </section>
+
+      <div class="result-sections">
+        <section class="result-section" aria-labelledby="conditions-heading">
+          <p class="section-kicker" data-i18n="preliminaryFindings">ابتدائی معلومات</p>
+          <h2 id="conditions-heading" data-i18n="possibleConditions">ممکنہ بیماریاں</h2>
+          <p class="section-intro-copy" data-i18n="conditionsHelp">یہ AI کی مدد سے بتائی گئی ممکنہ حالتیں ہیں، حتمی تشخیص نہیں۔</p>
+          <ul id="conditions-list" class="conditions-list"></ul>
+          <p id="conditions-empty" class="result-empty hidden" data-i18n="noConditions">کوئی ممکنہ بیماری نہیں بتائی گئی۔</p>
+        </section>
+
+        <section class="result-section" aria-labelledby="explanation-heading">
+          <p class="section-kicker" data-i18n="assessmentDetails">معائنے کی تفصیل</p>
+          <h2 id="explanation-heading" data-i18n="explanation">وضاحت</h2>
+          <p id="explanation-text" class="dynamic-copy" dir="auto"></p>
+        </section>
+
+        <section class="result-section confidence-section" aria-labelledby="confidence-heading">
+          <span class="confidence-icon" aria-hidden="true">i</span>
+          <div>
+            <p class="section-kicker" data-i18n="aiConfidence">AI کی یقین دہانی</p>
+            <h2 id="confidence-heading" data-i18n="keepInMind">یہ بات ذہن میں رکھیں</h2>
+            <p id="confidence-text" class="dynamic-copy" dir="auto"></p>
+          </div>
+        </section>
+
+        <section class="result-section" aria-labelledby="symptoms-heading">
+          <p class="section-kicker" data-i18n="farmerReport">کسان کی بتائی ہوئی معلومات</p>
+          <h2 id="symptoms-heading" data-i18n="reportedSymptoms">بتائی گئی علامات</h2>
+          <p id="symptoms-text" class="symptoms-copy" dir="auto"></p>
+        </section>
+
+        <aside class="result-safety" aria-label="اہم حفاظتی بات" data-i18n-aria-label="safetyLabel">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8v4m0 4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg>
+          <p data-i18n="safetyMessage">مویشی محافظ AI کی مدد سے ابتدائی صحت جانچ اور ممکنہ بیماریوں کی معلومات دیتا ہے۔ یہ جانوروں کے مستند ڈاکٹر کا متبادل نہیں۔</p>
+        </aside>
+
+        <div class="result-actions">
+          <a id="primary-profile-link" href="index.html" class="btn btn-primary" data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</a>
+          <a id="vet-summary-link" href="index.html" class="btn btn-secondary" data-i18n="vetReadySummary">ڈاکٹر کے لیے خلاصہ</a>
+          <a id="health-history-link" href="index.html" class="btn btn-secondary" data-i18n="viewHealthHistory">صحت کی پچھلی تفصیل دیکھیں</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="result-footer">
+    <p data-i18n="footerCare">مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔</p>
+    <p data-i18n="footerDisclaimer">AI کی رائے ابتدائی رہنمائی ہے، ڈاکٹر کا متبادل نہیں۔</p>
+  </footer>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/assessment-result.js" defer></script>
+</body>
+</html>
