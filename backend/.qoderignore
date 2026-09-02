@@ -1,0 +1,4 @@
+# Files excluded from Qoder indexing / agent context.
+# (.env is also gitignored; this makes the exclusion explicit for Qoder.)
+.env
+.env.*

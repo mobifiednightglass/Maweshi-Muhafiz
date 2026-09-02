@@ -123,6 +123,41 @@ def _wire_dependencies(app):
     app.image_quality_service = ImageQualityService()
     app.red_flag_service = RedFlagService()
 
+    # -- Voice (Urdu speech-to-text / text-to-speech) dependencies ----------
+    from app.services.voice_service import VoiceService
+
+    if app.config.get("TESTING"):
+        from app.services.voice_service import TESTING_TRANSCRIPTION
+
+        class _StubSpeechToTextProvider:
+            def transcribe(self, audio_bytes, mime_type):
+                return TESTING_TRANSCRIPTION
+
+        class _StubTextToSpeechProvider:
+            def synthesize_speech(self, text):
+                return b"\x00\x00" * 2400  # 0.1 s of silence at 24 kHz 16-bit
+
+        voice_service = VoiceService(
+            _StubSpeechToTextProvider(),
+            _StubTextToSpeechProvider(),
+        )
+    else:
+        from app.services.voice_service import (
+            GeminiSpeechToTextProvider,
+            GeminiTextToSpeechProvider,
+        )
+
+        voice_service = VoiceService(
+            stt_provider=GeminiSpeechToTextProvider(
+                api_key=app.config["GEMINI_API_KEY"],
+            ),
+            tts_provider=GeminiTextToSpeechProvider(
+                api_key=app.config["GEMINI_API_KEY"],
+            ),
+        )
+
+    app.voice_service = voice_service
+
     # -- Reminder dependencies ---------------------------------------------
     from app.services.reminder_service import ReminderService
 
