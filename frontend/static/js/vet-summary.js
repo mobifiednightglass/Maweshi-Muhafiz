@@ -16,12 +16,12 @@
       connectionTitle: 'خلاصہ ابھی دستیاب نہیں', connectionMessage: 'رابطہ نہیں ہو سکا۔ کچھ دیر بعد دوبارہ کوشش کریں۔',
       malformedTitle: 'خلاصہ مکمل نہیں دکھایا جا سکتا', malformedMessage: 'محفوظ معلومات کی شکل سمجھ نہیں آئی۔ براہِ کرم دوبارہ کوشش کریں۔',
       documentLabel: 'جانوروں کی صحت کا منظم ریکارڈ', clinicalRecord: 'ڈاکٹر کے لیے ریکارڈ', pageTitle: 'ڈاکٹر کے لیے صحت کا خلاصہ', pageSubtitle: 'جانور کی معلومات اور صحت کے ایک معائنے کا محفوظ خلاصہ',
-      summaryReference: 'خلاصہ نمبر', createdDate: 'بننے کی تاریخ', assessmentStatus: 'معائنے کی حالت', redFlagLabel: 'ہنگامی علامت', redFlagTitle: 'فوری توجہ درکار ہے',
+      createdDate: 'بننے کی تاریخ', assessmentStatus: 'معائنے کی حالت', redFlagLabel: 'ہنگامی علامت', redFlagTitle: 'فوری توجہ درکار ہے',
       animalRecord: 'جانور کا ریکارڈ', animalInformation: 'جانور کی معلومات', animalName: 'نام', animalType: 'جانور کی قسم', breed: 'نسل', gender: 'جنس', age: 'عمر', weight: 'وزن', color: 'رنگ', healthStatus: 'موجودہ صحت',
       farmerReport: 'کسان کی دی ہوئی معلومات', assessmentInformation: 'معائنے کی معلومات', urgency: 'فوری توجہ', reportedSymptoms: 'بتائی گئی علامات',
       assessmentFindings: 'معائنے کی معلومات', possibleFindings: 'ممکنہ حالتیں اور وضاحت', possibleConditions: 'ممکنہ حالتیں', explanation: 'وضاحت', confidenceNote: 'غیر یقینی بات', noConditions: 'کوئی ممکنہ حالت درج نہیں ہے۔',
       findingsUnavailable: 'معائنے کی مکمل معلومات موجود نہیں ہیں', findingsUnavailableHelp: 'اس خلاصے میں محفوظ تشخیصی معلومات دستیاب نہیں ہیں۔',
-      safetyMessage: 'یہ AI کی مدد سے تیار شدہ ابتدائی صحت ریکارڈ ہے اور مستند جانوروں کے ڈاکٹر کی تشخیص کا متبادل نہیں۔', animalId: 'جانور نمبر', assessmentId: 'معائنہ نمبر',
+      safetyMessage: 'یہ AI کی مدد سے تیار شدہ ابتدائی صحت ریکارڈ ہے اور مستند جانوروں کے ڈاکٹر کی تشخیص کا متبادل نہیں۔', animalPhotoAlt: '{name} کی معائنے والی تصویر',
       notRecorded: 'درج نہیں', years: 'سال', kg: 'کلو', statusCompleted: 'مکمل', statusPending: 'جاری ہے', statusFailed: 'مکمل نہیں ہوا', statusUnknown: 'درج نہیں', urgencyLow: 'کم فوری توجہ', urgencyMedium: 'توجہ درکار', urgencyHigh: 'فوری توجہ', urgencyUnknown: 'درج نہیں', noSymptoms: 'کوئی علامات درج نہیں ہیں۔'
     },
     en: {
@@ -33,12 +33,12 @@
       connectionTitle: 'Summary unavailable right now', connectionMessage: 'We could not connect. Please try again in a little while.',
       malformedTitle: 'Summary cannot be shown completely', malformedMessage: 'Some saved information could not be understood. Please try again.',
       documentLabel: 'Organised livestock health record', clinicalRecord: 'Veterinary record', pageTitle: 'Vet-Ready Case Summary', pageSubtitle: 'A saved snapshot of the animal and one health assessment',
-      summaryReference: 'Summary reference', createdDate: 'Created', assessmentStatus: 'Assessment status', redFlagLabel: 'Emergency warning', redFlagTitle: 'Urgent attention required',
+      createdDate: 'Created', assessmentStatus: 'Assessment status', redFlagLabel: 'Emergency warning', redFlagTitle: 'Urgent attention required',
       animalRecord: 'Animal record', animalInformation: 'Animal Information', animalName: 'Name', animalType: 'Animal type', breed: 'Breed', gender: 'Gender', age: 'Age', weight: 'Weight', color: 'Color', healthStatus: 'Current health status',
       farmerReport: 'Farmer report', assessmentInformation: 'Assessment Information', urgency: 'Urgency', reportedSymptoms: 'Reported Symptoms',
       assessmentFindings: 'Assessment findings', possibleFindings: 'Possible Conditions and Explanation', possibleConditions: 'Possible conditions', explanation: 'Explanation', confidenceNote: 'Confidence and uncertainty', noConditions: 'No possible condition was recorded.',
       findingsUnavailable: 'Complete assessment findings are unavailable', findingsUnavailableHelp: 'No structured diagnosis result is stored in this summary.',
-      safetyMessage: 'This is an AI-assisted preliminary health record and does not replace diagnosis by a qualified veterinarian.', animalId: 'Animal ID', assessmentId: 'Assessment ID',
+      safetyMessage: 'This is an AI-assisted preliminary health record and does not replace diagnosis by a qualified veterinarian.', animalPhotoAlt: 'Assessment photo of {name}',
       notRecorded: 'Not recorded', years: 'years', kg: 'kg', statusCompleted: 'Completed', statusPending: 'Pending', statusFailed: 'Not completed', statusUnknown: 'Not recorded', urgencyLow: 'Low urgency', urgencyMedium: 'Needs attention', urgencyHigh: 'Urgent attention', urgencyUnknown: 'Not recorded', noSymptoms: 'No symptoms were recorded.'
     }
   };
@@ -46,17 +46,17 @@
   const el = {
     loading: document.querySelector('#summary-loading'), error: document.querySelector('#summary-error'), document: document.querySelector('#summary-document'),
     errorTitle: document.querySelector('#summary-error-title'), errorMessage: document.querySelector('#summary-error-message'), retry: document.querySelector('#retry-summary'), print: document.querySelector('#print-summary'),
-    backResult: document.querySelector('#back-result-link'), errorResult: document.querySelector('#error-result-link'), reference: document.querySelector('#summary-reference'), date: document.querySelector('#summary-date'), status: document.querySelector('#summary-status'),
-    redFlag: document.querySelector('#summary-red-flag'), redReasons: document.querySelector('#summary-red-reasons'), animalIcon: document.querySelector('#summary-animal-icon'), animalDetails: document.querySelector('#animal-details'),
+    backResult: document.querySelector('#back-result-link'), errorResult: document.querySelector('#error-result-link'), date: document.querySelector('#summary-date'), status: document.querySelector('#summary-status'),
+    redFlag: document.querySelector('#summary-red-flag'), redReasons: document.querySelector('#summary-red-reasons'), animalPhoto: document.querySelector('#summary-animal-photo'), animalIcon: document.querySelector('#summary-animal-icon'), animalDetails: document.querySelector('#animal-details'),
     urgency: document.querySelector('#summary-urgency'), symptoms: document.querySelector('#summary-symptoms'), findings: document.querySelector('#findings-section'), noFindings: document.querySelector('#no-findings'),
-    conditions: document.querySelector('#summary-conditions'), conditionsEmpty: document.querySelector('#summary-conditions-empty'), explanation: document.querySelector('#summary-explanation'), confidence: document.querySelector('#summary-confidence'),
-    animalId: document.querySelector('#animal-id'), assessmentId: document.querySelector('#assessment-id')
+    conditions: document.querySelector('#summary-conditions'), conditionsEmpty: document.querySelector('#summary-conditions-empty'), explanation: document.querySelector('#summary-explanation'), confidence: document.querySelector('#summary-confidence')
   };
 
   let language = window.MaweshiI18n.getLanguage();
   let summary = null;
   let state = 'loading';
   let errorKind = null;
+  let animalPhotoUrl = null;
 
   function t(key) { return copy[language][key] || key; }
   function hasValue(value) { return value !== null && value !== undefined && String(value).trim() !== ''; }
@@ -86,6 +86,42 @@
     if (normalized.includes('sheep') || normalized.includes('بھیڑ')) return '🐑';
     if (normalized.includes('cow') || normalized.includes('گائے')) return '🐄';
     return '🐾';
+  }
+
+  function animalPhotoAlt() {
+    const name = display(summary?.animal?.name);
+    return t('animalPhotoAlt').replace('{name}', name);
+  }
+
+  function clearAnimalPhoto() {
+    if (animalPhotoUrl) URL.revokeObjectURL(animalPhotoUrl);
+    animalPhotoUrl = null;
+    el.animalPhoto.removeAttribute('src');
+    el.animalPhoto.classList.add('hidden');
+    el.animalIcon.classList.remove('hidden');
+  }
+
+  async function loadAnimalPhoto() {
+    clearAnimalPhoto();
+    const imageId = Array.isArray(summary?.image_ids)
+      ? summary.image_ids.find((id) => hasValue(id))
+      : null;
+    if (!imageId) return;
+
+    try {
+      const blob = await window.MaweshiAuth.requestBlob(`${API_BASE}/api/images/${encodeURIComponent(imageId)}`, {
+        headers: { Accept: 'image/*' }
+      });
+      if (!blob || !blob.size) return;
+      animalPhotoUrl = URL.createObjectURL(blob);
+      el.animalPhoto.src = animalPhotoUrl;
+      el.animalPhoto.alt = animalPhotoAlt();
+      el.animalPhoto.classList.remove('hidden');
+      el.animalIcon.classList.add('hidden');
+    } catch (error) {
+      console.warn('The assessment photo could not be displayed.', error);
+      clearAnimalPhoto();
+    }
   }
 
   function statusInfo(status) {
@@ -149,11 +185,11 @@
     const status = statusInfo(summary.status);
     const urgency = urgencyInfo(diagnosis?.urgency_level);
 
-    el.reference.textContent = display(summary.id);
     el.date.textContent = formatDate(summary.created_at);
     el.status.className = `document-status document-status--${status.key}`;
     el.status.textContent = status.label;
     el.animalIcon.textContent = animalIcon(animal.animal_type);
+    el.animalPhoto.alt = animalPhotoAlt();
     el.animalDetails.replaceChildren();
     addAnimalDetail('animalName', animal.name);
     addAnimalDetail('animalType', animal.animal_type);
@@ -167,8 +203,6 @@
     el.urgency.className = `document-urgency document-urgency--${urgency.key}`;
     el.urgency.textContent = urgency.label;
     el.symptoms.textContent = hasValue(summary.symptoms) ? summary.symptoms : t('noSymptoms');
-    el.animalId.textContent = display(summary.animal_id);
-    el.assessmentId.textContent = display(summary.assessment_id);
     renderRedFlag();
 
     const hasDiagnosis = diagnosis && (localized.conditions.length || hasValue(localized.explanation) || hasValue(localized.confidence));
@@ -227,6 +261,7 @@
         state = 'error'; errorKind = 'malformed'; render(); return;
       }
       state = 'ready'; render();
+      await loadAnimalPhoto();
     } catch (error) {
       console.error('Vet-ready summary could not be loaded.', error);
       state = 'error';
@@ -249,6 +284,7 @@
   });
   el.retry.addEventListener('click', loadSummary);
   el.print.addEventListener('click', () => window.print());
+  window.addEventListener('beforeunload', clearAnimalPhoto);
 
   applyLanguage(language);
   loadSummary();
