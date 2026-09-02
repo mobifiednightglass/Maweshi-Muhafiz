@@ -56,6 +56,7 @@ class InMemoryAnimalRepository(AnimalRepository):
             "weight": data.get("weight"),
             "color": data.get("color"),
             "health_status": data.get("health_status"),
+            "region": data.get("region"),
             "notes": data.get("notes"),
             "created_at": now,
             "updated_at": now,
@@ -107,6 +108,7 @@ class InMemoryAnimalRepository(AnimalRepository):
             "weight",
             "color",
             "health_status",
+            "region",
             "notes",
         ):
             if key in data:

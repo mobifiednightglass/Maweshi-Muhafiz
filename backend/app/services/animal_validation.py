@@ -20,6 +20,7 @@ MAX_BREED_LENGTH = 100
 MAX_GENDER_LENGTH = 20
 MAX_COLOR_LENGTH = 50
 MAX_HEALTH_STATUS_LENGTH = 50
+MAX_REGION_LENGTH = 100
 MAX_NOTES_LENGTH = 2000
 
 REQUIRED_FIELDS = ("name", "animal_type")
@@ -31,6 +32,7 @@ STRING_FIELDS = {
     "gender": MAX_GENDER_LENGTH,
     "color": MAX_COLOR_LENGTH,
     "health_status": MAX_HEALTH_STATUS_LENGTH,
+    "region": MAX_REGION_LENGTH,
 }
 
 NUMERIC_FIELDS = ("age", "weight")
@@ -45,6 +47,7 @@ ALLOWED_FIELDS = {
     "weight",
     "color",
     "health_status",
+    "region",
     "notes",
 }
 

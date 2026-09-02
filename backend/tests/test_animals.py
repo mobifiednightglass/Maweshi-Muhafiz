@@ -370,3 +370,56 @@ class TestOwnershipIsolation:
         # Confirm it still exists for the real owner
         still_there = client.get(f"/api/animals/{created['id']}", headers=auth_headers)
         assert still_there.status_code == 200
+
+
+# ---------------------------------------------------------------------------
+# Region field (optional; feeds the regional insights endpoint)
+# ---------------------------------------------------------------------------
+
+class TestRegionField:
+    def test_create_with_region(self, client, auth_headers):
+        resp = _post(client, _valid_payload(region="Punjab"), headers=auth_headers)
+        assert resp.status_code == 201
+        assert resp.get_json()["data"]["region"] == "Punjab"
+
+    def test_create_without_region_defaults_to_none(self, client, auth_headers):
+        resp = _post(client, _valid_payload(), headers=auth_headers)
+        assert resp.status_code == 201
+        assert resp.get_json()["data"]["region"] is None
+
+    def test_create_with_null_region(self, client, auth_headers):
+        resp = _post(client, _valid_payload(region=None), headers=auth_headers)
+        assert resp.status_code == 201
+        assert resp.get_json()["data"]["region"] is None
+
+    def test_create_region_at_max_length(self, client, auth_headers):
+        resp = _post(client, _valid_payload(region="r" * 100), headers=auth_headers)
+        assert resp.status_code == 201
+
+    def test_create_region_too_long(self, client, auth_headers):
+        resp = _post(client, _valid_payload(region="r" * 101), headers=auth_headers)
+        assert resp.status_code == 400
+        assert any("region" in e for e in resp.get_json()["error"])
+
+    def test_create_region_must_be_string(self, client, auth_headers):
+        resp = _post(client, _valid_payload(region=42), headers=auth_headers)
+        assert resp.status_code == 400
+        assert any("region" in e for e in resp.get_json()["error"])
+
+    def test_update_region(self, client, auth_headers):
+        created = (
+            _post(client, _valid_payload(region="Punjab"), headers=auth_headers)
+            .get_json()["data"]
+        )
+        resp = _put(client, created["id"], {"region": "Sindh"}, headers=auth_headers)
+        assert resp.status_code == 200
+        assert resp.get_json()["data"]["region"] == "Sindh"
+
+    def test_update_can_clear_region(self, client, auth_headers):
+        created = (
+            _post(client, _valid_payload(region="Punjab"), headers=auth_headers)
+            .get_json()["data"]
+        )
+        resp = _put(client, created["id"], {"region": None}, headers=auth_headers)
+        assert resp.status_code == 200
+        assert resp.get_json()["data"]["region"] is None

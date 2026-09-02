@@ -5,6 +5,7 @@ Endpoints
 ---------
 POST   /api/animals/<animal_id>/assessments   — create assessment (multipart)
 GET    /api/animals/<animal_id>/assessments   — list assessments for animal
+GET    /api/animals/<animal_id>/assessments/compare — compare two assessments
 GET    /api/assessments/<assessment_id>       — get single assessment (ownership verified)
 GET    /api/images/<image_id>                 — get raw image bytes (ownership verified)
 
@@ -254,6 +255,71 @@ def list_assessments(animal_id):
     return _success(
         data=assessments,
         message="Assessments retrieved successfully.",
+    )
+
+
+# ---------------------------------------------------------------------------
+# GET /animals/<animal_id>/assessments/compare
+# ---------------------------------------------------------------------------
+
+@health_assessments_bp.route(
+    "/animals/<animal_id>/assessments/compare",
+    methods=["GET"],
+)
+@require_auth
+def compare_assessments(animal_id):
+    """Return two assessments of one animal side by side.
+
+    Query parameters:
+      - ``assessment_id_1`` — id of the first (e.g. "before") assessment
+      - ``assessment_id_2`` — id of the second (e.g. "after") assessment
+    """
+
+    # -- 1. Verify the animal exists and belongs to the user ----------------
+    try:
+        current_app.animal_service.get_by_id(animal_id, g.user_id)
+    except AnimalNotFoundError:
+        return _error(
+            f"Animal with id {animal_id} not found.",
+            status=404,
+        )
+    except Exception:
+        logger.exception("Unexpected error verifying animal %s", animal_id)
+        return _error("An unexpected error occurred.", status=500)
+
+    # -- 2. Extract required query parameters -------------------------------
+    id_1 = request.args.get("assessment_id_1", "").strip()
+    id_2 = request.args.get("assessment_id_2", "").strip()
+    if not id_1 or not id_2:
+        return _error(
+            "Both 'assessment_id_1' and 'assessment_id_2' query "
+            "parameters are required.",
+            status=400,
+        )
+
+    # -- 3. Fetch both assessments ------------------------------------------
+    try:
+        assessment_1 = current_app.health_assessment_repo.get_by_id(id_1)
+        assessment_2 = current_app.health_assessment_repo.get_by_id(id_2)
+    except Exception:
+        logger.exception(
+            "Unexpected error fetching assessments %s and %s", id_1, id_2,
+        )
+        return _error("An unexpected error occurred.", status=500)
+
+    # -- 4. Both must exist and belong to the animal in the URL -------------
+    # 404 (not 403) for missing/mismatched assessments hides existence from
+    # non-owners, consistent with the rest of this module.
+    for record, assessment_id in ((assessment_1, id_1), (assessment_2, id_2)):
+        if record is None or str(record.get("animal_id")) != str(animal_id):
+            return _error(
+                f"Assessment with id {assessment_id} not found.",
+                status=404,
+            )
+
+    return _success(
+        data={"assessment_1": assessment_1, "assessment_2": assessment_2},
+        message="Assessment comparison retrieved successfully.",
     )
 
 

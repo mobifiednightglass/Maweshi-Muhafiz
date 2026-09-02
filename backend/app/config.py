@@ -41,3 +41,15 @@ _configs = {
 def get_config(name=None):
     name = name or os.environ.get("FLASK_ENV", "development")
     return _configs.get(name, DevelopmentConfig)
+
+
+def require_mongodb_uri(config) -> None:
+    """Raise a clear startup error when MONGODB_URI is missing or blank.
+
+    Called during app creation in non-testing modes; testing mode uses
+    in-memory repositories and never needs the URI.  Without this check,
+    MongoClient("") fails with an opaque pymongo ConfigurationError.
+    """
+    uri = (config.get("MONGODB_URI") or "").strip()
+    if not uri:
+        raise RuntimeError("MONGODB_URI is not set — check your .env file.")

@@ -52,6 +52,8 @@ class InMemoryHealthAssessmentRepository(HealthAssessmentRepository):
             "image_ids": data.get("image_ids", []),
             "diagnosis_result": data.get("diagnosis_result"),
             "status": data.get("status", "pending"),
+            "is_red_flag": data.get("is_red_flag", False),
+            "red_flag_reasons": data.get("red_flag_reasons", []),
             "created_at": now,
             "updated_at": now,
         }
@@ -91,5 +93,7 @@ class InMemoryHealthAssessmentRepository(HealthAssessmentRepository):
         for key in ("animal_id", "symptoms", "image_ids", "diagnosis_result", "status"):
             if key in data:
                 record[key] = data[key]
+        record["is_red_flag"] = data.get("is_red_flag", False)
+        record["red_flag_reasons"] = data.get("red_flag_reasons", [])
         record["updated_at"] = self._utcnow()
         return self._to_dict(record)
