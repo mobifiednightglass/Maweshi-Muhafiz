@@ -176,3 +176,46 @@ class VetCaseSummaryRepository(ABC):
 
         Returns ``True`` if a document was deleted, ``False`` otherwise.
         """
+
+
+# ---------------------------------------------------------------------------
+# Animal health reminder repository interface
+# ---------------------------------------------------------------------------
+
+class ReminderRepository(ABC):
+    """Interface for persisting animal health reminders.
+
+    A reminder (e.g. vaccination, deworming) is attached to an animal and
+    owned by the authenticated user who created it.  Every lookup is
+    scoped to ``user_id`` so users can only access their own reminders.
+    """
+
+    @abstractmethod
+    def create(self, data: dict) -> dict:
+        """Persist a new reminder and return it as a dict.
+
+        ``data`` must contain ``user_id``, ``animal_id``, ``reminder_type``,
+        and ``due_date``; ``notes`` is optional.  The repository assigns
+        ``id`` and ``created_at`` / ``updated_at``.
+        """
+
+    @abstractmethod
+    def get_by_id(
+        self, reminder_id: EntityId, user_id: EntityId,
+    ) -> Optional[dict]:
+        """Return a single reminder only if it belongs to *user_id*."""
+
+    @abstractmethod
+    def get_by_animal_id(
+        self, animal_id: EntityId, user_id: EntityId,
+    ) -> list[dict]:
+        """Return all reminders for an animal belonging to *user_id*."""
+
+    @abstractmethod
+    def delete(
+        self, reminder_id: EntityId, user_id: EntityId,
+    ) -> bool:
+        """Delete a reminder only if it belongs to *user_id*.
+
+        Returns ``True`` if a record was deleted, ``False`` otherwise.
+        """

@@ -5,11 +5,15 @@ from app.config import get_config
 
 def create_app(config_name=None):
     app = Flask(__name__)
-    CORS(app, origins=[
-        "http://localhost:5500",
-        "http://127.0.0.1:5500"
-    ])
-    
+    CORS(
+        app,
+        origins=[
+            f"http://{host}:{port}"
+            for host in ("localhost", "127.0.0.1")
+            for port in (5500, 5173, 3000, 8000)
+        ],
+    )
+
     app.config.from_object(get_config(config_name))
 
     _register_blueprints(app)
@@ -24,12 +28,14 @@ def _register_blueprints(app):
     from app.routes.auth import auth_bp
     from app.routes.health_assessments import health_assessments_bp
     from app.routes.vet_summary import vet_summary_bp
+    from app.routes.reminders import reminders_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(animals_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(health_assessments_bp, url_prefix="/api")
     app.register_blueprint(vet_summary_bp, url_prefix="/api")
+    app.register_blueprint(reminders_bp, url_prefix="/api")
 
 
 def _wire_dependencies(app):
@@ -109,3 +115,21 @@ def _wire_dependencies(app):
     app.image_storage_service = image_storage_service
     app.image_quality_service = ImageQualityService()
     app.red_flag_service = RedFlagService()
+
+    # -- Reminder dependencies ---------------------------------------------
+    from app.services.reminder_service import ReminderService
+
+    if app.config.get("TESTING"):
+        from app.repositories.in_memory_reminders import InMemoryReminderRepository
+
+        reminder_repo = InMemoryReminderRepository()
+    else:
+        from app.repositories.mongo_reminders import MongoReminderRepository
+
+        reminder_repo = MongoReminderRepository(
+            uri=app.config["MONGODB_URI"],
+            db_name=app.config["MONGODB_DB_NAME"],
+        )
+
+    app.reminder_repo = reminder_repo
+    app.reminder_service = ReminderService(reminder_repo)

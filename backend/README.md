@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Maweshi Muhafiz
-=======
 # Maweshi Muhafiz — Backend
 
 AI-powered livestock assistance system backend.
@@ -103,5 +100,4 @@ GET /api/health
 }
 ```
 
-Used to verify the backend is up and reachable.
->>>>>>> Implement Feature 1: Digital Animal Profile Management with MongoDB Atlas
+Used to verify the backend is up and reachable.gi
