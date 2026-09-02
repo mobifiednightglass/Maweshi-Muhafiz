@@ -113,6 +113,21 @@ def create_assessment(animal_id):
         logger.exception("Unexpected error during image quality check for animal %s", animal_id)
         return _error("An unexpected error occurred while checking image quality.", status=500)
 
+    # -- 4b. Gemini-based blur check (second gate) ---------------------------
+    try:
+        is_blurry = current_app.vision_provider.check_blur(
+            image_data, image_file.content_type,
+        )
+        if is_blurry:
+            return _error(
+                "Image is too blurry to analyze. Please upload a clearer photo.",
+                status=400,
+            )
+    except Exception:
+        # Don't block the request if the blur pre-check itself errors —
+        # let the full assessment handle quality downstream.
+        logger.exception("Unexpected error during Gemini blur check for animal %s", animal_id)
+
     # -- 5. Save the image via ImageStorageService --------------------------
     try:
         file_id = current_app.image_storage_service.save_image(

@@ -1,14 +1,15 @@
 """
 ImageQualityService — Pre-assessment image quality validation.
 
-Analyzes images for blur, darkness, and resolution issues before they're
-accepted for health assessment. Uses OpenCV's Laplacian variance method
-for blur detection (no external AI API needed).
+Analyzes images for darkness and resolution issues before they're
+accepted for health assessment. Uses OpenCV for fast local checks.
+
+Blur detection is handled separately via Gemini (see vision_provider.check_blur).
 
 Usage:
     service = ImageQualityService()
     result = service.check_quality(image_bytes)
-    # result = {"is_acceptable": bool, "issues": [...], "blur_score": float}
+    # result = {"is_acceptable": bool, "issues": [...]}
 """
 
 import logging
@@ -50,12 +51,10 @@ class ImageQualityService:
         dict
             {
                 "is_acceptable": bool,
-                "issues": list[str],
-                "blur_score": float
+                "issues": list[str]
             }
         """
         issues: List[str] = []
-        blur_score = 0.0
 
         try:
             # Decode image from bytes
@@ -66,7 +65,6 @@ class ImageQualityService:
                 return {
                     "is_acceptable": False,
                     "issues": ["Image could not be processed"],
-                    "blur_score": 0.0,
                 }
 
             # Check resolution
@@ -74,7 +72,7 @@ class ImageQualityService:
             if width < MIN_RESOLUTION[0] or height < MIN_RESOLUTION[1]:
                 issues.append("Image resolution is too low")
 
-            # Convert to grayscale for analysis
+            # Convert to grayscale for darkness analysis
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             # Check darkness (mean brightness)
@@ -92,5 +90,4 @@ class ImageQualityService:
             return {
                 "is_acceptable": False,
                 "issues": ["Image could not be processed"],
-                "blur_score": 0.0,
             }

@@ -84,6 +84,9 @@ def _wire_dependencies(app):
             def assess(self, image_bytes, image_content_type, symptoms):
                 return safe_fallback("Stub provider — testing mode.")
 
+            def check_blur(self, image_bytes, image_content_type):
+                return False  # stub: never blurry in tests
+
         vision_provider = _StubVisionProvider()
         image_storage_service = None  # not needed in tests (image save is skipped)
     else:
@@ -101,6 +104,7 @@ def _wire_dependencies(app):
 
     app.health_assessment_repo = health_assessment_repo
     app.vet_summary_repo = vet_summary_repo
+    app.vision_provider = vision_provider
     app.health_assessment_service = HealthAssessmentService(vision_provider)
     app.image_storage_service = image_storage_service
     app.image_quality_service = ImageQualityService()
