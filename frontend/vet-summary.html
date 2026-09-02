@@ -83,7 +83,6 @@
           <p data-i18n="pageSubtitle">جانور کی معلومات اور صحت کے ایک معائنے کا محفوظ خلاصہ</p>
         </div>
         <dl class="document-meta">
-          <div><dt data-i18n="summaryReference">خلاصہ نمبر</dt><dd id="summary-reference" dir="ltr"></dd></div>
           <div><dt data-i18n="createdDate">بننے کی تاریخ</dt><dd id="summary-date"></dd></div>
           <div><dt data-i18n="assessmentStatus">معائنے کی حالت</dt><dd><span id="summary-status" class="document-status"></span></dd></div>
         </dl>
@@ -100,10 +99,15 @@
 
       <section class="document-section" aria-labelledby="animal-heading">
         <div class="document-section-heading">
-          <span id="summary-animal-icon" class="document-animal-icon" aria-hidden="true">🐾</span>
           <div><p class="section-kicker" data-i18n="animalRecord">جانور کا ریکارڈ</p><h2 id="animal-heading" data-i18n="animalInformation">جانور کی معلومات</h2></div>
         </div>
-        <div id="animal-details" class="document-detail-grid"></div>
+        <div class="document-animal-layout">
+          <figure class="document-animal-visual">
+            <img id="summary-animal-photo" class="document-animal-photo hidden" alt="">
+            <span id="summary-animal-icon" class="document-animal-icon" aria-hidden="true">🐾</span>
+          </figure>
+          <div id="animal-details" class="document-detail-grid"></div>
+        </div>
       </section>
 
       <section class="document-section" aria-labelledby="assessment-heading">
@@ -134,7 +138,6 @@
 
       <footer class="document-footer">
         <p data-i18n="safetyMessage">یہ AI کی مدد سے تیار شدہ ابتدائی صحت ریکارڈ ہے اور مستند جانوروں کے ڈاکٹر کی تشخیص کا متبادل نہیں۔</p>
-        <p class="document-identifiers"><span data-i18n="animalId">جانور نمبر</span>: <b id="animal-id" dir="ltr"></b> · <span data-i18n="assessmentId">معائنہ نمبر</span>: <b id="assessment-id" dir="ltr"></b></p>
       </footer>
     </article>
   </main>

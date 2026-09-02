@@ -22,7 +22,7 @@
       editRecord: 'ریکارڈ میں تبدیلی', closeFormLabel: 'فارم بند کریں', name: 'نام', notRecorded: 'درج نہیں', female: 'مادہ', male: 'نر',
       ageYears: 'عمر (سال)', weightKg: 'وزن (کلو)', healthy: 'صحت مند', needsAttention: 'توجہ درکار', underTreatment: 'علاج جاری ہے',
       cancel: 'منسوخ کریں', saveChanges: 'تبدیلی محفوظ کریں', saving: 'محفوظ ہو رہا ہے…', assessmentInstructions: 'جانور کی صاف تصویر اور نظر آنے والی علامات لکھیں۔',
-      animalPhoto: 'جانور کی تصویر', imageHelp: 'JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB', symptoms: 'علامات',
+      animalPhoto: 'جانور کی تصویر', uploadImage: 'تصویر اپ لوڈ کریں', takePhoto: 'تصویر لیں', noImageSelected: 'ابھی کوئی تصویر منتخب نہیں ہوئی۔', selectedImage: 'منتخب تصویر: {name}', imageRequired: 'براہِ کرم تصویر اپ لوڈ کریں یا نئی تصویر لیں۔', imageHelp: 'JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB', symptoms: 'علامات',
       symptomsPlaceholder: 'مثلاً جانور کھانا نہیں کھا رہا اور سست ہے', assessmentSafety: 'یہ ابتدائی AI رہنمائی ہے۔ ہنگامی حالت میں فوراً جانوروں کے ڈاکٹر سے رابطہ کریں۔',
       beginAssessment: 'معائنہ کریں', assessing: 'معائنہ ہو رہا ہے…', deleteQuestion: 'کیا یہ جانور حذف کرنا ہے؟',
       deleteWarning: 'اس جانور کا ریکارڈ ختم ہو جائے گا۔ یہ عمل واپس نہیں ہو سکتا۔', keepAnimal: 'ریکارڈ رہنے دیں', confirmDelete: 'ہاں، حذف کریں', deleting: 'حذف ہو رہا ہے…',
@@ -31,7 +31,8 @@
       noNotes: 'کوئی نوٹ درج نہیں کیا گیا۔', year: 'سال', kg: 'کلو', recordUpdated: 'جانور کی معلومات محفوظ ہو گئیں۔',
       assessmentSaved: 'صحت کا معائنہ ریکارڈ ہو گیا۔', couldNotSave: 'معلومات محفوظ نہیں ہو سکیں۔ دوبارہ کوشش کریں۔',
       couldNotAssess: 'معائنہ مکمل نہیں ہو سکا۔ دوبارہ کوشش کریں۔', couldNotDelete: 'ریکارڈ حذف نہیں ہو سکا۔ دوبارہ کوشش کریں۔',
-      imageTooLarge: 'تصویر 5 MB سے کم ہونی چاہیے۔', statusPending: 'جاری ہے', statusCompleted: 'مکمل', statusFailed: 'مکمل نہیں ہوا',
+      imageTooLarge: 'تصویر 5 MB سے کم ہونی چاہیے۔', imageBlurry: 'تصویر دھندلی ہے۔ براہِ کرم صاف تصویر منتخب کر کے دوبارہ کوشش کریں۔', imageDark: 'تصویر بہت تاریک ہے۔ براہِ کرم بہتر روشنی میں تصویر لے کر دوبارہ کوشش کریں۔', imageLowResolution: 'تصویر کی کوالٹی بہت کم ہے۔ براہِ کرم زیادہ واضح تصویر منتخب کر کے دوبارہ کوشش کریں۔', imageUnreadable: 'تصویر پڑھی نہیں جا سکی۔ براہِ کرم دوسری JPG، PNG یا WebP تصویر منتخب کریں۔', imageInvalidType: 'تصویر کا فارمیٹ درست نہیں۔ براہِ کرم JPG، PNG یا WebP تصویر منتخب کریں۔',
+      statusPending: 'جاری ہے', statusCompleted: 'مکمل', statusFailed: 'مکمل نہیں ہوا',
       urgencyLow: 'معمولی توجہ', urgencyMedium: 'توجہ درکار', urgencyHigh: 'فوری توجہ', noConditionSummary: 'کوئی بیماری درج نہیں',
       preliminaryResult: 'ابتدائی نتیجہ', assessmentDate: 'معائنے کی تاریخ'
     },
@@ -50,7 +51,7 @@
       editRecord: 'Edit record', closeFormLabel: 'Close form', name: 'Name', notRecorded: 'Not recorded', female: 'Female', male: 'Male',
       ageYears: 'Age in years', weightKg: 'Weight in kg', healthy: 'Healthy', needsAttention: 'Needs attention', underTreatment: 'Under treatment',
       cancel: 'Cancel', saveChanges: 'Save changes', saving: 'Saving…', assessmentInstructions: 'Add a clear photo and describe the symptoms you can see.',
-      animalPhoto: 'Animal photo', imageHelp: 'JPG, PNG or WebP — maximum 5 MB', symptoms: 'Symptoms',
+      animalPhoto: 'Animal photo', uploadImage: 'Upload image', takePhoto: 'Take photo', noImageSelected: 'No image selected yet.', selectedImage: 'Selected image: {name}', imageRequired: 'Please upload an image or take a new photo.', imageHelp: 'JPG, PNG or WebP — maximum 5 MB', symptoms: 'Symptoms',
       symptomsPlaceholder: 'e.g. The animal is not eating and seems tired', assessmentSafety: 'This is preliminary AI guidance. Contact a veterinarian immediately in an emergency.',
       beginAssessment: 'Begin assessment', assessing: 'Assessing…', deleteQuestion: 'Delete this animal?',
       deleteWarning: 'This will remove this animal record. This action cannot be undone.', keepAnimal: 'Keep animal', confirmDelete: 'Yes, delete', deleting: 'Deleting…',
@@ -59,7 +60,8 @@
       noNotes: 'No notes recorded.', year: 'yr', kg: 'kg', recordUpdated: 'Animal information was saved.',
       assessmentSaved: 'The health assessment was recorded.', couldNotSave: 'The information could not be saved. Please try again.',
       couldNotAssess: 'The assessment could not be completed. Please try again.', couldNotDelete: 'The record could not be deleted. Please try again.',
-      imageTooLarge: 'The image must be smaller than 5 MB.', statusPending: 'Pending', statusCompleted: 'Completed', statusFailed: 'Not completed',
+      imageTooLarge: 'The image must be smaller than 5 MB. Please choose another image and try again.', imageBlurry: 'Image is too blurry to analyze. Please upload a clearer photo.', imageDark: 'Image is too dark. Please choose a brighter photo and try again.', imageLowResolution: 'Image resolution is too low. Please choose a clearer, higher-resolution photo and try again.', imageUnreadable: 'Image could not be processed. Please choose another JPG, PNG or WebP image.', imageInvalidType: 'This image format is not accepted. Please choose a JPG, PNG or WebP image.',
+      statusPending: 'Pending', statusCompleted: 'Completed', statusFailed: 'Not completed',
       urgencyLow: 'Low urgency', urgencyMedium: 'Needs attention', urgencyHigh: 'Urgent attention', noConditionSummary: 'No condition recorded',
       preliminaryResult: 'Preliminary result', assessmentDate: 'Assessment date'
     }
@@ -77,8 +79,9 @@
     activityError: document.querySelector('#activity-error'), editDialog: document.querySelector('#edit-dialog'), editForm: document.querySelector('#edit-form'),
     editAlert: document.querySelector('#edit-alert'), saveEdit: document.querySelector('#save-edit'), assessmentDialog: document.querySelector('#assessment-dialog'),
     assessmentForm: document.querySelector('#assessment-form'), assessmentAlert: document.querySelector('#assessment-alert'), submitAssessment: document.querySelector('#submit-assessment'),
+    uploadInput: document.querySelector('#assessment-upload-input'), cameraInput: document.querySelector('#assessment-camera-input'), imageSelection: document.querySelector('#assessment-image-selection'),
     deleteDialog: document.querySelector('#delete-dialog'), deleteAlert: document.querySelector('#delete-alert'), confirmDelete: document.querySelector('#confirm-delete'),
-    historyLink: document.querySelector('#health-history-link')
+    historyLink: document.querySelector('#health-history-link'), preventiveLink: document.querySelector('#preventive-care-link')
   };
 
   let language = window.MaweshiI18n.getLanguage();
@@ -107,6 +110,7 @@
     if (animal) renderAnimal();
     if (assessments.length) renderAssessments();
     if (pageErrorKind !== null) showPageError(pageErrorKind);
+    updateImageSelection();
   }
 
   function value(raw, fallback = t('notRecorded')) { return raw === null || raw === undefined || String(raw).trim() === '' ? fallback : String(raw); }
@@ -270,13 +274,52 @@
     } finally { el.saveEdit.disabled = false; el.saveEdit.textContent = t('saveChanges'); }
   }
 
-  function openAssessment() { el.assessmentAlert.classList.add('hidden'); el.assessmentDialog.showModal(); }
+  function selectedAssessmentImage() {
+    return el.cameraInput.files?.[0] || el.uploadInput.files?.[0] || null;
+  }
+
+  function updateImageSelection() {
+    const image = selectedAssessmentImage();
+    el.imageSelection.textContent = image ? t('selectedImage').replace('{name}', image.name) : t('noImageSelected');
+    el.imageSelection.dir = image ? 'auto' : '';
+  }
+
+  function useSelectedImage(source, other) {
+    if (source.files?.length) other.value = '';
+    updateImageSelection();
+  }
+
+  function openAssessment() { el.assessmentAlert.classList.add('hidden'); updateImageSelection(); el.assessmentDialog.showModal(); }
+
+  function assessmentImageErrorMessage(error) {
+    if (error?.status !== 400) return '';
+    const backendErrors = Array.isArray(error?.payload?.error)
+      ? error.payload.error
+      : [error?.payload?.error, error?.payload?.message, error?.message, error?.details];
+    const messages = [];
+
+    backendErrors.filter((item) => typeof item === 'string').forEach((item) => {
+      const message = item.trim();
+      if (!message) return;
+      if (message === 'Image is too blurry to analyze. Please upload a clearer photo.') messages.push(t('imageBlurry'));
+      else if (message === 'Image is too dark') messages.push(t('imageDark'));
+      else if (message === 'Image resolution is too low') messages.push(t('imageLowResolution'));
+      else if (message === 'Image could not be processed') messages.push(t('imageUnreadable'));
+      else if (message.startsWith('Content type ') && message.includes(' is not allowed.')) messages.push(t('imageInvalidType'));
+      else if (message.startsWith('File size (') && message.includes('exceeds the maximum allowed size')) messages.push(t('imageTooLarge'));
+    });
+
+    return [...new Set(messages)].join(' ');
+  }
+
   async function submitAssessment(event) {
     event.preventDefault(); el.assessmentAlert.classList.add('hidden');
     if (!el.assessmentForm.reportValidity()) return;
+    const image = selectedAssessmentImage();
+    if (!image) { el.assessmentAlert.textContent = t('imageRequired'); el.assessmentAlert.classList.remove('hidden'); return; }
     const data = new FormData(el.assessmentForm);
-    const image = data.get('image');
-    if (image && image.size > MAX_IMAGE_BYTES) { el.assessmentAlert.textContent = t('imageTooLarge'); el.assessmentAlert.classList.remove('hidden'); return; }
+    data.set('image', image, image.name || 'animal-photo.jpg');
+    if (image.size > MAX_IMAGE_BYTES) { el.assessmentAlert.textContent = t('imageTooLarge'); el.assessmentAlert.classList.remove('hidden'); return; }
     el.submitAssessment.disabled = true; el.submitAssessment.textContent = t('assessing');
     try {
       const assessment = await api.createAssessment(animalId, data);
@@ -284,9 +327,14 @@
         throw new RequestError('Assessment id missing', 200);
       }
       el.assessmentForm.reset();
+      el.uploadInput.value = '';
+      el.cameraInput.value = '';
+      updateImageSelection();
       window.location.assign(`assessment-result.html?id=${encodeURIComponent(assessment.id)}`);
     } catch (error) {
-      console.error(error); el.assessmentAlert.textContent = t('couldNotAssess'); el.assessmentAlert.classList.remove('hidden');
+      console.error(error);
+      el.assessmentAlert.textContent = assessmentImageErrorMessage(error) || t('couldNotAssess');
+      el.assessmentAlert.classList.remove('hidden');
     } finally { el.submitAssessment.disabled = false; el.submitAssessment.textContent = t('beginAssessment'); }
   }
 
@@ -305,6 +353,8 @@
     if (languageButton) { language = window.MaweshiI18n.setLanguage(languageButton.dataset.language); translatePage(); }
     if (event.target.closest('[data-open-edit]')) openEdit();
     if (event.target.closest('[data-open-assessment]')) openAssessment();
+    if (event.target.closest('[data-choose-upload]')) el.uploadInput.click();
+    if (event.target.closest('[data-take-photo]')) el.cameraInput.click();
     if (event.target.closest('[data-open-delete]')) { el.deleteAlert.classList.add('hidden'); el.deleteDialog.showModal(); }
     if (event.target.closest('[data-close-dialog]')) closeDialog(event.target.closest('[data-close-dialog]'));
     if (event.target.closest('[data-retry-activity]')) loadAssessments();
@@ -314,9 +364,12 @@
   document.querySelector('#refresh-activity').addEventListener('click', loadAssessments);
   el.editForm.addEventListener('submit', submitEdit);
   el.assessmentForm.addEventListener('submit', submitAssessment);
+  el.uploadInput.addEventListener('change', () => useSelectedImage(el.uploadInput, el.cameraInput));
+  el.cameraInput.addEventListener('change', () => useSelectedImage(el.cameraInput, el.uploadInput));
   el.confirmDelete.addEventListener('click', deleteAnimal);
 
   el.historyLink.href = animalId ? `health-history.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+  el.preventiveLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : 'index.html';
   translatePage();
   loadProfile();
 })();

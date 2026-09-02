@@ -146,9 +146,10 @@
               <span data-i18n="healthHistory">صحت کی پچھلی تفصیل</span>
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
-            <button type="button" class="quick-action quick-action--placeholder" disabled>
-              <span data-i18n="preventiveCare">بیماری سے بچاؤ</span><small data-i18n="comingSoon">جلد آرہا ہے</small>
-            </button>
+            <a id="preventive-care-link" href="index.html" class="quick-action">
+              <span data-i18n="preventiveCare">بیماری سے بچاؤ</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
             <button type="button" class="quick-action quick-action--placeholder" disabled>
               <span data-i18n="followUp">دوبارہ جانچ</span><small data-i18n="comingSoon">جلد آرہا ہے</small>
             </button>
@@ -199,7 +200,23 @@
       <p class="mb-5 text-sm leading-6 text-stone-600" data-i18n="assessmentInstructions">جانور کی صاف تصویر اور نظر آنے والی علامات لکھیں۔</p>
       <div id="assessment-alert" class="form-alert hidden" role="alert"></div>
       <div class="grid gap-4">
-        <label class="field"><span><span data-i18n="animalPhoto">جانور کی تصویر</span> <b>*</b></span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required><small data-i18n="imageHelp">JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB</small></label>
+        <div class="field">
+          <span><span data-i18n="animalPhoto">جانور کی تصویر</span> <b>*</b></span>
+          <div class="assessment-image-actions">
+            <button type="button" class="assessment-image-option" data-choose-upload>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v5h14v-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span data-i18n="uploadImage">تصویر اپ لوڈ کریں</span>
+            </button>
+            <button type="button" class="assessment-image-option" data-take-photo>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8.5h3l1.5-2h7l1.5 2h3v10H4v-10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+              <span data-i18n="takePhoto">تصویر لیں</span>
+            </button>
+          </div>
+          <input id="assessment-upload-input" class="hidden" type="file" accept="image/jpeg,image/png,image/webp">
+          <input id="assessment-camera-input" class="hidden" type="file" accept="image/*" capture="environment">
+          <p id="assessment-image-selection" class="assessment-image-selection" aria-live="polite" data-i18n="noImageSelected">ابھی کوئی تصویر منتخب نہیں ہوئی۔</p>
+          <small data-i18n="imageHelp">JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB</small>
+        </div>
         <label class="field"><span><span data-i18n="symptoms">علامات</span> <b>*</b></span><textarea name="symptoms" maxlength="5000" rows="5" required data-i18n-placeholder="symptomsPlaceholder" placeholder="مثلاً جانور کھانا نہیں کھا رہا اور سست ہے"></textarea></label>
       </div>
       <div class="assessment-safety-note" data-i18n="assessmentSafety">یہ ابتدائی AI رہنمائی ہے۔ ہنگامی حالت میں فوراً جانوروں کے ڈاکٹر سے رابطہ کریں۔</div>

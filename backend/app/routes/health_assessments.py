@@ -117,7 +117,24 @@ def _run_assessment_pipeline(animal_id, symptoms, image_file):
         logger.exception("Unexpected error during image quality check for animal %s", animal_id)
         return None, _error("An unexpected error occurred while checking image quality.", status=500)
 
-    # -- 3. Save the image via ImageStorageService --------------------------
+    # -- 3. Save the image via ImageStorageService -------------------------
+    # -- 4b. Gemini-based blur check (second gate) ---------------------------
+    try:
+        is_blurry = current_app.vision_provider.check_blur(
+            image_data, image_file.content_type,
+        )
+        if is_blurry:
+            return _error(
+                "Image is too blurry to analyze. Please upload a clearer photo.",
+                status=400,
+            )
+    except Exception:
+        # Don't block the request if the blur pre-check itself errors —
+        # let the full assessment handle quality downstream.
+        logger.exception("Unexpected error during Gemini blur check for animal %s", animal_id)
+
+    # -- 5. Save the image via ImageStorageService --------------------------
+
     try:
         file_id = current_app.image_storage_service.save_image(
             file_stream=image_file.stream,

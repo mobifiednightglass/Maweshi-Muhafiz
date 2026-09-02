@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="Manage preventive-care reminders for an animal in Maweshi Muhafiz.">
+  <title>Maweshi Muhafiz | بیماری سے بچاؤ کی یاد دہانیاں</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', leaf: '#6d8d72', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/preventive-care.css">
+</head>
+<body class="min-h-screen bg-cream text-ink antialiased">
+  <a class="skip-link" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="border-b border-sand bg-paper">
+    <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M11 13c3.7 0 6.3 1.8 9 5 2.7-3.2 5.3-5 9-5v7.5c0 6-3.8 10.5-9 10.5s-9-4.5-9-10.5V13Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 14 8 10m19 4 5-4M16 23h.01M24 23h.01M17 27c1.8 1.3 4.2 1.3 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span>
+          <span class="block text-[1.05rem] font-bold leading-tight tracking-tight text-forest">Maweshi Muhafiz</span>
+          <span class="block text-xs font-medium text-stone-500" lang="ur" dir="rtl">مویشی محافظ</span>
+        </span>
+      </a>
+      <div class="authenticated-nav-actions">
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+        <button type="button" class="logout-button" data-logout data-i18n="logout">لاگ آؤٹ</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="page-feedback" class="care-feedback hidden" role="status" aria-live="polite"></div>
+
+  <main id="main-content" class="care-shell">
+    <a id="profile-link" href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</span>
+    </a>
+
+    <section id="care-loading" class="care-loading" data-i18n-aria-label="loadingLabel" aria-label="یاد دہانیاں دیکھی جا رہی ہیں">
+      <div class="care-loading-head"></div>
+      <div class="care-loading-row"></div>
+      <div class="care-loading-row"></div>
+    </section>
+
+    <section id="care-error" class="care-state hidden" aria-live="polite">
+      <span class="care-state-icon care-state-icon--warning" aria-hidden="true">!</span>
+      <h1 id="care-error-title"></h1>
+      <p id="care-error-message"></p>
+      <div class="care-state-actions">
+        <button id="retry-care" type="button" class="btn btn-primary" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+        <a id="error-profile-link" href="index.html" class="btn btn-secondary" data-i18n="backToProfile">جانور کے پروفائل پر واپس جائیں</a>
+      </div>
+    </section>
+
+    <div id="care-page" class="hidden">
+      <section class="care-heading" aria-labelledby="care-title">
+        <span id="animal-icon" class="care-animal-icon" aria-hidden="true">🐾</span>
+        <div class="care-heading-copy">
+          <p id="animal-summary" class="care-animal-summary" dir="auto"></p>
+          <h1 id="care-title" data-i18n="pageTitle">بیماری سے بچاؤ اور یاد دہانیاں</h1>
+          <p data-i18n="pageSubtitle">ویکسین، پیٹ کے کیڑوں کی دوا اور معمول کے معائنے کی تاریخیں یاد رکھیں۔</p>
+        </div>
+        <button type="button" class="btn btn-primary care-add-button" data-open-reminder>
+          <span aria-hidden="true">+</span><span data-i18n="addReminder">یاد دہانی شامل کریں</span>
+        </button>
+      </section>
+
+      <section class="care-list-section" aria-labelledby="reminders-heading">
+        <div class="care-section-heading">
+          <div>
+            <p class="section-kicker" data-i18n="careSchedule">دیکھ بھال کی تاریخیں</p>
+            <h2 id="reminders-heading" data-i18n="allReminders">تمام یاد دہانیاں</h2>
+          </div>
+          <p id="reminder-count" class="care-count" aria-live="polite"></p>
+        </div>
+
+        <div id="reminders-empty" class="care-state care-state--empty hidden">
+          <span class="care-state-icon care-state-icon--leaf" aria-hidden="true">✓</span>
+          <h2 data-i18n="emptyTitle">ابھی بیماری سے بچاؤ کی کوئی یاد دہانی نہیں ہے۔</h2>
+          <p data-i18n="emptyHelp">اگلی ویکسین، پیٹ کے کیڑوں کی دوا یا معمول کے معائنے کی تاریخ شامل کریں۔</p>
+          <button type="button" class="btn btn-primary" data-open-reminder data-i18n="addReminder">یاد دہانی شامل کریں</button>
+        </div>
+
+        <div id="reminder-list" class="reminder-list"></div>
+      </section>
+
+      <aside class="care-accuracy-note">
+        <span aria-hidden="true">i</span>
+        <p data-i18n="reminderDistinction">یہ صرف یاد دہانیاں ہیں۔ یہ کسی ویکسین یا علاج کے مکمل ہونے کا طبی ریکارڈ نہیں ہیں۔</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="care-footer">
+    <p data-i18n="footerCare">مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔</p>
+    <p data-i18n="footerReminder">وقت پر دیکھ بھال کی تاریخیں یاد رکھیں۔</p>
+  </footer>
+
+  <dialog id="reminder-dialog" class="animal-dialog" aria-labelledby="reminder-dialog-title">
+    <form id="reminder-form" class="dialog-panel" novalidate>
+      <div class="dialog-header">
+        <div><p class="section-kicker" data-i18n="preventiveCare">بیماری سے بچاؤ</p><h2 id="reminder-dialog-title" class="mt-1 text-2xl font-bold" data-i18n="addReminder">یاد دہانی شامل کریں</h2></div>
+        <button type="button" class="icon-button" data-close-dialog data-i18n-aria-label="closeFormLabel" aria-label="فارم بند کریں"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+      <p class="mb-5 text-sm leading-6 text-stone-600" data-i18n="formHelp">جانور کی اگلی ضروری دیکھ بھال کی تاریخ لکھیں۔</p>
+      <div id="reminder-alert" class="form-alert hidden" role="alert"></div>
+      <div class="grid gap-4">
+        <label class="field">
+          <span><span data-i18n="reminderType">یاد دہانی کی قسم</span> <b>*</b></span>
+          <input name="reminder_type" type="text" list="reminder-type-suggestions" maxlength="50" required data-i18n-placeholder="typePlaceholder" placeholder="مثلاً ویکسین">
+          <datalist id="reminder-type-suggestions">
+            <option value="Vaccination"></option>
+            <option value="Deworming"></option>
+            <option value="Routine check-up"></option>
+          </datalist>
+          <small data-i18n="typeHelp">اپنی ضرورت کے مطابق کوئی بھی مختصر نام لکھ سکتے ہیں۔</small>
+        </label>
+        <label class="field">
+          <span><span data-i18n="dueDate">یاد دہانی کی تاریخ</span> <b>*</b></span>
+          <input name="due_date" type="date" required>
+        </label>
+        <label class="field">
+          <span data-i18n="notes">نوٹس (اختیاری)</span>
+          <textarea name="notes" maxlength="2000" rows="4" data-i18n-placeholder="notesPlaceholder" placeholder="مثلاً پچھلی خوراک یا ڈاکٹر کی ہدایت"></textarea>
+          <small data-i18n="notesHelp">یہ نوٹ جیسے لکھیں گے ویسے ہی محفوظ ہوگا۔</small>
+        </label>
+      </div>
+      <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button type="button" class="btn btn-secondary justify-center" data-close-dialog data-i18n="cancel">منسوخ کریں</button>
+        <button id="save-reminder" type="submit" class="btn btn-primary justify-center" data-i18n="saveReminder">یاد دہانی محفوظ کریں</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="delete-reminder-dialog" class="confirm-dialog" aria-labelledby="delete-reminder-title">
+    <div class="confirm-panel">
+      <span class="delete-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8 8v10m4-10v10m4-10v10M5 5h14m-9-2h4m-7 2 1 16h8l1-16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <h2 id="delete-reminder-title" data-i18n="deleteTitle">یہ یاد دہانی حذف کرنی ہے؟</h2>
+      <p><span data-i18n="deleteMessage">یہ یاد دہانی فہرست سے ختم ہو جائے گی:</span> <strong id="delete-reminder-name" dir="auto"></strong></p>
+      <div id="delete-alert" class="form-alert hidden mt-4" role="alert"></div>
+      <div class="mt-6 flex flex-col-reverse justify-center gap-3 sm:flex-row">
+        <button type="button" class="btn btn-secondary justify-center" data-close-dialog data-i18n="keepReminder">یاد دہانی رہنے دیں</button>
+        <button id="confirm-delete-reminder" type="button" class="danger-confirm-button" data-i18n="confirmDelete">ہاں، حذف کریں</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/preventive-care.js" defer></script>
+</body>
+</html>

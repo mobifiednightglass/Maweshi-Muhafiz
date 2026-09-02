@@ -1,0 +1,67 @@
+.care-shell { width: min(100% - 2rem, 68rem); min-height: 70vh; margin-inline: auto; padding-block: 2rem 4.5rem; }
+.care-heading { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1.1rem; margin-top: 1.5rem; border-block-end: 1px solid var(--sand); padding-block-end: 1.6rem; }
+.care-animal-icon { display: grid; width: 4.1rem; height: 4.1rem; flex: none; place-items: center; border: 1px solid #cad7c9; border-radius: 0.55rem; background: #e7efe4; font-size: 2rem; }
+.care-animal-summary { color: var(--forest); font-size: 0.86rem; font-weight: 800; }
+.care-heading h1 { margin-top: 0.25rem; color: var(--ink); font-size: clamp(1.85rem, 4vw, 2.7rem); font-weight: 850; line-height: 1.25; }
+.care-heading-copy > p:last-child { max-width: 41rem; margin-top: 0.45rem; color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+.care-add-button { justify-content: center; white-space: nowrap; }
+.care-add-button > span:first-child { font-size: 1.25rem; line-height: 1; }
+
+.care-loading { display: grid; gap: 1rem; margin-top: 1.75rem; }
+.care-loading-head, .care-loading-row { border-radius: 0.5rem; background: #ece8df; animation: soft-pulse 1.4s ease-in-out infinite; }
+.care-loading-head { min-height: 8rem; }
+.care-loading-row { min-height: 7rem; }
+
+.care-state { margin-top: 2rem; border: 1px solid var(--sand); border-radius: 0.55rem; background: var(--paper); padding: clamp(2rem, 6vw, 4rem) 1.25rem; text-align: center; }
+.care-state-icon { display: grid; width: 3.1rem; height: 3.1rem; margin-inline: auto; place-items: center; border-radius: 50%; font-size: 1.2rem; font-weight: 900; }
+.care-state-icon--warning { background: #f3e7d8; color: var(--warning); }
+.care-state-icon--leaf { background: #e7efe4; color: var(--forest); }
+.care-state h1, .care-state h2 { margin-top: 0.9rem; color: var(--ink); font-size: clamp(1.35rem, 4vw, 1.8rem); font-weight: 850; }
+.care-state > p { max-width: 34rem; margin: 0.55rem auto 0; color: var(--muted); line-height: 1.7; }
+.care-state-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 1.5rem; }
+.care-state--empty { margin-top: 1.1rem; border-style: dashed; box-shadow: none; }
+.care-state--empty .btn { margin-top: 1.4rem; }
+
+.care-list-section { margin-top: 2rem; }
+.care-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+.care-section-heading h2 { margin-top: 0.25rem; color: var(--ink); font-size: 1.35rem; font-weight: 850; }
+.care-count { color: #70756f; font-size: 0.8rem; font-weight: 750; }
+.reminder-list { display: grid; margin-top: 1rem; border-block-start: 1px solid #ded6c8; }
+.reminder-item { display: grid; grid-template-columns: minmax(9.5rem, 0.32fr) minmax(0, 1fr) auto; gap: 1.25rem; align-items: center; border-block-end: 1px solid #ded6c8; background: var(--paper); padding: 1.1rem; }
+.reminder-date { display: flex; min-width: 0; align-items: center; gap: 0.75rem; }
+.reminder-date-mark { display: grid; width: 2.7rem; height: 2.7rem; flex: none; place-items: center; border-radius: 0.42rem; background: #e7efe4; color: var(--forest); font-weight: 900; }
+.reminder-date time { display: block; color: var(--ink); font-size: 0.86rem; font-weight: 800; }
+.reminder-state { display: inline-flex; min-height: 1.7rem; align-items: center; gap: 0.3rem; margin-top: 0.35rem; border-radius: 999px; padding: 0.2rem 0.52rem; font-size: 0.68rem; font-weight: 850; }
+.reminder-state--upcoming { background: #e3f1e7; color: #2d6d4a; }
+.reminder-state--today { background: #f9ead6; color: #8b5118; }
+.reminder-state--overdue { background: #f7e5e2; color: #92372f; }
+.reminder-content { min-width: 0; }
+.reminder-content h3 { overflow-wrap: anywhere; color: var(--ink); font-size: 1rem; font-weight: 850; }
+.reminder-content p { margin-top: 0.35rem; overflow-wrap: anywhere; color: var(--muted); font-size: 0.84rem; line-height: 1.6; white-space: pre-wrap; }
+.reminder-delete { min-height: 2.55rem; align-self: center; color: #8d3730; font-size: 0.78rem; font-weight: 800; text-decoration: underline; text-underline-offset: 0.2rem; }
+.reminder-delete:hover { color: var(--danger); }
+
+.care-accuracy-note { display: flex; align-items: flex-start; gap: 0.7rem; margin-top: 1.5rem; border-inline-start: 3px solid #98ad96; background: #eef3ec; padding: 0.85rem 1rem; color: #4d5b52; font-size: 0.8rem; line-height: 1.65; }
+.care-accuracy-note > span { display: grid; width: 1.35rem; height: 1.35rem; flex: none; place-items: center; border: 1px solid #9fb19e; border-radius: 50%; color: var(--forest); font-size: 0.7rem; font-weight: 900; }
+.care-feedback { position: fixed; z-index: 80; inset-block-start: 5.5rem; left: 50%; transform: translateX(-50%); width: min(calc(100% - 2rem), 30rem); border: 1px solid #bdd4c3; border-radius: 0.4rem; background: #edf7f0; padding: 0.85rem 1rem; color: #285f42; text-align: center; box-shadow: 0 10px 35px rgba(38, 49, 45, 0.15); font-size: 0.9rem; font-weight: 800; }
+.care-footer { display: flex; width: min(100% - 2rem, 68rem); align-items: center; justify-content: space-between; gap: 1rem; margin-inline: auto; border-block-start: 1px solid var(--sand); padding-block: 1.5rem; color: #777b77; font-size: 0.75rem; }
+
+@media (max-width: 760px) {
+  .care-heading { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+  .care-add-button { grid-column: 1 / -1; width: 100%; }
+  .reminder-item { grid-template-columns: minmax(0, 1fr) auto; }
+  .reminder-date { grid-column: 1 / -1; }
+}
+
+@media (max-width: 520px) {
+  .care-shell { width: min(100% - 1.5rem, 68rem); padding-block: 1.4rem 3.5rem; }
+  .care-animal-icon { width: 3.5rem; height: 3.5rem; font-size: 1.65rem; }
+  .care-heading { gap: 0.8rem; }
+  .care-section-heading { align-items: flex-start; flex-direction: column; gap: 0.4rem; }
+  .reminder-item { grid-template-columns: 1fr; gap: 0.85rem; }
+  .reminder-date { grid-column: auto; }
+  .reminder-delete { width: 100%; justify-self: stretch; border: 1px solid #e2c5c1; border-radius: 0.4rem; text-align: center; text-decoration: none; }
+  .care-state-actions { flex-direction: column; }
+  .care-state-actions .btn { width: 100%; justify-content: center; }
+  .care-footer { align-items: flex-start; flex-direction: column; }
+}

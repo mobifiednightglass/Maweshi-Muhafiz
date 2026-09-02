@@ -248,6 +248,58 @@ class GeminiVisionProvider(VisionAssessmentProvider):
             return safe_fallback(f"AI provider error: {exc}")
 
     # ------------------------------------------------------------------
+    # Blur pre-check (lightweight Gemini call)
+    # ------------------------------------------------------------------
+
+    _BLUR_PROMPT = (
+        "Is this image too blurry or out of focus to make out visible "
+        "details of the animal? Answer with only the single word YES or NO."
+    )
+
+    def check_blur(self, image_bytes: bytes, image_content_type: str) -> bool:
+        """Quick Gemini-based blur check.
+
+        Sends *only* the image with a minimal YES/NO prompt to determine
+        whether the photo is too blurry to analyse.
+
+        Returns
+        -------
+        bool
+            ``True``  — image IS too blurry (reject it).
+            ``False`` — image is acceptable **or** the API call failed
+            (fail-open: don't block the user when the pre-check itself
+            errors; let the full assessment handle quality instead).
+        """
+        try:
+            from google.genai import types  # noqa: WPS433
+
+            image_part = types.Part.from_bytes(
+                data=image_bytes,
+                mime_type=image_content_type,
+            )
+
+            response = self._client.models.generate_content(
+                model=self._model,
+                contents=[image_part, self._BLUR_PROMPT],
+                config=types.GenerateContentConfig(
+                    max_output_tokens=5,
+                ),
+            )
+
+            text = (response.text or "").strip().upper()
+            # Fail-safe: only a clear "NO" means the image is NOT blurry.
+            # Anything else (YES, empty, gibberish) → treat as blurry.
+            if text.startswith("NO"):
+                return False  # not blurry
+            return True  # blurry (or ambiguous → fail-safe)
+
+        except Exception as exc:
+            # API error → don't block the request; fall through to the
+            # full assessment which has its own error handling.
+            logger.warning("Gemini blur pre-check failed (falling through): %s", exc)
+            return False
+
+    # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
 

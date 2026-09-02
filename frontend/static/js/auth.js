@@ -8,12 +8,14 @@
   let redirectingToLogin = false;
 
   class AuthRequestError extends Error {
-    constructor(message, status, details, kind) {
+    constructor(message, status, details, kind, payload = null) {
       super(message);
       this.name = 'AuthRequestError';
       this.status = status;
       this.details = details;
       this.kind = kind;
+      this.payload = payload;
+      this.errorItems = Array.isArray(payload?.error) ? payload.error : [];
     }
   }
 
@@ -92,16 +94,48 @@
     if (response.status === 401) {
       clearSession();
       loginRedirect('session-expired');
-      throw new AuthRequestError('Session expired', 401, errorDetails(payload), 'unauthorized');
+      throw new AuthRequestError('Session expired', 401, errorDetails(payload), 'unauthorized', payload);
     }
     if (response.status === 403) {
       showPermissionNotice();
-      throw new AuthRequestError('Permission denied', 403, errorDetails(payload), 'forbidden');
+      throw new AuthRequestError('Permission denied', 403, errorDetails(payload), 'forbidden', payload);
     }
     if (!response.ok || payload?.success !== true) {
-      throw new AuthRequestError(payload?.message || 'Request failed', response.status, errorDetails(payload), 'request');
+      throw new AuthRequestError(payload?.message || 'Request failed', response.status, errorDetails(payload), 'request', payload);
     }
     return payload.data;
+  }
+
+  async function requestBlob(url, options = {}) {
+    const token = getToken();
+    if (!token) {
+      loginRedirect('login-required');
+      throw new AuthRequestError('Authentication required', 401, '', 'unauthorized');
+    }
+
+    const headers = new Headers(options.headers || {});
+    headers.set('Authorization', `Bearer ${token}`);
+
+    let response;
+    try { response = await fetch(url, { ...options, headers }); }
+    catch { throw new AuthRequestError('Connection unavailable', 0, '', 'connection'); }
+
+    if (response.ok) return response.blob();
+
+    let payload = null;
+    try { payload = await response.json(); }
+    catch { payload = null; }
+
+    if (response.status === 401) {
+      clearSession();
+      loginRedirect('session-expired');
+      throw new AuthRequestError('Session expired', 401, errorDetails(payload), 'unauthorized', payload);
+    }
+    if (response.status === 403) {
+      showPermissionNotice();
+      throw new AuthRequestError('Permission denied', 403, errorDetails(payload), 'forbidden', payload);
+    }
+    throw new AuthRequestError(payload?.message || 'Image unavailable', response.status, errorDetails(payload), 'request', payload);
   }
 
   function logout() {
@@ -113,5 +147,5 @@
     if (event.target.closest('[data-logout]')) logout();
   });
 
-  window.MaweshiAuth = { saveSession, getToken, getUser, clearSession, request, logout, showPermissionNotice, AuthRequestError };
+  window.MaweshiAuth = { saveSession, getToken, getUser, clearSession, request, requestBlob, logout, showPermissionNotice, AuthRequestError };
 })();

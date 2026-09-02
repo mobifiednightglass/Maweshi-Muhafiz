@@ -361,6 +361,12 @@ html[dir="rtl"] .profile-action[aria-expanded="true"] svg { transform: scaleX(-1
 .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--forest); outline: 3px solid rgba(31, 77, 58, 0.13); }
 .field input:user-invalid, .field select:user-invalid { border-color: var(--danger); }
 
+.assessment-image-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+.assessment-image-option { display: flex; min-height: 3.25rem; align-items: center; justify-content: center; gap: 0.55rem; border: 1px solid #cfc6b5; border-radius: 0.4rem; background: white; padding: 0.7rem; color: var(--forest); font-size: 0.85rem; font-weight: 800; }
+.assessment-image-option:hover { border-color: #97aa96; background: #f2f6f0; }
+.assessment-image-option svg { width: 1.3rem; height: 1.3rem; flex: none; }
+.assessment-image-selection { min-height: 1.35rem; color: #646b67; font-size: 0.78rem; overflow-wrap: anywhere; }
+
 .form-alert {
   margin-bottom: 1rem;
   border-inline-start: 4px solid var(--danger);
@@ -379,6 +385,7 @@ html[dir="rtl"] .profile-action[aria-expanded="true"] svg { transform: scaleX(-1
 
 @media (max-width: 440px) {
   .language-option { padding-inline: 0.5rem; }
+  .assessment-image-actions { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
