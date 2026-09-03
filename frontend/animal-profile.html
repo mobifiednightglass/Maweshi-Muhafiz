@@ -256,6 +256,13 @@
         </section>
       </div>
       <div class="assessment-safety-note" data-i18n="assessmentSafety">یہ ابتدائی AI رہنمائی ہے۔ ہنگامی حالت میں فوراً جانوروں کے ڈاکٹر سے رابطہ کریں۔</div>
+      <div id="assessment-processing" class="assessment-processing hidden" role="status" aria-live="polite" aria-atomic="true">
+        <span class="assessment-processing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <div>
+          <strong data-i18n="assessmentProcessingTitle">تصویر اور علامات دیکھی جا رہی ہیں…</strong>
+          <p data-i18n="assessmentProcessingHelp">معائنہ تیار ہو رہا ہے، براہِ کرم تھوڑا انتظار کریں۔</p>
+        </div>
+      </div>
       <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><button type="button" class="btn btn-secondary justify-center" data-close-dialog data-i18n="cancel">منسوخ کریں</button><button id="submit-assessment" type="submit" class="btn btn-primary justify-center" data-i18n="beginAssessment">معائنہ کریں</button></div>
     </form>
   </dialog>

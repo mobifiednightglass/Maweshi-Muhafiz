@@ -24,7 +24,7 @@
       cancel: 'منسوخ کریں', saveChanges: 'تبدیلی محفوظ کریں', saving: 'محفوظ ہو رہا ہے…', assessmentInstructions: 'جانور کی صاف تصویر دیں، پھر علامات لکھیں یا اردو میں بولیں۔',
       animalPhoto: 'جانور کی تصویر', uploadImage: 'تصویر اپ لوڈ کریں', takePhoto: 'تصویر لیں', noImageSelected: 'ابھی کوئی تصویر منتخب نہیں ہوئی۔', selectedImage: 'منتخب تصویر: {name}', imageRequired: 'براہِ کرم تصویر اپ لوڈ کریں یا نئی تصویر لیں۔', imageHelp: 'JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB', symptoms: 'علامات',
       symptomsPlaceholder: 'مثلاً جانور کھانا نہیں کھا رہا اور سست ہے', assessmentSafety: 'یہ ابتدائی AI رہنمائی ہے۔ ہنگامی حالت میں فوراً جانوروں کے ڈاکٹر سے رابطہ کریں۔',
-      beginAssessment: 'معائنہ کریں', assessing: 'معائنہ ہو رہا ہے…', deleteQuestion: 'کیا یہ جانور حذف کرنا ہے؟',
+      beginAssessment: 'معائنہ کریں', assessing: 'معائنہ ہو رہا ہے…', assessmentProcessingTitle: 'تصویر اور علامات دیکھی جا رہی ہیں…', assessmentProcessingHelp: 'معائنہ تیار ہو رہا ہے، براہِ کرم تھوڑا انتظار کریں۔', deleteQuestion: 'کیا یہ جانور حذف کرنا ہے؟',
       deleteWarning: 'اس جانور کا ریکارڈ ختم ہو جائے گا۔ یہ عمل واپس نہیں ہو سکتا۔', keepAnimal: 'ریکارڈ رہنے دیں', confirmDelete: 'ہاں، حذف کریں', deleting: 'حذف ہو رہا ہے…',
       pageNotFound: 'جانور کا ریکارڈ نہیں ملا', notFoundMessage: 'یہ ریکارڈ موجود نہیں یا حذف ہو چکا ہے۔', forbiddenTitle: 'اجازت نہیں ہے', forbiddenMessage: 'آپ کو یہ ریکارڈ دیکھنے کی اجازت نہیں ہے۔', connectionTitle: 'ریکارڈ ابھی دستیاب نہیں',
       connectionMessage: 'رابطہ نہیں ہو سکا۔ کچھ دیر بعد دوبارہ کوشش کریں۔', recordNumber: 'ریکارڈ', updatedOn: 'آخری تبدیلی',
@@ -57,7 +57,7 @@
       cancel: 'Cancel', saveChanges: 'Save changes', saving: 'Saving…', assessmentInstructions: 'Add a clear animal photo, then type the symptoms or speak in Urdu.',
       animalPhoto: 'Animal photo', uploadImage: 'Upload image', takePhoto: 'Take photo', noImageSelected: 'No image selected yet.', selectedImage: 'Selected image: {name}', imageRequired: 'Please upload an image or take a new photo.', imageHelp: 'JPG, PNG or WebP — maximum 5 MB', symptoms: 'Symptoms',
       symptomsPlaceholder: 'e.g. The animal is not eating and seems tired', assessmentSafety: 'This is preliminary AI guidance. Contact a veterinarian immediately in an emergency.',
-      beginAssessment: 'Begin assessment', assessing: 'Assessing…', deleteQuestion: 'Delete this animal?',
+      beginAssessment: 'Begin assessment', assessing: 'Assessing…', assessmentProcessingTitle: 'Reviewing the photo and symptoms…', assessmentProcessingHelp: 'Your assessment is being prepared. Please wait a moment.', deleteQuestion: 'Delete this animal?',
       deleteWarning: 'This will remove this animal record. This action cannot be undone.', keepAnimal: 'Keep animal', confirmDelete: 'Yes, delete', deleting: 'Deleting…',
       pageNotFound: 'Animal record not found', notFoundMessage: 'This record does not exist or may have been removed.', forbiddenTitle: 'Permission required', forbiddenMessage: 'You do not have permission to access this record.', connectionTitle: 'Record unavailable right now',
       connectionMessage: 'We could not connect. Please try again in a little while.', recordNumber: 'Record', updatedOn: 'Last updated',
@@ -86,7 +86,7 @@
     activityLoading: document.querySelector('#activity-loading'), activityList: document.querySelector('#activity-list'), activityEmpty: document.querySelector('#activity-empty'),
     activityError: document.querySelector('#activity-error'), editDialog: document.querySelector('#edit-dialog'), editForm: document.querySelector('#edit-form'),
     editAlert: document.querySelector('#edit-alert'), saveEdit: document.querySelector('#save-edit'), assessmentDialog: document.querySelector('#assessment-dialog'),
-    assessmentForm: document.querySelector('#assessment-form'), assessmentAlert: document.querySelector('#assessment-alert'), submitAssessment: document.querySelector('#submit-assessment'),
+    assessmentForm: document.querySelector('#assessment-form'), assessmentAlert: document.querySelector('#assessment-alert'), assessmentProcessing: document.querySelector('#assessment-processing'), submitAssessment: document.querySelector('#submit-assessment'),
     uploadInput: document.querySelector('#assessment-upload-input'), cameraInput: document.querySelector('#assessment-camera-input'), imageSelection: document.querySelector('#assessment-image-selection'),
     typedPanel: document.querySelector('#typed-symptoms-panel'), voicePanel: document.querySelector('#voice-symptoms-panel'), symptomsInput: document.querySelector('[name="symptoms"]'),
     voiceTitle: document.querySelector('#voice-state-title'), voiceHelp: document.querySelector('#voice-state-help'), voiceTimer: document.querySelector('#voice-timer'), voicePreview: document.querySelector('#voice-preview'),
@@ -394,6 +394,9 @@
   function updateAssessmentSubmitButton() {
     el.submitAssessment.disabled = assessmentSubmitting || voiceState === 'recording' || voiceState === 'requesting';
     document.querySelectorAll('[data-assessment-mode]').forEach((button) => { button.disabled = assessmentSubmitting; });
+    el.assessmentProcessing.classList.toggle('hidden', !assessmentSubmitting);
+    if (assessmentSubmitting) el.assessmentForm.setAttribute('aria-busy', 'true');
+    else el.assessmentForm.removeAttribute('aria-busy');
     el.submitAssessment.textContent = t(assessmentSubmitting
       ? assessmentMode === 'voice' ? 'processingVoice' : 'assessing'
       : assessmentMode === 'voice' ? 'submitVoiceAssessment' : 'beginAssessment');
