@@ -17,6 +17,7 @@
       activityUnavailable: 'صحت کا ریکارڈ ابھی نہیں دکھایا جا سکتا۔', animalHealth: 'جانور کی صحت', quickActions: 'فوری کام',
       startAssessment: 'صحت کا معائنہ شروع کریں', assessmentHelp: 'تصویر اور علامات کے ساتھ', healthHistory: 'صحت کی پچھلی تفصیل',
       preventiveCare: 'بیماری سے بچاؤ', followUp: 'دوبارہ جانچ', healthPassport: 'صحت پاسپورٹ', comingSoon: 'جلد آرہا ہے',
+      upcomingCare: 'قریب کی دیکھ بھال', upcomingCareHelp: 'گزری ہوئی، آج کی اور اگلے 10 دن کی یاد دہانیاں', viewAllReminders: 'تمام یاد دہانیاں دیکھیں', reminderOverdue: 'تاریخ گزر چکی ہے', reminderDueToday: 'آج کی تاریخ', reminderDueTomorrow: 'کل کی تاریخ', reminderDueInDays: '{count} دن بعد',
       recordSettings: 'ریکارڈ کی ترتیب', deleteHelp: 'اگر یہ ریکارڈ مزید نہیں چاہیے تو اسے حذف کر سکتے ہیں۔', deleteAnimal: 'جانور کا ریکارڈ حذف کریں',
       footerCare: 'مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔', footerDisclaimer: 'AI کی رائے ابتدائی رہنمائی ہے، ڈاکٹر کا متبادل نہیں۔',
       editRecord: 'ریکارڈ میں تبدیلی', closeFormLabel: 'فارم بند کریں', name: 'نام', notRecorded: 'درج نہیں', female: 'مادہ', male: 'نر',
@@ -50,6 +51,7 @@
       activityUnavailable: 'Health activity cannot be shown right now.', animalHealth: 'Animal health', quickActions: 'Quick actions',
       startAssessment: 'Start Health Assessment', assessmentHelp: 'With a photo and symptoms', healthHistory: 'Health History', preventiveCare: 'Preventive Care',
       followUp: 'Follow-Up', healthPassport: 'Health Passport', comingSoon: 'Coming soon', recordSettings: 'Record settings',
+      upcomingCare: 'Upcoming care', upcomingCareHelp: 'Overdue, due today and reminders within the next 10 days', viewAllReminders: 'View all reminders', reminderOverdue: 'Overdue', reminderDueToday: 'Due today', reminderDueTomorrow: 'Due tomorrow', reminderDueInDays: 'Due in {count} days',
       deleteHelp: 'If this record is no longer needed, you can remove it.', deleteAnimal: 'Delete animal record',
       footerCare: 'Built to support better livestock care.', footerDisclaimer: 'AI guidance is preliminary and does not replace a veterinarian.',
       editRecord: 'Edit record', closeFormLabel: 'Close form', name: 'Name', notRecorded: 'Not recorded', female: 'Female', male: 'Male',
@@ -92,12 +94,14 @@
     voiceTitle: document.querySelector('#voice-state-title'), voiceHelp: document.querySelector('#voice-state-help'), voiceTimer: document.querySelector('#voice-timer'), voicePreview: document.querySelector('#voice-preview'),
     startRecording: document.querySelector('#start-voice-recording'), stopRecording: document.querySelector('#stop-voice-recording'), rerecord: document.querySelector('#rerecord-voice'),
     deleteDialog: document.querySelector('#delete-dialog'), deleteAlert: document.querySelector('#delete-alert'), confirmDelete: document.querySelector('#confirm-delete'),
-    historyLink: document.querySelector('#health-history-link'), preventiveLink: document.querySelector('#preventive-care-link'), passportLink: document.querySelector('#health-passport-link')
+    historyLink: document.querySelector('#health-history-link'), preventiveLink: document.querySelector('#preventive-care-link'), passportLink: document.querySelector('#health-passport-link'),
+    reminderStrip: document.querySelector('#profile-reminders'), reminderList: document.querySelector('#profile-reminder-list'), reminderListLink: document.querySelector('#profile-reminders-link')
   };
 
   let language = window.MaweshiI18n.getLanguage();
   let animal = null;
   let assessments = [];
+  let reminders = [];
   let pageErrorKind = null;
   let assessmentMode = 'typed';
   let voiceState = 'idle';
@@ -120,6 +124,7 @@
   const api = {
     getAnimal: (id) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}`, { headers: { Accept: 'application/json' } }),
     getAssessments: (id) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}/assessments`, { headers: { Accept: 'application/json' } }),
+    getReminders: (id) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}/reminders`, { headers: { Accept: 'application/json' } }),
     updateAnimal: (id, payload) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}`, {
       method: 'PUT', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload)
     }),
@@ -132,6 +137,7 @@
     language = window.MaweshiI18n.applyPage(language, copy).language;
     if (animal) renderAnimal();
     if (assessments.length) renderAssessments();
+    renderProfileReminders();
     if (pageErrorKind !== null) showPageError(pageErrorKind);
     updateImageSelection();
     renderVoiceState();
@@ -164,6 +170,72 @@
     const options = { day: 'numeric', month: 'short', year: 'numeric' };
     if (includeTime) Object.assign(options, { hour: 'numeric', minute: '2-digit' });
     return new Intl.DateTimeFormat(language === 'ur' ? 'ur-PK' : 'en-PK', options).format(date);
+  }
+
+  function parseReminderDate(raw) {
+    if (typeof raw !== 'string' || !raw.trim()) return null;
+    const value = raw.trim();
+    const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    const date = dateOnly
+      ? new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]))
+      : new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function calendarDayNumber(date) { return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000; }
+  function daysUntilReminder(date) { return calendarDayNumber(date) - calendarDayNumber(new Date()); }
+
+  function reminderTimingLabel(days) {
+    if (days < 0) return t('reminderOverdue');
+    if (days === 0) return t('reminderDueToday');
+    if (days === 1) return t('reminderDueTomorrow');
+    return t('reminderDueInDays').replace('{count}', new Intl.NumberFormat(language === 'ur' ? 'ur-PK' : 'en-PK').format(days));
+  }
+
+  function formatReminderDate(date) {
+    return new Intl.DateTimeFormat(language === 'ur' ? 'ur-PK' : 'en-PK', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
+  }
+
+  function renderProfileReminders() {
+    el.reminderStrip.classList.add('hidden');
+    el.reminderStrip.classList.remove('has-overdue');
+    el.reminderList.replaceChildren();
+    const relevant = reminders
+      .map((record) => ({ record, date: parseReminderDate(record?.due_date) }))
+      .filter(({ record, date }) => record && date && String(record.reminder_type || '').trim())
+      .map((item) => ({ ...item, days: daysUntilReminder(item.date) }))
+      .filter(({ days }) => days <= 10)
+      .sort((a, b) => {
+        const aGroup = a.days < 0 ? 0 : a.days === 0 ? 1 : 2;
+        const bGroup = b.days < 0 ? 0 : b.days === 0 ? 1 : 2;
+        if (aGroup !== bGroup) return aGroup - bGroup;
+        return aGroup === 0 ? b.days - a.days : a.days - b.days;
+      })
+      .slice(0, 3);
+    if (!relevant.length) return;
+    const fragment = document.createDocumentFragment();
+    relevant.forEach(({ record, date, days }) => {
+      const item = document.createElement('li');
+      item.className = `profile-reminder-item profile-reminder-item--${days < 0 ? 'overdue' : days === 0 ? 'today' : 'upcoming'}`;
+      const status = document.createElement('span');
+      status.className = 'profile-reminder-status';
+      status.textContent = reminderTimingLabel(days);
+      const type = document.createElement('strong');
+      type.textContent = String(record.reminder_type).trim();
+      const due = document.createElement('time');
+      due.dateTime = String(record.due_date || '');
+      due.textContent = formatReminderDate(date);
+      item.append(status, type, due);
+      if (record.notes && String(record.notes).trim()) {
+        const notes = document.createElement('p');
+        notes.textContent = String(record.notes).trim();
+        item.appendChild(notes);
+      }
+      fragment.appendChild(item);
+    });
+    el.reminderList.appendChild(fragment);
+    el.reminderStrip.classList.toggle('has-overdue', relevant.some(({ days }) => days < 0));
+    el.reminderStrip.classList.remove('hidden');
   }
 
   function renderAnimal() {
@@ -247,6 +319,7 @@
       renderAnimal();
       el.loading.classList.add('hidden'); el.content.classList.remove('hidden');
       loadAssessments();
+      loadReminders();
     } catch (error) {
       console.error(error);
       showPageError(error.status === 404 ? 'notFound' : error.status === 403 ? 'forbidden' : 'connection');
@@ -468,6 +541,18 @@
     }
   }
 
+  async function loadReminders() {
+    try {
+      const data = await api.getReminders(animalId);
+      reminders = Array.isArray(data) ? data : [];
+      renderProfileReminders();
+    } catch (error) {
+      console.error('Animal reminders could not be loaded.', error);
+      reminders = [];
+      renderProfileReminders();
+    }
+  }
+
   function stopVoiceRecording() {
     if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
   }
@@ -598,6 +683,7 @@
 
   el.historyLink.href = animalId ? `health-history.html?id=${encodeURIComponent(animalId)}` : 'index.html';
   el.preventiveLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+  el.reminderListLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : 'index.html';
   el.passportLink.href = animalId ? `health-passport.html?id=${encodeURIComponent(animalId)}` : 'index.html';
   setAssessmentMode('typed');
   translatePage();

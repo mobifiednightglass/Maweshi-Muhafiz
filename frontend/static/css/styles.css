@@ -537,6 +537,24 @@ html[lang="ur"] .profile-name { letter-spacing: 0; }
 .record-id { color: #7b7b72; font-size: 0.75rem; font-weight: 700; }
 .profile-edit-button { flex: none; }
 
+.profile-reminder-strip { margin-top: 1.25rem; border: 1px solid #c9d7c4; border-inline-start: 4px solid var(--forest); border-radius: 0.5rem; background: #f0f5ed; padding: 1rem; }
+.profile-reminder-strip.has-overdue { border-inline-start-color: var(--danger); }
+.profile-reminder-heading { display: flex; align-items: center; gap: 0.75rem; }
+.profile-reminder-heading h2 { color: var(--ink); font-size: 1rem; font-weight: 850; }
+.profile-reminder-heading p { margin-top: 0.15rem; color: #69716b; font-size: 0.74rem; line-height: 1.45; }
+.profile-reminder-heading > a { flex: none; color: var(--forest); font-size: 0.76rem; font-weight: 850; text-decoration: underline; text-underline-offset: 0.2rem; }
+.profile-reminder-icon { display: grid; width: 2.5rem; height: 2.5rem; flex: none; place-items: center; border-radius: 50%; background: #dce9d8; color: var(--forest); }
+.profile-reminder-icon svg { width: 1.25rem; height: 1.25rem; }
+.profile-reminder-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.65rem; margin-top: 0.85rem; }
+.profile-reminder-item { min-width: 0; border: 1px solid #d8dfd3; border-radius: 0.4rem; background: var(--paper); padding: 0.75rem; }
+.profile-reminder-item strong, .profile-reminder-item time { display: block; overflow-wrap: anywhere; }
+.profile-reminder-item strong { margin-top: 0.4rem; color: var(--ink); font-size: 0.85rem; }
+.profile-reminder-item time { margin-top: 0.25rem; color: #69706b; font-size: 0.72rem; font-weight: 700; }
+.profile-reminder-item p { display: -webkit-box; overflow: hidden; margin-top: 0.45rem; color: #6d716c; font-size: 0.72rem; line-height: 1.45; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.profile-reminder-status { display: inline-flex; min-height: 1.65rem; align-items: center; border-radius: 999px; background: #e5efe2; padding: 0.2rem 0.5rem; color: #326149; font-size: 0.68rem; font-weight: 850; }
+.profile-reminder-item--today .profile-reminder-status { background: #f8ead6; color: #8b5118; }
+.profile-reminder-item--overdue .profile-reminder-status { background: #f6e5e2; color: #8b352e; }
+
 .profile-layout { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: 1.25rem; margin-top: 1.25rem; align-items: start; }
 .profile-main-column, .profile-side-column { display: grid; gap: 1.25rem; }
 .profile-side-column { position: sticky; top: 1rem; }
@@ -666,6 +684,9 @@ html[dir="rtl"] .quick-action svg { transform: scaleX(-1); }
   .profile-hero { align-items: flex-start; flex-wrap: wrap; gap: 0.9rem; }
   .animal-type-mark { width: 4rem; height: 4rem; font-size: 2rem; }
   .profile-edit-button { width: 100%; justify-content: center; }
+  .profile-reminder-heading { align-items: flex-start; flex-wrap: wrap; }
+  .profile-reminder-heading > a { width: 100%; padding-inline-start: 3.25rem; }
+  .profile-reminder-list { grid-template-columns: 1fr; }
   .profile-info-grid { grid-template-columns: 1fr; }
   .profile-info-grid div:nth-child(odd), .profile-info-grid div:nth-child(even) { border-inline-start: 0; padding-inline: 0; }
   .section-heading-row { align-items: flex-start; flex-direction: column; }

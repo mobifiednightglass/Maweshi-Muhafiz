@@ -83,6 +83,20 @@
         </button>
       </section>
 
+      <section id="profile-reminders" class="profile-reminder-strip hidden" aria-labelledby="profile-reminders-heading" aria-live="polite">
+        <div class="profile-reminder-heading">
+          <span class="profile-reminder-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M7 10V8a5 5 0 0 1 10 0v2c0 3 1.5 4.5 2.5 5.5H4.5C5.5 14.5 7 13 7 10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 19h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <div class="min-w-0 flex-1">
+            <h2 id="profile-reminders-heading" data-i18n="upcomingCare">قریب کی دیکھ بھال</h2>
+            <p data-i18n="upcomingCareHelp">گزری ہوئی، آج کی اور اگلے 10 دن کی یاد دہانیاں</p>
+          </div>
+          <a id="profile-reminders-link" href="index.html" data-i18n="viewAllReminders">تمام یاد دہانیاں دیکھیں</a>
+        </div>
+        <ul id="profile-reminder-list" class="profile-reminder-list"></ul>
+      </section>
+
       <div class="profile-layout">
         <div class="profile-main-column">
           <section class="profile-section" aria-labelledby="basic-info-heading">
