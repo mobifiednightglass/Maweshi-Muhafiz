@@ -186,7 +186,7 @@ Return this exact JSON structure:
 # Google Gemini implementation
 # ---------------------------------------------------------------------------
 
-_DEFAULT_MODEL = "gemini-3.6-flash"
+_DEFAULT_MODEL = "gemini-3.5-flash-lite"
 
 
 class GeminiVisionProvider(VisionAssessmentProvider):
@@ -197,7 +197,9 @@ class GeminiVisionProvider(VisionAssessmentProvider):
     api_key : str
         Google API key with Gemini access (read from ``GEMINI_API_KEY``).
     model : str
-        Gemini model identifier.  Defaults to ``gemini-2.5-flash``.
+        Gemini model identifier.  Defaults to ``gemini-3.5-flash-lite``
+        (Flash-Lite: same multimodal behaviour as the full Flash model,
+        but a far more generous free-tier daily quota).
     """
 
     def __init__(self, api_key: str, model: str = _DEFAULT_MODEL):

@@ -17,6 +17,7 @@
       statusCompleted: 'مکمل', statusPending: 'جاری ہے', statusFailed: 'مکمل نہیں ہوا', statusUnknown: 'حالت درج نہیں', urgencyLow: 'کم فوری توجہ', urgencyMedium: 'توجہ درکار', urgencyHigh: 'فوری توجہ',
       possibleConditions: 'ممکنہ حالتیں', noConditions: 'کوئی ممکنہ حالت درج نہیں', pendingAssessment: 'معائنہ مکمل ہو رہا ہے', failedAssessment: 'معائنہ مکمل نہیں ہو سکا',
       reportedSymptoms: 'بتائی گئی علامات', noSymptoms: 'کوئی علامات درج نہیں', viewResult: 'نتیجہ دیکھیں', dateUnavailable: 'تاریخ درج نہیں',
+      selectCompare: 'موازنے کے لیے منتخب کریں', selectedCompare: 'موازنے کے لیے منتخب', compareLimit: 'موازنے کے لیے صرف دو معائنے منتخب کیے جا سکتے ہیں۔', compareReady: 'دو معائنے منتخب ہو گئے', compareReadyHelp: 'دونوں ریکارڈ ساتھ دیکھنے کے لیے آگے بڑھیں۔', compareSelected: 'منتخب معائنوں کا موازنہ کریں',
       footerCare: 'مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔', footerDisclaimer: 'AI کی رائے ابتدائی رہنمائی ہے، ڈاکٹر کا متبادل نہیں۔'
     },
     en: {
@@ -31,6 +32,7 @@
       statusCompleted: 'Completed', statusPending: 'Pending', statusFailed: 'Not completed', statusUnknown: 'Status unavailable', urgencyLow: 'Low urgency', urgencyMedium: 'Needs attention', urgencyHigh: 'Urgent attention',
       possibleConditions: 'Possible conditions', noConditions: 'No possible condition recorded', pendingAssessment: 'Assessment is being completed', failedAssessment: 'Assessment could not be completed',
       reportedSymptoms: 'Reported symptoms', noSymptoms: 'No symptoms recorded', viewResult: 'View Result', dateUnavailable: 'Date not recorded',
+      selectCompare: 'Select to compare', selectedCompare: 'Selected for comparison', compareLimit: 'Only two assessments can be selected for comparison.', compareReady: 'Two assessments selected', compareReadyHelp: 'Continue to view both records together.', compareSelected: 'Compare Selected',
       footerCare: 'Built to support better livestock care.', footerDisclaimer: 'AI guidance is preliminary and does not replace a veterinarian.'
     }
   };
@@ -39,7 +41,8 @@
     loading: document.querySelector('#history-loading'), error: document.querySelector('#history-error'), page: document.querySelector('#history-page'), empty: document.querySelector('#history-empty'),
     content: document.querySelector('#history-content'), errorTitle: document.querySelector('#history-error-title'), errorMessage: document.querySelector('#history-error-message'), retry: document.querySelector('#retry-history'),
     profileLink: document.querySelector('#profile-link'), errorProfileLink: document.querySelector('#error-profile-link'), startLink: document.querySelector('#start-assessment-link'),
-    animalIcon: document.querySelector('#animal-icon'), animalSummary: document.querySelector('#animal-summary'), list: document.querySelector('#history-list'), filterEmpty: document.querySelector('#filter-empty'), malformedNotice: document.querySelector('#malformed-notice')
+    animalIcon: document.querySelector('#animal-icon'), animalSummary: document.querySelector('#animal-summary'), list: document.querySelector('#history-list'), filterEmpty: document.querySelector('#filter-empty'), malformedNotice: document.querySelector('#malformed-notice'),
+    compareTray: document.querySelector('#compare-tray'), compareButton: document.querySelector('#compare-selected')
   };
 
   let language = window.MaweshiI18n.getLanguage();
@@ -49,6 +52,7 @@
   let state = 'loading';
   let errorKind = null;
   let skippedRecords = 0;
+  let selectedIds = [];
 
   function t(key) { return copy[language][key] || key; }
 
@@ -137,9 +141,47 @@
     const heading = document.createElement('h3'); heading.textContent = conditionSummary(record, status); heading.dir = 'auto';
     const symptomsLabel = document.createElement('p'); symptomsLabel.className = 'entry-symptoms-label'; symptomsLabel.textContent = t('reportedSymptoms');
     const symptoms = document.createElement('p'); symptoms.className = 'entry-symptoms'; symptoms.textContent = typeof record.symptoms === 'string' && record.symptoms.trim() ? record.symptoms : t('noSymptoms'); symptoms.dir = 'auto';
+    const recordId = String(record.id);
+    const selected = selectedIds.includes(recordId);
+    const selectionFull = selectedIds.length >= 2;
+    entry.classList.toggle('is-selected', selected);
+
+    const actions = document.createElement('div'); actions.className = 'entry-actions';
     const resultLink = document.createElement('a'); resultLink.className = 'entry-result-link'; resultLink.href = `assessment-result.html?id=${encodeURIComponent(record.id)}`; resultLink.textContent = t('viewResult');
-    entry.append(top, heading, symptomsLabel, symptoms, resultLink);
+    const compareButton = document.createElement('button');
+    compareButton.type = 'button';
+    compareButton.className = 'entry-compare-button';
+    compareButton.dataset.compareId = recordId;
+    compareButton.setAttribute('aria-pressed', String(selected));
+    compareButton.disabled = selectionFull && !selected;
+    if (compareButton.disabled) compareButton.title = t('compareLimit');
+    compareButton.innerHTML = `<span class="compare-check" aria-hidden="true">${selected ? '✓' : ''}</span><span>${t(selected ? 'selectedCompare' : 'selectCompare')}</span>`;
+    actions.append(resultLink, compareButton);
+    entry.append(top, heading, symptomsLabel, symptoms, actions);
     return entry;
+  }
+
+  function renderCompareTray() {
+    const ready = selectedIds.length === 2 && selectedIds.every((id) => assessments.some((record) => String(record.id) === id));
+    el.compareTray.classList.toggle('hidden', !ready);
+    el.compareButton.disabled = !ready;
+  }
+
+  function toggleComparison(recordId) {
+    if (!assessments.some((record) => String(record.id) === recordId)) return;
+    if (selectedIds.includes(recordId)) selectedIds = selectedIds.filter((id) => id !== recordId);
+    else if (selectedIds.length < 2) selectedIds = [...selectedIds, recordId];
+    renderHistory();
+  }
+
+  function compareSelected() {
+    const selectedRecords = selectedIds
+      .map((id) => assessments.find((record) => String(record.id) === id))
+      .filter(Boolean)
+      .sort((a, b) => safeTime(a.created_at) - safeTime(b.created_at));
+    if (selectedRecords.length !== 2 || !animalId) return;
+    const query = new URLSearchParams({ id: animalId, assessment1: String(selectedRecords[0].id), assessment2: String(selectedRecords[1].id) });
+    window.location.assign(`assessment-compare.html?${query.toString()}`);
   }
 
   function renderHeader() {
@@ -151,6 +193,7 @@
 
   function renderHistory() {
     if (state === 'loading') return;
+    if (state !== 'content') el.compareTray.classList.add('hidden');
     el.loading.classList.add('hidden');
     el.error.classList.toggle('hidden', state !== 'error');
     el.page.classList.toggle('hidden', state === 'error');
@@ -179,6 +222,7 @@
     el.list.classList.toggle('hidden', visible.length === 0);
     el.filterEmpty.classList.toggle('hidden', visible.length !== 0);
     el.malformedNotice.classList.toggle('hidden', skippedRecords === 0);
+    renderCompareTray();
   }
 
   async function loadHistory() {
@@ -193,6 +237,7 @@
       if (!Array.isArray(data)) { state = 'error'; errorKind = 'malformed'; renderHistory(); return; }
       skippedRecords = data.filter((record) => !validRecord(record)).length;
       assessments = data.filter(validRecord).sort((a, b) => safeTime(b.created_at) - safeTime(a.created_at));
+      selectedIds = selectedIds.filter((id) => assessments.some((record) => String(record.id) === id));
       if (data.length > 0 && assessments.length === 0) { state = 'error'; errorKind = 'malformed'; }
       else state = assessments.length ? 'content' : 'empty';
       renderHistory();
@@ -212,8 +257,11 @@
     if (languageButton) applyLanguage(languageButton.dataset.language);
     const filterButton = event.target.closest('[data-history-filter]');
     if (filterButton) { currentFilter = filterButton.dataset.historyFilter; renderHistory(); }
+    const compareControl = event.target.closest('[data-compare-id]');
+    if (compareControl && !compareControl.disabled) toggleComparison(compareControl.dataset.compareId);
   });
   el.retry.addEventListener('click', loadHistory);
+  el.compareButton.addEventListener('click', compareSelected);
 
   setProfileLinks();
   applyLanguage(language);

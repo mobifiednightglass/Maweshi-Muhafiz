@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="Compare two real animal health assessments in Maweshi Muhafiz.">
+  <title>Maweshi Muhafiz | صحت کے معائنوں کا موازنہ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', leaf: '#6d8d72', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/assessment-compare.css">
+</head>
+<body class="min-h-screen bg-cream text-ink antialiased">
+  <a class="skip-link" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="border-b border-sand bg-paper">
+    <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none"><path d="M11 13c3.7 0 6.3 1.8 9 5 2.7-3.2 5.3-5 9-5v7.5c0 6-3.8 10.5-9 10.5s-9-4.5-9-10.5V13Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 14 8 10m19 4 5-4M16 23h.01M24 23h.01M17 27c1.8 1.3 4.2 1.3 6 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span>
+          <span class="block text-[1.05rem] font-bold leading-tight tracking-tight text-forest">Maweshi Muhafiz</span>
+          <span class="block text-xs font-medium text-stone-500" lang="ur" dir="rtl">مویشی محافظ</span>
+        </span>
+      </a>
+      <div class="authenticated-nav-actions">
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+        <button type="button" class="logout-button" data-logout data-i18n="logout">لاگ آؤٹ</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="compare-shell">
+    <a id="history-link" href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="backToHistory">صحت کی پچھلی تفصیل پر واپس جائیں</span>
+    </a>
+
+    <section id="compare-loading" class="compare-loading" data-i18n-aria-label="loadingLabel" aria-label="معائنوں کا موازنہ دیکھا جا رہا ہے">
+      <div class="compare-loading-head"></div>
+      <div class="compare-loading-grid"><div></div><div></div></div>
+    </section>
+
+    <section id="compare-error" class="compare-state hidden" aria-live="polite">
+      <span class="compare-state-icon" aria-hidden="true">!</span>
+      <h1 id="compare-error-title"></h1>
+      <p id="compare-error-message"></p>
+      <div class="compare-state-actions">
+        <button id="retry-compare" type="button" class="btn btn-primary" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+        <a id="error-history-link" href="index.html" class="btn btn-secondary" data-i18n="backToHistory">صحت کی پچھلی تفصیل پر واپس جائیں</a>
+      </div>
+    </section>
+
+    <div id="compare-page" class="hidden">
+      <section class="compare-heading" aria-labelledby="compare-title">
+        <p class="section-kicker" data-i18n="comparisonKicker">دو صحت معائنے</p>
+        <h1 id="compare-title" data-i18n="comparisonTitle">صحت کے معائنوں کا موازنہ</h1>
+        <p id="animal-summary" class="animal-summary" dir="auto"></p>
+        <p data-i18n="comparisonSubtitle">وقت کے ساتھ درج کی گئی علامات اور رہنمائی ساتھ دیکھیں۔</p>
+      </section>
+
+      <aside class="comparison-caution" aria-label="اہم وضاحت" data-i18n-aria-label="cautionLabel">
+        <span aria-hidden="true">↔</span>
+        <p data-i18n="noVerdict">یہ دونوں ریکارڈ صرف ساتھ دکھائے گئے ہیں۔ مویشی محافظ نے یہ فیصلہ نہیں کیا کہ حالت بہتر ہوئی یا خراب۔</p>
+      </aside>
+
+      <section id="comparison-grid" class="comparison-grid" aria-label="دو صحت معائنوں کی معلومات" data-i18n-aria-label="comparisonGridLabel"></section>
+    </div>
+  </main>
+
+  <footer class="compare-footer">
+    <p data-i18n="footerCare">مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔</p>
+    <p data-i18n="footerDisclaimer">AI کی رائے ابتدائی رہنمائی ہے، ڈاکٹر کا متبادل نہیں۔</p>
+  </footer>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/assessment-compare.js" defer></script>
+</body>
+</html>

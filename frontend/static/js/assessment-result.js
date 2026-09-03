@@ -16,6 +16,8 @@
       tryAssessmentAgain: 'دوبارہ معائنہ کریں', preliminaryFindings: 'ابتدائی معلومات', possibleConditions: 'ممکنہ بیماریاں',
       conditionsHelp: 'یہ AI کی مدد سے بتائی گئی ممکنہ حالتیں ہیں، حتمی تشخیص نہیں۔', noConditions: 'کوئی ممکنہ بیماری نہیں بتائی گئی۔',
       assessmentDetails: 'معائنے کی تفصیل', explanation: 'وضاحت', aiConfidence: 'AI کی یقین دہانی', keepInMind: 'یہ بات ذہن میں رکھیں',
+      practicalGuidance: 'عملی رہنمائی', safeNextSteps: 'محفوظ اگلے قدم', safeNextStepsHelp: 'یہ احتیاطی قدم معائنے کی فوری توجہ کے مطابق دیے گئے ہیں۔',
+      listenInUrdu: 'اردو میں سنیں', loadingSpeech: 'آواز تیار ہو رہی ہے…', playingSpeech: 'آواز چل رہی ہے…', replayInUrdu: 'دوبارہ اردو میں سنیں', speechUnavailable: 'آواز ابھی نہیں چل سکی۔ دوبارہ کوشش کریں۔',
       farmerReport: 'کسان کی بتائی ہوئی معلومات', reportedSymptoms: 'بتائی گئی علامات', noSymptoms: 'کوئی علامات درج نہیں کی گئیں۔',
       safetyLabel: 'اہم حفاظتی بات', safetyMessage: 'مویشی محافظ AI کی مدد سے ابتدائی صحت جانچ اور ممکنہ بیماریوں کی معلومات دیتا ہے۔ یہ جانوروں کے مستند ڈاکٹر کا متبادل نہیں۔',
       redFlagLabel: 'ہنگامی علامت', redFlagTitle: 'فوری جانوروں کے ڈاکٹر سے رابطہ کریں', redFlagMessage: 'اس معائنے میں ہنگامی توجہ کی علامت سامنے آئی ہے۔', redFlagReasons: 'سامنے آنے والی علامات',
@@ -36,6 +38,8 @@
       tryAssessmentAgain: 'Try assessment again', preliminaryFindings: 'Preliminary findings', possibleConditions: 'Possible Conditions',
       conditionsHelp: 'These are AI-suggested possible conditions, not a confirmed diagnosis.', noConditions: 'No possible conditions were returned.',
       assessmentDetails: 'Assessment details', explanation: 'Explanation', aiConfidence: 'AI confidence', keepInMind: 'What to keep in mind',
+      practicalGuidance: 'Practical guidance', safeNextSteps: 'Safe Next Steps', safeNextStepsHelp: 'These precautionary steps are provided according to the assessment urgency.',
+      listenInUrdu: 'Listen in Urdu', loadingSpeech: 'Preparing audio…', playingSpeech: 'Playing audio…', replayInUrdu: 'Listen again in Urdu', speechUnavailable: 'Audio is unavailable right now. Please try again.',
       farmerReport: 'Farmer report', reportedSymptoms: 'Reported Symptoms', noSymptoms: 'No symptoms were recorded.',
       safetyLabel: 'Important safety information', safetyMessage: 'MaweshiMuhafiz provides AI-assisted early health screening and possible conditions. It does not replace a qualified veterinarian.',
       redFlagLabel: 'Emergency warning', redFlagTitle: 'Contact a veterinarian immediately', redFlagMessage: 'This assessment contains a genuine red-flag warning that needs urgent attention.', redFlagReasons: 'Reasons recorded',
@@ -52,8 +56,10 @@
     content: document.querySelector('#result-content'), errorTitle: document.querySelector('#result-error-title'), errorMessage: document.querySelector('#result-error-message'), retry: document.querySelector('#retry-result'),
     meta: document.querySelector('#assessment-meta'), animalSummary: document.querySelector('#animal-summary'), date: document.querySelector('#assessment-date'), urgency: document.querySelector('#urgency-panel'),
     urgencyIcon: document.querySelector('#urgency-icon'), urgencyLabel: document.querySelector('#urgency-label'), urgencyHeading: document.querySelector('#urgency-heading'), urgencyMessage: document.querySelector('#urgency-message'),
-    conditions: document.querySelector('#conditions-list'), conditionsEmpty: document.querySelector('#conditions-empty'), explanation: document.querySelector('#explanation-text'), confidence: document.querySelector('#confidence-text'), symptoms: document.querySelector('#symptoms-text'),
-    redFlag: document.querySelector('#red-flag-panel'), redFlagReasonsWrap: document.querySelector('#red-flag-reasons-wrap'), redFlagReasons: document.querySelector('#red-flag-reasons'), vetSummaryLink: document.querySelector('#vet-summary-link'), historyLink: document.querySelector('#health-history-link')
+    conditions: document.querySelector('#conditions-list'), conditionsEmpty: document.querySelector('#conditions-empty'), explanation: document.querySelector('#explanation-text'), confidence: document.querySelector('#confidence-text'), confidenceSection: document.querySelector('.confidence-section'), symptoms: document.querySelector('#symptoms-text'),
+    redFlag: document.querySelector('#red-flag-panel'), redFlagReasonsWrap: document.querySelector('#red-flag-reasons-wrap'), redFlagReasons: document.querySelector('#red-flag-reasons'),
+    guidanceSection: document.querySelector('#safe-guidance-section'), guidanceList: document.querySelector('#safe-guidance-list'), speechButton: document.querySelector('#listen-urdu-button'), speechStatus: document.querySelector('#speech-status'),
+    vetSummaryLink: document.querySelector('#vet-summary-link'), historyLink: document.querySelector('#health-history-link')
   };
 
   let language = window.MaweshiI18n.getLanguage();
@@ -61,12 +67,17 @@
   let animal = null;
   let state = 'loading';
   let errorKind = null;
+  let speechAudio = null;
+  let speechUrl = '';
+  let speechState = 'idle';
+  let speechError = false;
 
   function t(key) { return copy[language][key] || key; }
 
   const api = {
     getAssessment: (id) => window.MaweshiAuth.request(`${API_BASE}/api/assessments/${encodeURIComponent(id)}`, { headers: { Accept: 'application/json' } }),
-    getAnimal: (id) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}`, { headers: { Accept: 'application/json' } })
+    getAnimal: (id) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}`, { headers: { Accept: 'application/json' } }),
+    getSpeech: (animalId, id) => window.MaweshiAuth.requestBlob(`${API_BASE}/api/animals/${encodeURIComponent(animalId)}/assessments/${encodeURIComponent(id)}/speech`, { headers: { Accept: 'audio/wav' } })
   };
 
   function setProfileLinks(animalId) {
@@ -97,7 +108,7 @@
 
   function localizedDiagnosis(result) {
     if (language !== 'ur') {
-      return { conditions: result.possible_conditions, explanation: result.explanation, confidence: result.confidence_note };
+      return { conditions: result.possible_conditions, explanation: result.explanation, confidence: result.confidence_note, guidance: validStringList(result.safe_next_steps) };
     }
     const urduConditions = Array.isArray(result.possible_conditions_urdu)
       ? result.possible_conditions_urdu.filter((item) => typeof item === 'string' && item.trim())
@@ -105,8 +116,38 @@
     return {
       conditions: urduConditions.length ? urduConditions : result.possible_conditions,
       explanation: typeof result.explanation_urdu === 'string' && result.explanation_urdu.trim() ? result.explanation_urdu : result.explanation,
-      confidence: typeof result.confidence_note_urdu === 'string' && result.confidence_note_urdu.trim() ? result.confidence_note_urdu : result.confidence_note
+      confidence: typeof result.confidence_note_urdu === 'string' && result.confidence_note_urdu.trim() ? result.confidence_note_urdu : result.confidence_note,
+      guidance: validStringList(result.safe_next_steps_urdu).length ? validStringList(result.safe_next_steps_urdu) : validStringList(result.safe_next_steps)
     };
+  }
+
+  function validStringList(raw) {
+    return Array.isArray(raw) ? raw.filter((item) => typeof item === 'string' && item.trim()) : [];
+  }
+
+  function updateSpeechControl() {
+    const hasUrduSpeech = validStringList(assessment?.diagnosis_result?.safe_next_steps_urdu).length > 0 && Boolean(assessment?.animal_id);
+    el.speechButton.classList.toggle('hidden', !hasUrduSpeech);
+    if (!hasUrduSpeech) {
+      el.speechStatus.textContent = '';
+      return;
+    }
+    el.speechButton.disabled = speechState === 'loading' || speechState === 'playing';
+    el.speechButton.textContent = t(speechState === 'loading' ? 'loadingSpeech' : speechState === 'playing' ? 'playingSpeech' : speechState === 'ready' ? 'replayInUrdu' : 'listenInUrdu');
+    el.speechStatus.textContent = speechError ? t('speechUnavailable') : '';
+    el.speechStatus.classList.toggle('speech-status--error', speechError);
+  }
+
+  function renderGuidance(localized) {
+    el.guidanceList.replaceChildren();
+    localized.guidance.forEach((step) => {
+      const item = document.createElement('li');
+      item.textContent = step;
+      item.dir = 'auto';
+      el.guidanceList.appendChild(item);
+    });
+    el.guidanceSection.classList.toggle('hidden', localized.guidance.length === 0);
+    updateSpeechControl();
   }
 
   function renderRedFlag() {
@@ -154,6 +195,7 @@
   function renderCompleted() {
     const result = assessment.diagnosis_result;
     const localized = localizedDiagnosis(result);
+    el.confidenceSection.before(el.guidanceSection);
     const urgency = result.urgency_level;
     const urgencyText = urgencyCopy(urgency);
     el.urgency.className = `urgency-panel urgency-panel--${urgency}`;
@@ -174,8 +216,36 @@
     el.conditions.classList.toggle('hidden', conditionItems.length === 0);
     el.conditionsEmpty.classList.toggle('hidden', conditionItems.length !== 0);
     el.explanation.textContent = localized.explanation;
+    renderGuidance(localized);
     el.confidence.textContent = localized.confidence;
     el.symptoms.textContent = typeof assessment.symptoms === 'string' && assessment.symptoms.trim() ? assessment.symptoms : t('noSymptoms');
+  }
+
+  async function playUrduGuidance() {
+    if (!assessment?.animal_id || !validStringList(assessment?.diagnosis_result?.safe_next_steps_urdu).length) return;
+    speechError = false;
+    try {
+      if (!speechAudio) {
+        speechState = 'loading';
+        updateSpeechControl();
+        const blob = await api.getSpeech(assessment.animal_id, assessmentId);
+        if (!blob || blob.size === 0) throw new Error('Empty speech response');
+        speechUrl = URL.createObjectURL(blob);
+        speechAudio = new Audio(speechUrl);
+        speechAudio.addEventListener('ended', () => { speechState = 'ready'; updateSpeechControl(); });
+        speechAudio.addEventListener('error', () => { speechState = 'idle'; speechError = true; updateSpeechControl(); });
+      } else {
+        speechAudio.currentTime = 0;
+      }
+      speechState = 'playing';
+      updateSpeechControl();
+      await speechAudio.play();
+    } catch (error) {
+      console.error('Urdu guidance audio could not be played.', error);
+      speechState = 'idle';
+      speechError = true;
+      updateSpeechControl();
+    }
   }
 
   function render() {
@@ -190,7 +260,14 @@
       return;
     }
     if (state === 'pending') { renderRedFlag(); el.pending.classList.remove('hidden'); return; }
-    if (state === 'failed') { renderRedFlag(); el.failed.classList.remove('hidden'); return; }
+    if (state === 'failed') {
+      renderRedFlag();
+      const result = assessment.diagnosis_result && typeof assessment.diagnosis_result === 'object' ? assessment.diagnosis_result : {};
+      el.failed.querySelector('.result-state-actions').before(el.guidanceSection);
+      renderGuidance(localizedDiagnosis(result));
+      el.failed.classList.remove('hidden');
+      return;
+    }
     renderCompleted();
     el.content.classList.remove('hidden');
   }
@@ -232,6 +309,8 @@
     if (languageButton) applyLanguage(languageButton.dataset.language);
   });
   el.retry.addEventListener('click', loadAssessment);
+  el.speechButton.addEventListener('click', playUrduGuidance);
+  window.addEventListener('beforeunload', () => { if (speechUrl) URL.revokeObjectURL(speechUrl); });
 
   setProfileLinks(null);
   applyLanguage(language);

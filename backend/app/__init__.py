@@ -29,6 +29,8 @@ def _register_blueprints(app):
     from app.routes.health_assessments import health_assessments_bp
     from app.routes.vet_summary import vet_summary_bp
     from app.routes.reminders import reminders_bp
+    from app.routes.passport import passport_bp
+    from app.routes.insights import insights_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(animals_bp, url_prefix="/api")
@@ -36,6 +38,8 @@ def _register_blueprints(app):
     app.register_blueprint(health_assessments_bp, url_prefix="/api")
     app.register_blueprint(vet_summary_bp, url_prefix="/api")
     app.register_blueprint(reminders_bp, url_prefix="/api")
+    app.register_blueprint(passport_bp, url_prefix="/api")
+    app.register_blueprint(insights_bp, url_prefix="/api")
 
 
 def _wire_dependencies(app):
@@ -50,6 +54,13 @@ def _wire_dependencies(app):
     """
     from app.services.animal_service import AnimalService
     from app.services.auth_service import AuthService
+
+    # Fail fast with a clear message before any MongoClient is built.
+    # Testing mode is exempt — it uses in-memory repositories.
+    if not app.config.get("TESTING"):
+        from app.config import require_mongodb_uri
+
+        require_mongodb_uri(app.config)
 
     if app.config.get("TESTING"):
         from app.repositories.in_memory import InMemoryAnimalRepository
@@ -113,6 +124,41 @@ def _wire_dependencies(app):
     app.image_quality_service = ImageQualityService()
     app.red_flag_service = RedFlagService()
 
+    # -- Voice (Urdu speech-to-text / text-to-speech) dependencies ----------
+    from app.services.voice_service import VoiceService
+
+    if app.config.get("TESTING"):
+        from app.services.voice_service import TESTING_TRANSCRIPTION
+
+        class _StubSpeechToTextProvider:
+            def transcribe(self, audio_bytes, mime_type):
+                return TESTING_TRANSCRIPTION
+
+        class _StubTextToSpeechProvider:
+            def synthesize_speech(self, text):
+                return b"\x00\x00" * 2400  # 0.1 s of silence at 24 kHz 16-bit
+
+        voice_service = VoiceService(
+            _StubSpeechToTextProvider(),
+            _StubTextToSpeechProvider(),
+        )
+    else:
+        from app.services.voice_service import (
+            GeminiSpeechToTextProvider,
+            GeminiTextToSpeechProvider,
+        )
+
+        voice_service = VoiceService(
+            stt_provider=GeminiSpeechToTextProvider(
+                api_key=app.config["GEMINI_API_KEY"],
+            ),
+            tts_provider=GeminiTextToSpeechProvider(
+                api_key=app.config["GEMINI_API_KEY"],
+            ),
+        )
+
+    app.voice_service = voice_service
+
     # -- Reminder dependencies ---------------------------------------------
     from app.services.reminder_service import ReminderService
 
@@ -130,3 +176,21 @@ def _wire_dependencies(app):
 
     app.reminder_repo = reminder_repo
     app.reminder_service = ReminderService(reminder_repo)
+
+    # -- Passport dependencies ----------------------------------------------
+    from app.services.passport_service import PassportService
+
+    app.passport_service = PassportService(
+        animal_service=app.animal_service,
+        health_assessment_repo=health_assessment_repo,
+        vet_summary_repo=vet_summary_repo,
+        reminder_repo=reminder_repo,
+    )
+
+    # -- Insight dependencies ------------------------------------------------
+    from app.services.insight_service import InsightService
+
+    app.insight_service = InsightService(
+        animal_service=app.animal_service,
+        health_assessment_repo=health_assessment_repo,
+    )

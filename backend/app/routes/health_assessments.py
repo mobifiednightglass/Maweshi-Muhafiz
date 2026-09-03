@@ -4,16 +4,23 @@ Health-assessment routes — Flask Blueprint registered under /api.
 Endpoints
 ---------
 POST   /api/animals/<animal_id>/assessments   — create assessment (multipart)
+POST   /api/animals/<animal_id>/symptoms/voice — create assessment from an
+                                                  Urdu voice note (multipart)
 GET    /api/animals/<animal_id>/assessments   — list assessments for animal
+GET    /api/animals/<animal_id>/assessments/compare — compare two assessments
 GET    /api/assessments/<assessment_id>       — get single assessment (ownership verified)
+GET    /api/animals/<animal_id>/assessments/<assessment_id>/speech
+                                             — Urdu safe-next-steps guidance as
+                                               spoken WAV audio (ownership verified)
 GET    /api/images/<image_id>                 — get raw image bytes (ownership verified)
 
 All responses follow a consistent envelope:
     Success → {"success": true,  "message": "...", "data": ...}
     Error   → {"success": false, "message": "...", "error":  "..."}
 
-Exception: GET /images/<image_id> returns raw binary bytes with the
-appropriate Content-Type header instead of the JSON envelope.
+Exception: GET /images/<image_id> and GET /assessments/<id>/speech return
+raw binary bytes with the appropriate Content-Type header instead of the
+JSON envelope.
 """
 
 import logging
@@ -22,6 +29,13 @@ from flask import Blueprint, Response, current_app, g, jsonify, request
 
 from app.services.animal_service import AnimalNotFoundError
 from app.services.image_storage import ImageValidationError
+from app.services.next_steps_service import build_safe_next_steps
+from app.services.voice_service import (
+    AudioFormatError,
+    NoSpeechDetectedError,
+    SpeechSynthesisError,
+    TranscriptionError,
+)
 from app.utils.auth_middleware import require_auth
 
 health_assessments_bp = Blueprint("health_assessments", __name__)
@@ -46,45 +60,35 @@ def _error(message, error_detail=None, status=400):
     return jsonify(body), status
 
 
-# ---------------------------------------------------------------------------
-# POST /animals/<animal_id>/assessments
-# ---------------------------------------------------------------------------
+def _verify_animal(animal_id):
+    """Verify the animal exists and belongs to the current user.
 
-@health_assessments_bp.route(
-    "/animals/<animal_id>/assessments", methods=["POST"],
-)
-@require_auth
-def create_assessment(animal_id):
-    """Create a health assessment from an uploaded image + symptoms text.
-
-    Accepts ``multipart/form-data`` with:
-      - ``image``   — file field (required)
-      - ``symptoms`` — text field (required)
+    Returns an error response when verification fails, or ``None`` when the
+    caller may proceed.
     """
-
-    # -- 1. Verify the animal exists ----------------------------------------
     try:
         current_app.animal_service.get_by_id(animal_id, g.user_id)
+        return None
     except AnimalNotFoundError:
-        return _error(
-            f"Animal with id {animal_id} not found.",
-            status=404,
-        )
+        return _error(f"Animal with id {animal_id} not found.", status=404)
     except Exception:
         logger.exception("Unexpected error verifying animal %s", animal_id)
         return _error("An unexpected error occurred.", status=500)
 
-    # -- 2. Extract form fields ---------------------------------------------
-    symptoms = request.form.get("symptoms", "").strip()
-    if not symptoms:
-        return _error("'symptoms' field is required and must not be empty.", status=400)
 
-    image_file = request.files.get("image")
-    if image_file is None or image_file.filename == "":
-        return _error("'image' file field is required.", status=400)
+def _run_assessment_pipeline(animal_id, symptoms, image_file):
+    """Run the shared assessment pipeline for the text and voice endpoints.
 
-    # -- 3. Validate symptoms via validate_assessment_data ------------------
-    # Animal existence was already verified above, so no animal_repo needed.
+    Validates the symptoms and image, stores the image, creates a pending
+    assessment record, runs the AI assessment, attaches safe-next-steps
+    guidance, and persists the final record.
+
+    Returns ``(record, None)`` on success, or ``(None, error_response)``
+    when a client error (validation / image quality) prevents the
+    assessment from being created.
+    """
+    # -- 1. Validate symptoms via validate_assessment_data ------------------
+    # Animal existence was already verified by the caller.
     from app.services.health_validation import validate_assessment_data
 
     validation_payload = {
@@ -93,15 +97,15 @@ def create_assessment(animal_id):
     }
     errors = validate_assessment_data(validation_payload)
     if errors:
-        return _error("Validation failed.", error_detail=errors, status=400)
+        return None, _error("Validation failed.", error_detail=errors, status=400)
 
-    # -- 4. Check image quality BEFORE saving --------------------------------
+    # -- 2. Check image quality BEFORE saving --------------------------------
     try:
         image_data = image_file.stream.read()
         quality_result = current_app.image_quality_service.check_quality(image_data)
 
         if not quality_result["is_acceptable"]:
-            return _error(
+            return None, _error(
                 "Image quality check failed.",
                 error_detail=quality_result["issues"],
                 status=400,
@@ -111,9 +115,27 @@ def create_assessment(animal_id):
         image_file.stream.seek(0)
     except Exception:
         logger.exception("Unexpected error during image quality check for animal %s", animal_id)
-        return _error("An unexpected error occurred while checking image quality.", status=500)
+        return None, _error("An unexpected error occurred while checking image quality.", status=500)
+
+    # -- 3. Save the image via ImageStorageService -------------------------
+    # -- 4b. Gemini-based blur check (second gate) ---------------------------
+    try:
+        is_blurry = current_app.vision_provider.check_blur(
+            image_data, image_file.content_type,
+        )
+        if is_blurry:
+            return _error(
+                "Image is too blurry to analyze. Please upload a clearer photo.",
+                status=400,
+            )
+    except Exception:
+        # Don't block the request if the blur pre-check itself errors —
+        # let the full assessment handle quality downstream.
+        logger.exception("Unexpected error during Gemini blur check for animal %s", animal_id)
+
 
     # -- 5. Save the image via ImageStorageService --------------------------
+
     try:
         file_id = current_app.image_storage_service.save_image(
             file_stream=image_file.stream,
@@ -121,17 +143,17 @@ def create_assessment(animal_id):
             content_type=image_file.content_type,
         )
     except ImageValidationError as exc:
-        return _error("Image validation failed.", error_detail=exc.errors, status=400)
+        return None, _error("Image validation failed.", error_detail=exc.errors, status=400)
     except Exception:
         logger.exception("Unexpected error saving image for animal %s", animal_id)
-        return _error("An unexpected error occurred while storing the image.", status=500)
+        return None, _error("An unexpected error occurred while storing the image.", status=500)
 
-    # -- 6. Run red-flag keyword check on symptoms -------------------------
+    # -- 4. Run red-flag keyword check on symptoms -------------------------
     red_flag_result = current_app.red_flag_service.check_red_flags(symptoms)
     keyword_matched = red_flag_result["is_red_flag"]
     matched_keywords = red_flag_result["matched_keywords"]
 
-    # -- 7. Create a pending HealthAssessment record ------------------------
+    # -- 5. Create a pending HealthAssessment record ------------------------
     try:
         record = current_app.health_assessment_repo.create({
             "animal_id": animal_id,
@@ -143,9 +165,9 @@ def create_assessment(animal_id):
         })
     except Exception:
         logger.exception("Unexpected error creating assessment record")
-        return _error("An unexpected error occurred.", status=500)
+        return None, _error("An unexpected error occurred.", status=500)
 
-    # -- 8. Run the AI assessment -------------------------------------------
+    # -- 6. Run the AI assessment -------------------------------------------
     try:
         diagnosis_result = current_app.health_assessment_service.run_assessment(
             image_bytes=image_data,
@@ -191,6 +213,7 @@ def create_assessment(animal_id):
         )
 
     # -- 9. Determine final status and red-flag state ----------------------
+    # -- 7. Determine final status and red-flag state ----------------------
     if diagnosis_result is None:
         status_value = "failed"
         diagnosis_result = {
@@ -217,10 +240,19 @@ def create_assessment(animal_id):
     # Combine keyword matches with AI urgency to determine final red-flag state
     ai_urgency_high = diagnosis_result.get("urgency_level") == "high"
     final_is_red_flag = keyword_matched or ai_urgency_high
-    print(f"[DEBUG] keyword_matched={keyword_matched}, ai_urgency_high={ai_urgency_high}, urgency_level={diagnosis_result.get('urgency_level')!r}, final={final_is_red_flag}", flush=True)
     red_flag_reasons = list(matched_keywords)
     if ai_urgency_high:
         red_flag_reasons.append("AI assessed urgency as high")
+
+    # -- 8. Attach server-generated safe-next-steps guidance ----------------
+    # Generated on the server (not by the AI) so the farmer always receives
+    # safe handling advice, even when the AI assessment failed or fell back.
+    diagnosis_result.update(
+        build_safe_next_steps(
+            urgency_level=diagnosis_result.get("urgency_level"),
+            is_red_flag=final_is_red_flag,
+        )
+    )
 
     try:
         updated = current_app.health_assessment_repo.update(
@@ -246,10 +278,125 @@ def create_assessment(animal_id):
         record["is_red_flag"] = final_is_red_flag
         record["red_flag_reasons"] = red_flag_reasons
 
+    return record, None
+
+
+# ---------------------------------------------------------------------------
+# POST /animals/<animal_id>/assessments
+# ---------------------------------------------------------------------------
+
+@health_assessments_bp.route(
+    "/animals/<animal_id>/assessments", methods=["POST"],
+)
+@require_auth
+def create_assessment(animal_id):
+    """Create a health assessment from an uploaded image + symptoms text.
+
+    Accepts ``multipart/form-data`` with:
+      - ``image``   — file field (required)
+      - ``symptoms`` — text field (required)
+    """
+
+    # -- 1. Verify the animal exists ----------------------------------------
+    error = _verify_animal(animal_id)
+    if error:
+        return error
+
+    # -- 2. Extract form fields ---------------------------------------------
+    symptoms = request.form.get("symptoms", "").strip()
+    if not symptoms:
+        return _error("'symptoms' field is required and must not be empty.", status=400)
+
+    image_file = request.files.get("image")
+    if image_file is None or image_file.filename == "":
+        return _error("'image' file field is required.", status=400)
+
+    # -- 3. Run the shared assessment pipeline -------------------------------
+    record, pipeline_error = _run_assessment_pipeline(animal_id, symptoms, image_file)
+    if pipeline_error:
+        return pipeline_error
+
     # Always return 200 — fallback is a valid safe response, not a request error.
     return _success(
         data=record,
         message="Health assessment created successfully.",
+        status=200,
+    )
+
+
+# ---------------------------------------------------------------------------
+# POST /animals/<animal_id>/symptoms/voice
+# ---------------------------------------------------------------------------
+
+@health_assessments_bp.route(
+    "/animals/<animal_id>/symptoms/voice", methods=["POST"],
+)
+@require_auth
+def create_voice_assessment(animal_id):
+    """Create a health assessment from an Urdu voice note + photo.
+
+    Accepts ``multipart/form-data`` with:
+      - ``audio`` — file field (required): the farmer describing the
+        animal's symptoms in Urdu (e.g. a WhatsApp voice note).
+      - ``image`` — file field (required): a photo of the animal.
+
+    The audio is transcribed to Urdu text, which feeds into the same
+    assessment pipeline as typed symptoms.  The response includes both the
+    transcript and the full assessment record.
+    """
+
+    # -- 1. Verify the animal exists ----------------------------------------
+    error = _verify_animal(animal_id)
+    if error:
+        return error
+
+    # -- 2. Extract file fields ----------------------------------------------
+    audio_file = request.files.get("audio")
+    if audio_file is None or audio_file.filename == "":
+        return _error("'audio' file field is required.", status=400)
+
+    image_file = request.files.get("image")
+    if image_file is None or image_file.filename == "":
+        return _error("'image' file field is required.", status=400)
+
+    # -- 3. Transcribe the Urdu voice note into symptom text ------------------
+    try:
+        audio_bytes = audio_file.stream.read()
+        transcribed_symptoms = current_app.voice_service.transcribe_urdu_audio(
+            audio_bytes=audio_bytes,
+            filename=audio_file.filename,
+            content_type=audio_file.content_type,
+        )
+    except NoSpeechDetectedError:
+        return _error(
+            "No understandable speech was detected in the audio. "
+            "Please try recording the symptoms again.",
+            status=400,
+        )
+    except AudioFormatError as exc:
+        return _error("Unsupported audio format.", error_detail=str(exc), status=400)
+    except TranscriptionError as exc:
+        logger.exception("Speech transcription failed for animal %s", animal_id)
+        return _error(
+            "Speech transcription is currently unavailable. "
+            "Please try again shortly.",
+            error_detail=str(exc),
+            status=502,
+        )
+
+    # -- 4. Feed the transcript into the shared assessment pipeline ------------
+    record, pipeline_error = _run_assessment_pipeline(
+        animal_id, transcribed_symptoms, image_file,
+    )
+    if pipeline_error:
+        return pipeline_error
+
+    return _success(
+        data={
+            "transcribed_symptoms": transcribed_symptoms,
+            "assessment": record,
+        },
+        message="Voice symptoms transcribed and assessed successfully.",
         status=200,
     )
 
@@ -266,16 +413,9 @@ def list_assessments(animal_id):
     """List all health assessments for a given animal."""
 
     # Verify the animal exists first
-    try:
-            current_app.animal_service.get_by_id(animal_id, g.user_id)
-    except AnimalNotFoundError:
-        return _error(
-            f"Animal with id {animal_id} not found.",
-            status=404,
-        )
-    except Exception:
-        logger.exception("Unexpected error verifying animal %s", animal_id)
-        return _error("An unexpected error occurred.", status=500)
+    error = _verify_animal(animal_id)
+    if error:
+        return error
 
     try:
         assessments = current_app.health_assessment_repo.get_by_animal_id(animal_id)
@@ -288,6 +428,64 @@ def list_assessments(animal_id):
     return _success(
         data=assessments,
         message="Assessments retrieved successfully.",
+    )
+
+
+# ---------------------------------------------------------------------------
+# GET /animals/<animal_id>/assessments/compare
+# ---------------------------------------------------------------------------
+
+@health_assessments_bp.route(
+    "/animals/<animal_id>/assessments/compare",
+    methods=["GET"],
+)
+@require_auth
+def compare_assessments(animal_id):
+    """Return two assessments of one animal side by side.
+
+    Query parameters:
+      - ``assessment_id_1`` — id of the first (e.g. "before") assessment
+      - ``assessment_id_2`` — id of the second (e.g. "after") assessment
+    """
+
+    # -- 1. Verify the animal exists and belongs to the user ----------------
+    error = _verify_animal(animal_id)
+    if error:
+        return error
+
+    # -- 2. Extract required query parameters -------------------------------
+    id_1 = request.args.get("assessment_id_1", "").strip()
+    id_2 = request.args.get("assessment_id_2", "").strip()
+    if not id_1 or not id_2:
+        return _error(
+            "Both 'assessment_id_1' and 'assessment_id_2' query "
+            "parameters are required.",
+            status=400,
+        )
+
+    # -- 3. Fetch both assessments ------------------------------------------
+    try:
+        assessment_1 = current_app.health_assessment_repo.get_by_id(id_1)
+        assessment_2 = current_app.health_assessment_repo.get_by_id(id_2)
+    except Exception:
+        logger.exception(
+            "Unexpected error fetching assessments %s and %s", id_1, id_2,
+        )
+        return _error("An unexpected error occurred.", status=500)
+
+    # -- 4. Both must exist and belong to the animal in the URL -------------
+    # 404 (not 403) for missing/mismatched assessments hides existence from
+    # non-owners, consistent with the rest of this module.
+    for record, assessment_id in ((assessment_1, id_1), (assessment_2, id_2)):
+        if record is None or str(record.get("animal_id")) != str(animal_id):
+            return _error(
+                f"Assessment with id {assessment_id} not found.",
+                status=404,
+            )
+
+    return _success(
+        data={"assessment_1": assessment_1, "assessment_2": assessment_2},
+        message="Assessment comparison retrieved successfully.",
     )
 
 
@@ -331,6 +529,75 @@ def get_assessment(assessment_id):
         data=record,
         message="Assessment retrieved successfully.",
     )
+
+
+# ---------------------------------------------------------------------------
+# GET /animals/<animal_id>/assessments/<assessment_id>/speech
+# ---------------------------------------------------------------------------
+
+@health_assessments_bp.route(
+    "/animals/<animal_id>/assessments/<assessment_id>/speech",
+    methods=["GET"],
+)
+@require_auth
+def get_assessment_speech(animal_id, assessment_id):
+    """Return the assessment's Urdu safe-next-steps guidance as spoken audio.
+
+    Reads ``safe_next_steps_urdu`` from the assessment's diagnosis result,
+    synthesizes it into Urdu speech via the voice service, and returns the
+    WAV audio bytes with an ``audio/wav`` Content-Type — NOT wrapped in the
+    JSON envelope (same exception as GET /images/<image_id>).
+    """
+
+    # -- 1. Verify the animal exists and belongs to the user ----------------
+    error = _verify_animal(animal_id)
+    if error:
+        return error
+
+    # -- 2. Fetch the assessment ---------------------------------------------
+    try:
+        record = current_app.health_assessment_repo.get_by_id(assessment_id)
+    except Exception:
+        logger.exception("Unexpected error fetching assessment %s", assessment_id)
+        return _error("An unexpected error occurred.", status=500)
+
+    # 404 (not 403) for missing/mismatched assessments hides existence from
+    # non-owners, consistent with the rest of this module.
+    if record is None or str(record.get("animal_id")) != str(animal_id):
+        return _error(
+            f"Assessment with id {assessment_id} not found.",
+            status=404,
+        )
+
+    # -- 3. Extract the Urdu guidance ----------------------------------------
+    diagnosis = record.get("diagnosis_result") or {}
+    steps_urdu = [
+        step.strip()
+        for step in (diagnosis.get("safe_next_steps_urdu") or [])
+        if isinstance(step, str) and step.strip()
+    ]
+    if not steps_urdu:
+        return _error(
+            "Speech guidance is not available for this assessment.",
+            status=404,
+        )
+
+    # -- 4. Synthesize the Urdu speech ---------------------------------------
+    try:
+        wav_bytes = current_app.voice_service.urdu_text_to_speech(
+            "\n".join(steps_urdu)
+        )
+    except SpeechSynthesisError as exc:
+        logger.exception("Speech synthesis failed for assessment %s", assessment_id)
+        return _error(
+            "Speech synthesis is currently unavailable. "
+            "Please try again shortly.",
+            error_detail=str(exc),
+            status=502,
+        )
+
+    # -- 5. Return raw WAV bytes with the correct Content-Type ---------------
+    return Response(wav_bytes, mimetype="audio/wav")
 
 
 # ---------------------------------------------------------------------------

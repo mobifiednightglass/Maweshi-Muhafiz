@@ -29,6 +29,7 @@ _MUTABLE_FIELDS = (
     "weight",
     "color",
     "health_status",
+    "region",
     "notes",
     "user_id",
 )
@@ -80,6 +81,7 @@ class MongoAnimalRepository(AnimalRepository):
             "weight": doc.get("weight"),
             "color": doc.get("color"),
             "health_status": doc.get("health_status"),
+            "region": doc.get("region"),
             "notes": doc.get("notes"),
             "created_at": doc.get("created_at"),
             "updated_at": doc.get("updated_at"),

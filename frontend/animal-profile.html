@@ -100,6 +100,7 @@
               <div><dt data-i18n="age">عمر</dt><dd id="info-age"></dd></div>
               <div><dt data-i18n="weight">وزن</dt><dd id="info-weight"></dd></div>
               <div><dt data-i18n="color">رنگ</dt><dd id="info-color"></dd></div>
+              <div><dt data-i18n="region">علاقہ</dt><dd id="info-region"></dd></div>
               <div><dt data-i18n="healthStatus">موجودہ صحت</dt><dd id="info-health"></dd></div>
               <div><dt data-i18n="recordCreated">ریکارڈ بنایا گیا</dt><dd id="created-date"></dd></div>
             </dl>
@@ -146,15 +147,17 @@
               <span data-i18n="healthHistory">صحت کی پچھلی تفصیل</span>
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
-            <button type="button" class="quick-action quick-action--placeholder" disabled>
-              <span data-i18n="preventiveCare">بیماری سے بچاؤ</span><small data-i18n="comingSoon">جلد آرہا ہے</small>
-            </button>
+            <a id="preventive-care-link" href="index.html" class="quick-action">
+              <span data-i18n="preventiveCare">بیماری سے بچاؤ</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
             <button type="button" class="quick-action quick-action--placeholder" disabled>
               <span data-i18n="followUp">دوبارہ جانچ</span><small data-i18n="comingSoon">جلد آرہا ہے</small>
             </button>
-            <button type="button" class="quick-action quick-action--placeholder" disabled>
-              <span data-i18n="healthPassport">صحت پاسپورٹ</span><small data-i18n="comingSoon">جلد آرہا ہے</small>
-            </button>
+            <a id="health-passport-link" href="index.html" class="quick-action">
+              <span data-i18n="healthPassport">صحت پاسپورٹ</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
           </section>
 
           <section class="danger-section" aria-labelledby="delete-heading">
@@ -186,6 +189,7 @@
         <label class="field"><span data-i18n="ageYears">عمر (سال)</span><input name="age" type="number" min="0" step="0.1" inputmode="decimal"></label>
         <label class="field"><span data-i18n="weightKg">وزن (کلو)</span><input name="weight" type="number" min="0.1" step="0.1" inputmode="decimal"></label>
         <label class="field"><span data-i18n="color">رنگ</span><input name="color" type="text" maxlength="50"></label>
+        <label class="field"><span data-i18n="region">علاقہ</span><input name="region" type="text" maxlength="100" autocomplete="address-level2"></label>
         <label class="field"><span data-i18n="healthStatus">موجودہ صحت</span><select name="health_status"><option value="" data-i18n="notRecorded">درج نہیں</option><option value="Healthy" data-i18n="healthy">صحت مند</option><option value="Needs attention" data-i18n="needsAttention">توجہ درکار</option><option value="Under treatment" data-i18n="underTreatment">علاج جاری ہے</option></select></label>
         <label class="field sm:col-span-2"><span data-i18n="notes">نوٹس</span><textarea name="notes" maxlength="2000" rows="4"></textarea></label>
       </div>
@@ -196,11 +200,60 @@
   <dialog id="assessment-dialog" class="animal-dialog" aria-labelledby="assessment-dialog-title">
     <form id="assessment-form" class="dialog-panel" novalidate>
       <div class="dialog-header"><div><p class="section-kicker" data-i18n="animalHealth">جانور کی صحت</p><h2 id="assessment-dialog-title" class="mt-1 text-2xl font-bold" data-i18n="startAssessment">صحت کا معائنہ شروع کریں</h2></div><button type="button" class="icon-button" data-close-dialog aria-label="فارم بند کریں" data-i18n-aria-label="closeFormLabel"><svg viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
-      <p class="mb-5 text-sm leading-6 text-stone-600" data-i18n="assessmentInstructions">جانور کی صاف تصویر اور نظر آنے والی علامات لکھیں۔</p>
+      <p class="mb-5 text-sm leading-6 text-stone-600" data-i18n="assessmentInstructions">جانور کی صاف تصویر دیں، پھر علامات لکھیں یا اردو میں بولیں۔</p>
       <div id="assessment-alert" class="form-alert hidden" role="alert"></div>
       <div class="grid gap-4">
-        <label class="field"><span><span data-i18n="animalPhoto">جانور کی تصویر</span> <b>*</b></span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" required><small data-i18n="imageHelp">JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB</small></label>
-        <label class="field"><span><span data-i18n="symptoms">علامات</span> <b>*</b></span><textarea name="symptoms" maxlength="5000" rows="5" required data-i18n-placeholder="symptomsPlaceholder" placeholder="مثلاً جانور کھانا نہیں کھا رہا اور سست ہے"></textarea></label>
+        <div class="field">
+          <span><span data-i18n="animalPhoto">جانور کی تصویر</span> <b>*</b></span>
+          <div class="assessment-image-actions">
+            <button type="button" class="assessment-image-option" data-choose-upload>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v5h14v-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span data-i18n="uploadImage">تصویر اپ لوڈ کریں</span>
+            </button>
+            <button type="button" class="assessment-image-option" data-take-photo>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8.5h3l1.5-2h7l1.5 2h3v10H4v-10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+              <span data-i18n="takePhoto">تصویر لیں</span>
+            </button>
+          </div>
+          <input id="assessment-upload-input" class="hidden" type="file" accept="image/jpeg,image/png,image/webp">
+          <input id="assessment-camera-input" class="hidden" type="file" accept="image/*" capture="environment">
+          <p id="assessment-image-selection" class="assessment-image-selection" aria-live="polite" data-i18n="noImageSelected">ابھی کوئی تصویر منتخب نہیں ہوئی۔</p>
+          <small data-i18n="imageHelp">JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB</small>
+        </div>
+        <div class="field">
+          <span data-i18n="symptomMethod">علامات بتانے کا طریقہ</span>
+          <div class="symptom-mode-switch" role="tablist" data-i18n-aria-label="symptomMethod">
+            <button id="typed-mode-tab" type="button" role="tab" class="symptom-mode-option is-active" data-assessment-mode="typed" aria-selected="true" aria-controls="typed-symptoms-panel" data-i18n="typeSymptoms">علامات لکھیں</button>
+            <button id="voice-mode-tab" type="button" role="tab" class="symptom-mode-option" data-assessment-mode="voice" aria-selected="false" aria-controls="voice-symptoms-panel" data-i18n="speakUrdu">اردو میں بولیں</button>
+          </div>
+        </div>
+        <div id="typed-symptoms-panel" role="tabpanel" aria-labelledby="typed-mode-tab">
+          <label class="field"><span><span data-i18n="symptoms">علامات</span> <b>*</b></span><textarea name="symptoms" maxlength="5000" rows="5" required data-i18n-placeholder="symptomsPlaceholder" placeholder="مثلاً جانور کھانا نہیں کھا رہا اور سست ہے"></textarea></label>
+        </div>
+        <section id="voice-symptoms-panel" class="voice-symptoms-panel hidden" role="tabpanel" aria-labelledby="voice-mode-tab" aria-live="polite">
+          <div class="voice-status">
+            <span class="voice-status-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v4m-3 0h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </span>
+            <div class="min-w-0 flex-1">
+              <strong id="voice-state-title">ریکارڈ کرنے کے لیے تیار</strong>
+              <p id="voice-state-help">مائیک دبائیں اور جانور کی علامات صاف آواز میں اردو میں بتائیں۔</p>
+            </div>
+            <span id="voice-timer" class="voice-timer hidden" dir="ltr">00:00</span>
+          </div>
+          <audio id="voice-preview" class="voice-preview hidden" controls preload="metadata" data-i18n-aria-label="recordingPreviewLabel" aria-label="ریکارڈ کی گئی آواز سنیں"></audio>
+          <div class="voice-actions">
+            <button id="start-voice-recording" type="button" class="voice-action voice-action--primary">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <span data-i18n="startRecording">ریکارڈنگ شروع کریں</span>
+            </button>
+            <button id="stop-voice-recording" type="button" class="voice-action voice-action--stop hidden">
+              <span class="stop-square" aria-hidden="true"></span>
+              <span data-i18n="stopRecording">ریکارڈنگ روکیں</span>
+            </button>
+            <button id="rerecord-voice" type="button" class="voice-action hidden" data-i18n="recordAgain">دوبارہ ریکارڈ کریں</button>
+          </div>
+        </section>
       </div>
       <div class="assessment-safety-note" data-i18n="assessmentSafety">یہ ابتدائی AI رہنمائی ہے۔ ہنگامی حالت میں فوراً جانوروں کے ڈاکٹر سے رابطہ کریں۔</div>
       <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><button type="button" class="btn btn-secondary justify-center" data-close-dialog data-i18n="cancel">منسوخ کریں</button><button id="submit-assessment" type="submit" class="btn btn-primary justify-center" data-i18n="beginAssessment">معائنہ کریں</button></div>

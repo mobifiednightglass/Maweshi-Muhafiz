@@ -3,6 +3,7 @@
 
   const API_BASE = 'http://127.0.0.1:5000';
   const ANIMALS_ENDPOINT = `${API_BASE}/api/animals`;
+  const AREA_INSIGHTS_ENDPOINT = `${API_BASE}/api/insights/area`;
 
   const translations = {
     ur: {
@@ -18,7 +19,7 @@
       formIntro: 'ضروری معلومات درج کریں۔ باقی خانے خالی چھوڑ سکتے ہیں۔', name: 'نام', namePlaceholder: 'مثلاً رانی',
       animalType: 'جانور کی قسم', typePlaceholder: 'مثلاً گائے', breed: 'نسل', breedPlaceholder: 'مثلاً ساہیوال',
       gender: 'جنس', selectGender: 'جنس منتخب کریں', female: 'مادہ', male: 'نر', ageYears: 'عمر (سال)', agePlaceholder: 'مثلاً 3',
-      weightKg: 'وزن (کلو)', weightPlaceholder: 'مثلاً 320', currentHealth: 'موجودہ صحت', notRecorded: 'درج نہیں',
+      weightKg: 'وزن (کلو)', weightPlaceholder: 'مثلاً 320', region: 'علاقہ', regionPlaceholder: 'مثلاً لاہور', currentHealth: 'موجودہ صحت', notRecorded: 'درج نہیں',
       healthy: 'صحت مند', needsAttention: 'توجہ درکار', underTreatment: 'علاج جاری ہے', notes: 'اضافی باتیں',
       notesPlaceholder: 'پہچان کی علامت یا دیکھ بھال کی اہم بات', cancel: 'منسوخ کریں', saveAnimal: 'جانور محفوظ کریں', saving: 'محفوظ ہو رہا ہے…',
       emptyTitle: 'ابھی کوئی جانور شامل نہیں کیا گیا', emptyMessage: 'اپنا پہلا جانور شامل کریں اور اس کا ریکارڈ سنبھالنا شروع کریں۔',
@@ -26,7 +27,10 @@
       errorMessage: 'رابطہ نہیں ہو سکا۔ کچھ دیر بعد دوبارہ کوشش کریں۔', forbiddenTitle: 'اجازت نہیں ہے', forbiddenMessage: 'آپ کو یہ ریکارڈ دیکھنے کی اجازت نہیں ہے۔', tryAgain: 'دوبارہ کوشش کریں',
       unreadableResponse: 'جواب سمجھ نہیں آیا۔ دوبارہ کوشش کریں۔', requestFailed: 'کام مکمل نہیں ہو سکا۔ دوبارہ کوشش کریں۔',
       updated: 'تازہ کیا گیا', typeNotRecorded: 'قسم درج نہیں', age: 'عمر', weight: 'وزن',
-      yearUnit: 'سال', kgUnit: 'کلو', noNotes: 'کوئی اضافی بات درج نہیں۔', viewProfile: 'پروفائل دیکھیں', closeProfile: 'پروفائل بند کریں', logout: 'لاگ آؤٹ'
+      yearUnit: 'سال', kgUnit: 'کلو', noNotes: 'کوئی اضافی بات درج نہیں۔', viewProfile: 'پروفائل دیکھیں', closeProfile: 'پروفائل بند کریں', logout: 'لاگ آؤٹ',
+      areaInsightsKicker: 'آپ کے جانوروں کا ریکارڈ', areaInsightsTitle: 'علاقے کے حساب سے صحت کی معلومات', areaInsightsSubtitle: 'آپ کے جانوروں کے صحت معائنے ان کے درج کیے گئے علاقے کے مطابق۔', areaInsightsLoading: 'علاقے کی صحت کی معلومات دیکھی جا رہی ہیں',
+      areaInsightsUnavailable: 'علاقے کی معلومات ابھی دستیاب نہیں ہیں۔', areaInsightsErrorHelp: 'رابطہ نہیں ہو سکا۔ کچھ دیر بعد دوبارہ کوشش کریں۔', areaInsightsMalformed: 'علاقے کی معلومات دکھائی نہیں جا سکیں۔', areaInsightsMalformedHelp: 'ریکارڈ کی کچھ معلومات سمجھ نہیں آئیں۔ براہِ کرم دوبارہ کوشش کریں۔',
+      areaInsightsEmpty: 'ابھی علاقے کے حساب سے کوئی صحت ریکارڈ موجود نہیں ہے۔', areaInsightsEmptyHelp: 'صحت کا معائنہ محفوظ ہونے کے بعد اس کی گنتی یہاں نظر آئے گی۔', areaInsightsScope: 'یہ گنتی صرف آپ کے اکاؤنٹ میں موجود جانوروں کے معائنوں کی ہے، پورے علاقے یا دوسرے کسانوں کی نہیں۔', regionNotRecorded: 'علاقہ درج نہیں', totalHealthAssessments: 'کل صحت معائنے', urgentFlaggedAssessments: 'فوری توجہ والے معائنے'
     },
     en: {
       skipLink: 'Skip to main content', homeLabel: 'Maweshi Muhafiz home', languageLabel: 'Choose language',
@@ -40,7 +44,7 @@
       closeFormLabel: 'Close add animal form', formIntro: 'Start with the essential details. You can leave optional information blank.',
       name: 'Name', namePlaceholder: 'e.g. Rani', animalType: 'Animal type', typePlaceholder: 'e.g. Cow', breed: 'Breed',
       breedPlaceholder: 'e.g. Sahiwal', gender: 'Gender', selectGender: 'Select gender', female: 'Female', male: 'Male',
-      ageYears: 'Age in years', agePlaceholder: 'e.g. 3', weightKg: 'Weight in kg', weightPlaceholder: 'e.g. 320',
+      ageYears: 'Age in years', agePlaceholder: 'e.g. 3', weightKg: 'Weight in kg', weightPlaceholder: 'e.g. 320', region: 'Region', regionPlaceholder: 'e.g. Lahore',
       currentHealth: 'Current health status', notRecorded: 'Not recorded', healthy: 'Healthy', needsAttention: 'Needs attention',
       underTreatment: 'Under treatment', notes: 'Notes', notesPlaceholder: 'Identification marks or useful care notes', cancel: 'Cancel',
       saveAnimal: 'Save animal', saving: 'Saving…', emptyTitle: 'No animals added yet',
@@ -48,7 +52,10 @@
       errorTitle: 'Records are unavailable right now', errorMessage: 'We could not connect. Please try again in a little while.', forbiddenTitle: 'Permission required', forbiddenMessage: 'You do not have permission to access this record.', tryAgain: 'Try again',
       unreadableResponse: 'We could not understand the response. Please try again.', requestFailed: 'The request could not be completed.',
       updated: 'Updated', typeNotRecorded: 'Type not recorded', age: 'Age', weight: 'Weight', yearUnit: 'yr', kgUnit: 'kg',
-      noNotes: 'No additional notes recorded.', viewProfile: 'View Profile', closeProfile: 'Close Profile', logout: 'Logout'
+      noNotes: 'No additional notes recorded.', viewProfile: 'View Profile', closeProfile: 'Close Profile', logout: 'Logout',
+      areaInsightsKicker: 'Your animals’ records', areaInsightsTitle: 'Health insights by recorded area', areaInsightsSubtitle: 'Health assessments for your animals, grouped by the area saved on their records.', areaInsightsLoading: 'Loading area health insights',
+      areaInsightsUnavailable: 'Area insights are unavailable right now.', areaInsightsErrorHelp: 'We could not connect. Please try again in a little while.', areaInsightsMalformed: 'Area insights could not be displayed.', areaInsightsMalformedHelp: 'Some record information could not be understood. Please try again.',
+      areaInsightsEmpty: 'No area-based health activity yet.', areaInsightsEmptyHelp: 'Assessment counts will appear here after a health assessment is saved.', areaInsightsScope: 'These counts only use assessments for animals in your account. They are not statistics for the wider area or other farmers.', regionNotRecorded: 'Region not recorded', totalHealthAssessments: 'Total assessments', urgentFlaggedAssessments: 'Urgent or flagged'
     }
   };
 
@@ -57,13 +64,17 @@
     totalCount: document.querySelector('#total-count'), healthyCount: document.querySelector('#healthy-count'), attentionCount: document.querySelector('#attention-count'),
     updated: document.querySelector('#last-updated'), indicator: document.querySelector('#api-indicator'), refreshButton: document.querySelector('#refresh-button'),
     dialog: document.querySelector('#animal-dialog'), form: document.querySelector('#animal-form'), formAlert: document.querySelector('#form-alert'),
-    saveButton: document.querySelector('#save-animal-button')
+    saveButton: document.querySelector('#save-animal-button'),
+    insightsLoading: document.querySelector('#area-insights-loading'), insightsContent: document.querySelector('#area-insights-content'), insightsList: document.querySelector('#area-insights-list'),
+    insightsEmpty: document.querySelector('#area-insights-empty'), insightsError: document.querySelector('#area-insights-error'), insightsErrorTitle: document.querySelector('#area-insights-error-title'), insightsErrorMessage: document.querySelector('#area-insights-error-message'), insightsRetry: document.querySelector('#retry-area-insights')
   };
 
   let currentLanguage = window.MaweshiI18n.getLanguage();
   let currentAnimals = null;
   let currentState = null;
   let connectionState = 'checking';
+  let areaInsights = [];
+  let areaInsightsState = 'loading';
 
   function t(key) { return translations[currentLanguage][key] || key; }
   function text(value, fallback = t('notRecorded')) {
@@ -82,6 +93,7 @@
   function translatePage() {
     currentLanguage = window.MaweshiI18n.applyPage(currentLanguage, translations).language;
     updateConnection(connectionState);
+    renderAreaInsights();
   }
 
   function setLanguage(language) {
@@ -105,6 +117,78 @@
     elements.totalCount.textContent = animals.length;
     elements.healthyCount.textContent = animals.filter((animal) => isHealthy(animal.health_status)).length;
     elements.attentionCount.textContent = animals.filter((animal) => needsAttention(animal.health_status)).length;
+  }
+
+  function validInsight(entry) {
+    return entry && typeof entry === 'object'
+      && typeof entry.region === 'string' && entry.region.trim()
+      && Number.isInteger(entry.total_assessments) && entry.total_assessments >= 0
+      && Number.isInteger(entry.flagged_cases) && entry.flagged_cases >= 0
+      && entry.flagged_cases <= entry.total_assessments;
+  }
+
+  function createInsightRow(entry) {
+    const row = document.createElement('article');
+    row.className = 'area-insight-row';
+
+    const region = document.createElement('h3');
+    region.className = 'area-insight-region';
+    region.textContent = entry.region.trim().toLowerCase() === 'unknown' ? t('regionNotRecorded') : entry.region;
+    region.dir = entry.region.trim().toLowerCase() === 'unknown' ? '' : 'auto';
+
+    const total = document.createElement('div');
+    total.className = 'area-insight-metric';
+    const totalValue = document.createElement('strong'); totalValue.textContent = String(entry.total_assessments);
+    const totalLabel = document.createElement('span'); totalLabel.textContent = t('totalHealthAssessments');
+    total.append(totalValue, totalLabel);
+
+    const flagged = document.createElement('div');
+    flagged.className = 'area-insight-metric area-insight-metric--flagged';
+    const flaggedValue = document.createElement('strong'); flaggedValue.textContent = String(entry.flagged_cases);
+    const flaggedLabel = document.createElement('span'); flaggedLabel.textContent = t('urgentFlaggedAssessments');
+    flagged.append(flaggedValue, flaggedLabel);
+
+    row.append(region, total, flagged);
+    return row;
+  }
+
+  function renderAreaInsights() {
+    elements.insightsLoading.classList.toggle('hidden', areaInsightsState !== 'loading');
+    elements.insightsContent.classList.toggle('hidden', areaInsightsState !== 'content');
+    elements.insightsEmpty.classList.toggle('hidden', areaInsightsState !== 'empty');
+    elements.insightsError.classList.toggle('hidden', !['error', 'malformed'].includes(areaInsightsState));
+    elements.insightsRetry.classList.toggle('hidden', !['error', 'malformed'].includes(areaInsightsState));
+
+    if (['error', 'malformed'].includes(areaInsightsState)) {
+      const malformed = areaInsightsState === 'malformed';
+      elements.insightsErrorTitle.textContent = t(malformed ? 'areaInsightsMalformed' : 'areaInsightsUnavailable');
+      elements.insightsErrorMessage.textContent = t(malformed ? 'areaInsightsMalformedHelp' : 'areaInsightsErrorHelp');
+    }
+    if (areaInsightsState === 'content') {
+      const fragment = document.createDocumentFragment();
+      areaInsights.forEach((entry) => fragment.appendChild(createInsightRow(entry)));
+      elements.insightsList.replaceChildren(fragment);
+    }
+  }
+
+  async function loadAreaInsights() {
+    areaInsightsState = 'loading';
+    renderAreaInsights();
+    try {
+      const data = await window.MaweshiAuth.request(AREA_INSIGHTS_ENDPOINT, { headers: { Accept: 'application/json' } });
+      if (!Array.isArray(data) || !data.every(validInsight)) {
+        areaInsights = [];
+        areaInsightsState = 'malformed';
+      } else {
+        areaInsights = data;
+        areaInsightsState = data.length ? 'content' : 'empty';
+      }
+    } catch (error) {
+      console.error('Area insights could not be loaded.', error);
+      areaInsights = [];
+      areaInsightsState = 'error';
+    }
+    renderAreaInsights();
   }
 
   function showState(kind) {
@@ -189,7 +273,7 @@
   }
   function buildAnimalPayload(formData) {
     const payload = { name: String(formData.get('name') || '').trim(), animal_type: String(formData.get('animal_type') || '').trim() };
-    ['breed', 'gender', 'health_status', 'notes'].forEach((field) => {
+    ['breed', 'gender', 'health_status', 'region', 'notes'].forEach((field) => {
       const value = optionalString(formData, field);
       if (value !== null) payload[field] = value;
     });
@@ -241,9 +325,11 @@
   });
   elements.dialog.addEventListener('click', (event) => { if (event.target === elements.dialog) closeDialog(); });
   elements.dialog.addEventListener('cancel', (event) => { if (elements.saveButton.disabled) event.preventDefault(); });
-  elements.refreshButton.addEventListener('click', loadAnimals);
+  elements.refreshButton.addEventListener('click', () => { loadAnimals(); loadAreaInsights(); });
+  elements.insightsRetry.addEventListener('click', loadAreaInsights);
   elements.form.addEventListener('submit', saveAnimal);
 
   translatePage();
   loadAnimals();
+  loadAreaInsights();
 })();
