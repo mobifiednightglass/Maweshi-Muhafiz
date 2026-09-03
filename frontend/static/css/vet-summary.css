@@ -13,7 +13,7 @@
 .vet-document { margin-top: 1.5rem; border: 1px solid #d9cfbc; background: var(--paper); box-shadow: 0 12px 32px rgba(38, 49, 45, 0.06); }
 .document-header { padding: clamp(1.4rem, 5vw, 2.5rem); border-block-end: 1px solid var(--sand); }
 .document-brand { display: flex; align-items: center; gap: 0.75rem; color: var(--muted); font-size: 0.75rem; }
-.document-brand-mark { display: grid; width: 2.4rem; height: 2.4rem; place-items: center; border-radius: 0.35rem; background: var(--forest); color: white; font-size: 0.72rem; font-weight: 900; }
+.document-brand-logo { width: 3.35rem; height: 3.35rem; }
 .document-product { color: var(--forest); font-size: 0.9rem; font-weight: 850; }
 .document-heading { margin-top: 2rem; }
 .document-heading h1 { margin-top: 0.25rem; color: var(--ink); font-size: clamp(1.8rem, 5vw, 2.65rem); font-weight: 900; line-height: 1.25; }
@@ -78,6 +78,7 @@
   .print-hidden, .auth-global-notice { display: none !important; }
   .vet-summary-shell { width: 100%; padding: 0; }
   .vet-document { margin: 0; border: 0; box-shadow: none; }
+  .document-brand-logo { width: 13mm; height: 13mm; }
   .document-section, .summary-red-flag { break-inside: avoid; }
   .document-animal-photo { print-color-adjust: exact; }
 }

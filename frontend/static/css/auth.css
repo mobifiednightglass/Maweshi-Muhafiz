@@ -2,8 +2,6 @@
 .auth-header { border-block-end: 1px solid var(--sand); background: rgba(255, 253, 248, 0.96); }
 .auth-nav { display: flex; width: min(100% - 2rem, 72rem); min-height: 4.75rem; align-items: center; justify-content: space-between; gap: 1rem; margin-inline: auto; }
 .auth-brand { display: flex; align-items: center; gap: 0.7rem; color: var(--forest); }
-.auth-brand-mark { display: grid; width: 2.4rem; height: 2.4rem; place-items: center; border: 1px solid #cad7c9; border-radius: 0.45rem; background: #eef3eb; }
-.auth-brand-mark svg { width: 1.9rem; height: 1.9rem; }
 .auth-brand strong, .auth-brand small { display: block; }
 .auth-brand strong { font-size: 0.98rem; line-height: 1.1; }
 .auth-brand small { margin-top: 0.15rem; font-size: 0.75rem; font-weight: 700; }
@@ -60,8 +58,6 @@ html[lang="ur"] .auth-intro h1 { letter-spacing: 0; line-height: 1.42; }
 
 @media (max-width: 520px) {
   .auth-nav { min-height: 4.25rem; }
-  .auth-brand-mark { width: 2.1rem; height: 2.1rem; }
-  .auth-brand-mark svg { width: 1.65rem; height: 1.65rem; }
   .auth-brand strong { font-size: 0.82rem; }
   .auth-brand small, .auth-home-link { display: none; }
   .auth-nav-actions { gap: 0.5rem; }
