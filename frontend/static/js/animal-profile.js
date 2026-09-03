@@ -10,7 +10,7 @@
       skipLink: 'مرکزی حصے پر جائیں', homeLabel: 'مویشی محافظ کا مرکزی صفحہ', languageLabel: 'زبان منتخب کریں',
       backToAnimals: 'جانوروں کی فہرست پر واپس جائیں', backToAnimalsShort: 'جانوروں کی فہرست', loadingLabel: 'جانور کا ریکارڈ لوڈ ہو رہا ہے',
       tryAgain: 'دوبارہ کوشش کریں', logout: 'لاگ آؤٹ', editAnimal: 'جانور کی معلومات بدلیں', profileDetails: 'جانور کی تفصیل', basicInformation: 'بنیادی معلومات',
-      animalType: 'جانور کی قسم', breed: 'نسل', gender: 'جنس', age: 'عمر', weight: 'وزن', color: 'رنگ',
+      animalType: 'جانور کی قسم', breed: 'نسل', gender: 'جنس', age: 'عمر', weight: 'وزن', color: 'رنگ', region: 'علاقہ',
       healthStatus: 'موجودہ صحت', recordCreated: 'ریکارڈ بنایا گیا', careNotes: 'دیکھ بھال کی باتیں', notes: 'نوٹس',
       healthRecord: 'صحت کا ریکارڈ', recentActivity: 'حالیہ صحت کی سرگرمی', refresh: 'تازہ کریں', loadingActivity: 'صحت کا ریکارڈ دیکھا جا رہا ہے…',
       noAssessments: 'ابھی تک صحت کا کوئی معائنہ موجود نہیں ہے۔', startFirstAssessment: 'پہلا معائنہ شروع کریں', viewResult: 'نتیجہ دیکھیں',
@@ -21,7 +21,7 @@
       footerCare: 'مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔', footerDisclaimer: 'AI کی رائے ابتدائی رہنمائی ہے، ڈاکٹر کا متبادل نہیں۔',
       editRecord: 'ریکارڈ میں تبدیلی', closeFormLabel: 'فارم بند کریں', name: 'نام', notRecorded: 'درج نہیں', female: 'مادہ', male: 'نر',
       ageYears: 'عمر (سال)', weightKg: 'وزن (کلو)', healthy: 'صحت مند', needsAttention: 'توجہ درکار', underTreatment: 'علاج جاری ہے',
-      cancel: 'منسوخ کریں', saveChanges: 'تبدیلی محفوظ کریں', saving: 'محفوظ ہو رہا ہے…', assessmentInstructions: 'جانور کی صاف تصویر اور نظر آنے والی علامات لکھیں۔',
+      cancel: 'منسوخ کریں', saveChanges: 'تبدیلی محفوظ کریں', saving: 'محفوظ ہو رہا ہے…', assessmentInstructions: 'جانور کی صاف تصویر دیں، پھر علامات لکھیں یا اردو میں بولیں۔',
       animalPhoto: 'جانور کی تصویر', uploadImage: 'تصویر اپ لوڈ کریں', takePhoto: 'تصویر لیں', noImageSelected: 'ابھی کوئی تصویر منتخب نہیں ہوئی۔', selectedImage: 'منتخب تصویر: {name}', imageRequired: 'براہِ کرم تصویر اپ لوڈ کریں یا نئی تصویر لیں۔', imageHelp: 'JPG، PNG یا WebP — زیادہ سے زیادہ 5 MB', symptoms: 'علامات',
       symptomsPlaceholder: 'مثلاً جانور کھانا نہیں کھا رہا اور سست ہے', assessmentSafety: 'یہ ابتدائی AI رہنمائی ہے۔ ہنگامی حالت میں فوراً جانوروں کے ڈاکٹر سے رابطہ کریں۔',
       beginAssessment: 'معائنہ کریں', assessing: 'معائنہ ہو رہا ہے…', deleteQuestion: 'کیا یہ جانور حذف کرنا ہے؟',
@@ -34,13 +34,17 @@
       imageTooLarge: 'تصویر 5 MB سے کم ہونی چاہیے۔', imageBlurry: 'تصویر دھندلی ہے۔ براہِ کرم صاف تصویر منتخب کر کے دوبارہ کوشش کریں۔', imageDark: 'تصویر بہت تاریک ہے۔ براہِ کرم بہتر روشنی میں تصویر لے کر دوبارہ کوشش کریں۔', imageLowResolution: 'تصویر کی کوالٹی بہت کم ہے۔ براہِ کرم زیادہ واضح تصویر منتخب کر کے دوبارہ کوشش کریں۔', imageUnreadable: 'تصویر پڑھی نہیں جا سکی۔ براہِ کرم دوسری JPG، PNG یا WebP تصویر منتخب کریں۔', imageInvalidType: 'تصویر کا فارمیٹ درست نہیں۔ براہِ کرم JPG، PNG یا WebP تصویر منتخب کریں۔',
       statusPending: 'جاری ہے', statusCompleted: 'مکمل', statusFailed: 'مکمل نہیں ہوا',
       urgencyLow: 'معمولی توجہ', urgencyMedium: 'توجہ درکار', urgencyHigh: 'فوری توجہ', noConditionSummary: 'کوئی بیماری درج نہیں',
-      preliminaryResult: 'ابتدائی نتیجہ', assessmentDate: 'معائنے کی تاریخ'
+      preliminaryResult: 'ابتدائی نتیجہ', assessmentDate: 'معائنے کی تاریخ', symptomMethod: 'علامات بتانے کا طریقہ', typeSymptoms: 'علامات لکھیں', speakUrdu: 'اردو میں بولیں', recordingPreviewLabel: 'ریکارڈ کی گئی آواز سنیں',
+      voiceReady: 'ریکارڈ کرنے کے لیے تیار', voiceReadyHelp: 'مائیک دبائیں اور جانور کی علامات صاف آواز میں اردو میں بتائیں۔', accessingMicrophone: 'مائیک کھولا جا رہا ہے…', accessingMicrophoneHelp: 'اجازت مانگے جانے پر مائیک استعمال کرنے کی اجازت دیں۔',
+      voiceRecording: 'آواز ریکارڈ ہو رہی ہے…', voiceRecordingHelp: 'علامات بتا کر ریکارڈنگ روکیں۔', voiceComplete: 'آواز ریکارڈ ہو گئی', voiceCompleteHelp: 'آپ آواز سن سکتے ہیں یا دوبارہ ریکارڈ کر سکتے ہیں۔',
+      startRecording: 'ریکارڈنگ شروع کریں', stopRecording: 'ریکارڈنگ روکیں', recordAgain: 'دوبارہ ریکارڈ کریں', microphoneDenied: 'مائیک کی اجازت نہیں ملی', microphoneDeniedHelp: 'براؤزر میں مائیک کی اجازت دیں، پھر دوبارہ کوشش کریں۔', microphoneUnavailable: 'مائیک استعمال نہیں ہو سکا', microphoneUnavailableHelp: 'اس ڈیوائس یا براؤزر میں مائیک دستیاب نہیں ہے۔', recordingUnsupported: 'اس براؤزر میں آواز ریکارڈ نہیں ہو سکتی', recordingUnsupportedHelp: 'نیا Chrome، Edge، Firefox یا Safari براؤزر استعمال کریں۔', recordingFailed: 'آواز ریکارڈ نہیں ہو سکی', recordingFailedHelp: 'دوبارہ کوشش کریں یا علامات لکھ دیں۔',
+      submitVoiceAssessment: 'آواز کے ساتھ معائنہ کریں', processingVoice: 'آواز سمجھی جا رہی ہے…', audioRequired: 'پہلے اپنی آواز ریکارڈ کریں۔', voiceNoSpeech: 'آواز میں بات صاف سمجھ نہیں آئی۔ دوبارہ صاف آواز میں علامات بتائیں۔', voiceInvalidAudio: 'ریکارڈ کی گئی آواز درست نہیں۔ براہِ کرم دوبارہ ریکارڈ کریں۔', voiceRecognitionUnavailable: 'آواز ابھی سمجھی نہیں جا سکی۔ کچھ دیر بعد دوبارہ کوشش کریں۔', voiceConnectionUnavailable: 'رابطہ نہیں ہو سکا۔ اپنی آواز محفوظ رکھیں اور دوبارہ کوشش کریں۔'
     },
     en: {
       skipLink: 'Skip to main content', homeLabel: 'Maweshi Muhafiz home', languageLabel: 'Choose language',
       backToAnimals: 'Back to animals', backToAnimalsShort: 'Animal dashboard', loadingLabel: 'Loading animal record', tryAgain: 'Try again', logout: 'Logout',
       editAnimal: 'Edit animal', profileDetails: 'Animal details', basicInformation: 'Basic information', animalType: 'Animal type', breed: 'Breed',
-      gender: 'Gender', age: 'Age', weight: 'Weight', color: 'Color', healthStatus: 'Current health status', recordCreated: 'Record created',
+      gender: 'Gender', age: 'Age', weight: 'Weight', color: 'Color', region: 'Region', healthStatus: 'Current health status', recordCreated: 'Record created',
       careNotes: 'Care notes', notes: 'Notes', healthRecord: 'Health record', recentActivity: 'Recent health activity', refresh: 'Refresh',
       loadingActivity: 'Loading health activity…', noAssessments: 'No health assessments yet.', startFirstAssessment: 'Start the first assessment', viewResult: 'View Result',
       activityUnavailable: 'Health activity cannot be shown right now.', animalHealth: 'Animal health', quickActions: 'Quick actions',
@@ -50,7 +54,7 @@
       footerCare: 'Built to support better livestock care.', footerDisclaimer: 'AI guidance is preliminary and does not replace a veterinarian.',
       editRecord: 'Edit record', closeFormLabel: 'Close form', name: 'Name', notRecorded: 'Not recorded', female: 'Female', male: 'Male',
       ageYears: 'Age in years', weightKg: 'Weight in kg', healthy: 'Healthy', needsAttention: 'Needs attention', underTreatment: 'Under treatment',
-      cancel: 'Cancel', saveChanges: 'Save changes', saving: 'Saving…', assessmentInstructions: 'Add a clear photo and describe the symptoms you can see.',
+      cancel: 'Cancel', saveChanges: 'Save changes', saving: 'Saving…', assessmentInstructions: 'Add a clear animal photo, then type the symptoms or speak in Urdu.',
       animalPhoto: 'Animal photo', uploadImage: 'Upload image', takePhoto: 'Take photo', noImageSelected: 'No image selected yet.', selectedImage: 'Selected image: {name}', imageRequired: 'Please upload an image or take a new photo.', imageHelp: 'JPG, PNG or WebP — maximum 5 MB', symptoms: 'Symptoms',
       symptomsPlaceholder: 'e.g. The animal is not eating and seems tired', assessmentSafety: 'This is preliminary AI guidance. Contact a veterinarian immediately in an emergency.',
       beginAssessment: 'Begin assessment', assessing: 'Assessing…', deleteQuestion: 'Delete this animal?',
@@ -63,7 +67,11 @@
       imageTooLarge: 'The image must be smaller than 5 MB. Please choose another image and try again.', imageBlurry: 'Image is too blurry to analyze. Please upload a clearer photo.', imageDark: 'Image is too dark. Please choose a brighter photo and try again.', imageLowResolution: 'Image resolution is too low. Please choose a clearer, higher-resolution photo and try again.', imageUnreadable: 'Image could not be processed. Please choose another JPG, PNG or WebP image.', imageInvalidType: 'This image format is not accepted. Please choose a JPG, PNG or WebP image.',
       statusPending: 'Pending', statusCompleted: 'Completed', statusFailed: 'Not completed',
       urgencyLow: 'Low urgency', urgencyMedium: 'Needs attention', urgencyHigh: 'Urgent attention', noConditionSummary: 'No condition recorded',
-      preliminaryResult: 'Preliminary result', assessmentDate: 'Assessment date'
+      preliminaryResult: 'Preliminary result', assessmentDate: 'Assessment date', symptomMethod: 'How would you describe the symptoms?', typeSymptoms: 'Type Symptoms', speakUrdu: 'Speak in Urdu', recordingPreviewLabel: 'Listen to the recorded symptoms',
+      voiceReady: 'Ready to record', voiceReadyHelp: 'Press the microphone and describe the animal’s symptoms clearly in Urdu.', accessingMicrophone: 'Opening microphone…', accessingMicrophoneHelp: 'Allow microphone access when your browser asks.',
+      voiceRecording: 'Recording…', voiceRecordingHelp: 'Describe the symptoms, then stop the recording.', voiceComplete: 'Recording complete', voiceCompleteHelp: 'You can listen to the recording or record it again.',
+      startRecording: 'Start recording', stopRecording: 'Stop recording', recordAgain: 'Re-record', microphoneDenied: 'Microphone permission was not allowed', microphoneDeniedHelp: 'Allow microphone access in your browser, then try again.', microphoneUnavailable: 'Microphone unavailable', microphoneUnavailableHelp: 'A microphone is not available on this device or browser.', recordingUnsupported: 'Voice recording is not supported in this browser', recordingUnsupportedHelp: 'Please use a recent version of Chrome, Edge, Firefox or Safari.', recordingFailed: 'The recording could not be completed', recordingFailedHelp: 'Please try again or type the symptoms instead.',
+      submitVoiceAssessment: 'Assess with Voice', processingVoice: 'Understanding your recording…', audioRequired: 'Please record your symptoms first.', voiceNoSpeech: 'We could not understand clear speech in the recording. Please record the symptoms again.', voiceInvalidAudio: 'The recorded audio could not be used. Please record it again.', voiceRecognitionUnavailable: 'We could not understand the recording right now. Please try again shortly.', voiceConnectionUnavailable: 'We could not connect. Your recording is still ready, so please try again.'
     }
   };
 
@@ -73,21 +81,35 @@
     name: document.querySelector('#animal-name'), kind: document.querySelector('#animal-kind'), typeIcon: document.querySelector('#animal-type-icon'),
     healthBadge: document.querySelector('#animal-health-badge'), idLabel: document.querySelector('#animal-id-label'), updated: document.querySelector('#updated-date'),
     infoType: document.querySelector('#info-type'), infoBreed: document.querySelector('#info-breed'), infoGender: document.querySelector('#info-gender'),
-    infoAge: document.querySelector('#info-age'), infoWeight: document.querySelector('#info-weight'), infoColor: document.querySelector('#info-color'),
+    infoAge: document.querySelector('#info-age'), infoWeight: document.querySelector('#info-weight'), infoColor: document.querySelector('#info-color'), infoRegion: document.querySelector('#info-region'),
     infoHealth: document.querySelector('#info-health'), created: document.querySelector('#created-date'), notes: document.querySelector('#animal-notes'),
     activityLoading: document.querySelector('#activity-loading'), activityList: document.querySelector('#activity-list'), activityEmpty: document.querySelector('#activity-empty'),
     activityError: document.querySelector('#activity-error'), editDialog: document.querySelector('#edit-dialog'), editForm: document.querySelector('#edit-form'),
     editAlert: document.querySelector('#edit-alert'), saveEdit: document.querySelector('#save-edit'), assessmentDialog: document.querySelector('#assessment-dialog'),
     assessmentForm: document.querySelector('#assessment-form'), assessmentAlert: document.querySelector('#assessment-alert'), submitAssessment: document.querySelector('#submit-assessment'),
     uploadInput: document.querySelector('#assessment-upload-input'), cameraInput: document.querySelector('#assessment-camera-input'), imageSelection: document.querySelector('#assessment-image-selection'),
+    typedPanel: document.querySelector('#typed-symptoms-panel'), voicePanel: document.querySelector('#voice-symptoms-panel'), symptomsInput: document.querySelector('[name="symptoms"]'),
+    voiceTitle: document.querySelector('#voice-state-title'), voiceHelp: document.querySelector('#voice-state-help'), voiceTimer: document.querySelector('#voice-timer'), voicePreview: document.querySelector('#voice-preview'),
+    startRecording: document.querySelector('#start-voice-recording'), stopRecording: document.querySelector('#stop-voice-recording'), rerecord: document.querySelector('#rerecord-voice'),
     deleteDialog: document.querySelector('#delete-dialog'), deleteAlert: document.querySelector('#delete-alert'), confirmDelete: document.querySelector('#confirm-delete'),
-    historyLink: document.querySelector('#health-history-link'), preventiveLink: document.querySelector('#preventive-care-link')
+    historyLink: document.querySelector('#health-history-link'), preventiveLink: document.querySelector('#preventive-care-link'), passportLink: document.querySelector('#health-passport-link')
   };
 
   let language = window.MaweshiI18n.getLanguage();
   let animal = null;
   let assessments = [];
   let pageErrorKind = null;
+  let assessmentMode = 'typed';
+  let voiceState = 'idle';
+  let audioBlob = null;
+  let audioObjectUrl = '';
+  let mediaRecorder = null;
+  let microphoneStream = null;
+  let recordingChunks = [];
+  let recordingStartedAt = 0;
+  let recordingTimer = null;
+  let recordingRequestId = 0;
+  let assessmentSubmitting = false;
 
   class RequestError extends Error {
     constructor(message, status, details) { super(message); this.status = status; this.details = details; }
@@ -102,7 +124,8 @@
       method: 'PUT', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload)
     }),
     deleteAnimal: (id) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { Accept: 'application/json' } }),
-    createAssessment: (id, formData) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}/assessments`, { method: 'POST', body: formData })
+    createAssessment: (id, formData) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}/assessments`, { method: 'POST', body: formData }),
+    createVoiceAssessment: (id, formData) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}/symptoms/voice`, { method: 'POST', body: formData })
   };
 
   function translatePage() {
@@ -111,6 +134,8 @@
     if (assessments.length) renderAssessments();
     if (pageErrorKind !== null) showPageError(pageErrorKind);
     updateImageSelection();
+    renderVoiceState();
+    updateAssessmentSubmitButton();
   }
 
   function value(raw, fallback = t('notRecorded')) { return raw === null || raw === undefined || String(raw).trim() === '' ? fallback : String(raw); }
@@ -155,6 +180,7 @@
     el.infoAge.textContent = animal.age === null || animal.age === undefined ? t('notRecorded') : `${animal.age} ${t('year')}`;
     el.infoWeight.textContent = animal.weight === null || animal.weight === undefined ? t('notRecorded') : `${animal.weight} ${t('kg')}`;
     el.infoColor.textContent = value(animal.color);
+    el.infoRegion.textContent = value(animal.region);
     el.infoHealth.textContent = translatedValue(animal.health_status);
     el.created.textContent = formatDate(animal.created_at);
     el.notes.textContent = animal.notes && String(animal.notes).trim() ? animal.notes : t('noNotes');
@@ -250,14 +276,14 @@
   }
   function openEdit() {
     el.editForm.querySelectorAll('option[data-dynamic]').forEach((option) => option.remove());
-    ['name', 'animal_type', 'breed', 'gender', 'age', 'weight', 'color', 'health_status', 'notes'].forEach((field) => setFormValue(el.editForm, field, animal[field]));
+    ['name', 'animal_type', 'breed', 'gender', 'age', 'weight', 'color', 'region', 'health_status', 'notes'].forEach((field) => setFormValue(el.editForm, field, animal[field]));
     el.editAlert.classList.add('hidden'); el.editDialog.showModal();
   }
   function optional(formData, key) { const raw = String(formData.get(key) || '').trim(); return raw || null; }
   function editPayload() {
     const data = new FormData(el.editForm);
     const payload = { name: String(data.get('name') || '').trim(), animal_type: String(data.get('animal_type') || '').trim() };
-    ['breed', 'gender', 'color', 'health_status', 'notes'].forEach((key) => { payload[key] = optional(data, key); });
+    ['breed', 'gender', 'color', 'region', 'health_status', 'notes'].forEach((key) => { payload[key] = optional(data, key); });
     ['age', 'weight'].forEach((key) => { const raw = String(data.get(key) || '').trim(); payload[key] = raw === '' ? null : Number(raw); });
     return payload;
   }
@@ -289,7 +315,167 @@
     updateImageSelection();
   }
 
-  function openAssessment() { el.assessmentAlert.classList.add('hidden'); updateImageSelection(); el.assessmentDialog.showModal(); }
+  function supportedRecordingType() {
+    if (!window.MediaRecorder || typeof window.MediaRecorder.isTypeSupported !== 'function') return null;
+    const candidates = [
+      { mimeType: 'audio/webm;codecs=opus', extension: 'webm' },
+      { mimeType: 'audio/webm', extension: 'webm' },
+      { mimeType: 'audio/ogg;codecs=opus', extension: 'ogg' },
+      { mimeType: 'audio/ogg', extension: 'ogg' },
+      { mimeType: 'audio/mp4', extension: 'm4a' }
+    ];
+    return candidates.find((candidate) => window.MediaRecorder.isTypeSupported(candidate.mimeType)) || null;
+  }
+
+  function releaseMicrophone() {
+    if (microphoneStream) microphoneStream.getTracks().forEach((track) => track.stop());
+    microphoneStream = null;
+    window.clearInterval(recordingTimer);
+    recordingTimer = null;
+  }
+
+  function clearRecordedAudio() {
+    audioBlob = null;
+    recordingChunks = [];
+    if (audioObjectUrl) URL.revokeObjectURL(audioObjectUrl);
+    audioObjectUrl = '';
+    el.voicePreview.removeAttribute('src');
+    el.voicePreview.load();
+  }
+
+  function resetVoiceRecording() {
+    recordingRequestId += 1;
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.ondataavailable = null;
+      mediaRecorder.onstop = null;
+      mediaRecorder.onerror = null;
+      mediaRecorder.stop();
+    }
+    mediaRecorder = null;
+    releaseMicrophone();
+    clearRecordedAudio();
+    voiceState = 'idle';
+    renderVoiceState();
+  }
+
+  function voiceStateCopy() {
+    if (voiceState === 'requesting') return ['accessingMicrophone', 'accessingMicrophoneHelp'];
+    if (voiceState === 'recording') return ['voiceRecording', 'voiceRecordingHelp'];
+    if (voiceState === 'ready') return ['voiceComplete', 'voiceCompleteHelp'];
+    if (voiceState === 'denied') return ['microphoneDenied', 'microphoneDeniedHelp'];
+    if (voiceState === 'unavailable') return ['microphoneUnavailable', 'microphoneUnavailableHelp'];
+    if (voiceState === 'unsupported') return ['recordingUnsupported', 'recordingUnsupportedHelp'];
+    if (voiceState === 'error') return ['recordingFailed', 'recordingFailedHelp'];
+    return ['voiceReady', 'voiceReadyHelp'];
+  }
+
+  function formatRecordingTime(milliseconds) {
+    const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+    return `${String(Math.floor(totalSeconds / 60)).padStart(2, '0')}:${String(totalSeconds % 60).padStart(2, '0')}`;
+  }
+
+  function renderVoiceState() {
+    if (!el.voicePanel) return;
+    const [titleKey, helpKey] = voiceStateCopy();
+    el.voiceTitle.textContent = t(titleKey);
+    el.voiceHelp.textContent = t(helpKey);
+    el.voicePanel.classList.toggle('is-recording', voiceState === 'recording');
+    el.voicePanel.classList.toggle('is-ready', voiceState === 'ready');
+    el.voiceTimer.classList.toggle('hidden', voiceState !== 'recording');
+    el.startRecording.classList.toggle('hidden', voiceState === 'recording' || voiceState === 'ready' || voiceState === 'requesting');
+    el.stopRecording.classList.toggle('hidden', voiceState !== 'recording');
+    el.rerecord.classList.toggle('hidden', voiceState !== 'ready');
+    el.voicePreview.classList.toggle('hidden', voiceState !== 'ready' || !audioObjectUrl);
+    el.startRecording.disabled = voiceState === 'requesting' || assessmentSubmitting;
+    el.stopRecording.disabled = assessmentSubmitting;
+    el.rerecord.disabled = assessmentSubmitting;
+  }
+
+  function updateAssessmentSubmitButton() {
+    el.submitAssessment.disabled = assessmentSubmitting || voiceState === 'recording' || voiceState === 'requesting';
+    document.querySelectorAll('[data-assessment-mode]').forEach((button) => { button.disabled = assessmentSubmitting; });
+    el.submitAssessment.textContent = t(assessmentSubmitting
+      ? assessmentMode === 'voice' ? 'processingVoice' : 'assessing'
+      : assessmentMode === 'voice' ? 'submitVoiceAssessment' : 'beginAssessment');
+  }
+
+  function setAssessmentMode(mode) {
+    if (assessmentSubmitting || !['typed', 'voice'].includes(mode) || assessmentMode === mode) return;
+    if (assessmentMode === 'voice') resetVoiceRecording();
+    assessmentMode = mode;
+    const isVoice = mode === 'voice';
+    el.typedPanel.classList.toggle('hidden', isVoice);
+    el.voicePanel.classList.toggle('hidden', !isVoice);
+    el.symptomsInput.disabled = isVoice;
+    el.symptomsInput.required = !isVoice;
+    document.querySelectorAll('[data-assessment-mode]').forEach((button) => {
+      const selected = button.dataset.assessmentMode === mode;
+      button.classList.toggle('is-active', selected);
+      button.setAttribute('aria-selected', String(selected));
+      button.tabIndex = selected ? 0 : -1;
+    });
+    el.assessmentAlert.classList.add('hidden');
+    renderVoiceState();
+    updateAssessmentSubmitButton();
+  }
+
+  async function startVoiceRecording() {
+    el.assessmentAlert.classList.add('hidden');
+    const recordingType = supportedRecordingType();
+    if (!recordingType || !navigator.mediaDevices?.getUserMedia) {
+      voiceState = 'unsupported'; renderVoiceState(); return;
+    }
+    clearRecordedAudio();
+    voiceState = 'requesting'; renderVoiceState(); updateAssessmentSubmitButton();
+    const requestId = ++recordingRequestId;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
+      if (requestId !== recordingRequestId || assessmentMode !== 'voice') { stream.getTracks().forEach((track) => track.stop()); return; }
+      microphoneStream = stream;
+      recordingChunks = [];
+      mediaRecorder = new MediaRecorder(stream, { mimeType: recordingType.mimeType });
+      mediaRecorder.ondataavailable = (event) => { if (event.data?.size) recordingChunks.push(event.data); };
+      mediaRecorder.onerror = () => {
+        if (mediaRecorder) mediaRecorder.onstop = null;
+        releaseMicrophone(); mediaRecorder = null; voiceState = 'error'; renderVoiceState(); updateAssessmentSubmitButton();
+      };
+      mediaRecorder.onstop = () => {
+        const mimeType = mediaRecorder?.mimeType || recordingType.mimeType;
+        releaseMicrophone(); mediaRecorder = null;
+        audioBlob = new Blob(recordingChunks, { type: mimeType });
+        recordingChunks = [];
+        if (!audioBlob.size) { audioBlob = null; voiceState = 'error'; }
+        else {
+          audioObjectUrl = URL.createObjectURL(audioBlob);
+          el.voicePreview.src = audioObjectUrl;
+          voiceState = 'ready';
+        }
+        renderVoiceState(); updateAssessmentSubmitButton();
+      };
+      mediaRecorder.start(250);
+      recordingStartedAt = Date.now();
+      el.voiceTimer.textContent = '00:00';
+      recordingTimer = window.setInterval(() => { el.voiceTimer.textContent = formatRecordingTime(Date.now() - recordingStartedAt); }, 500);
+      voiceState = 'recording'; renderVoiceState(); updateAssessmentSubmitButton();
+    } catch (error) {
+      console.error('Microphone recording could not start.', error);
+      releaseMicrophone(); mediaRecorder = null;
+      voiceState = error?.name === 'NotAllowedError' || error?.name === 'SecurityError' ? 'denied' : error?.name === 'NotFoundError' ? 'unavailable' : 'error';
+      renderVoiceState(); updateAssessmentSubmitButton();
+    }
+  }
+
+  function stopVoiceRecording() {
+    if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
+  }
+
+  function openAssessment() {
+    el.assessmentAlert.classList.add('hidden');
+    updateImageSelection();
+    renderVoiceState();
+    updateAssessmentSubmitButton();
+    el.assessmentDialog.showModal();
+  }
 
   function assessmentImageErrorMessage(error) {
     if (error?.status !== 400) return '';
@@ -312,19 +498,50 @@
     return [...new Set(messages)].join(' ');
   }
 
+  function voiceAssessmentErrorMessage(error) {
+    const candidates = [error?.payload?.message, error?.payload?.error, error?.message, error?.details]
+      .flat().filter((item) => typeof item === 'string').join(' ');
+    if (candidates.includes('No understandable speech was detected')) return t('voiceNoSpeech');
+    if (candidates.includes('Unsupported audio format') || candidates.includes('Unrecognised audio format') || candidates.includes('audio file is empty')) return t('voiceInvalidAudio');
+    if (candidates.includes("'audio' file field is required")) return t('audioRequired');
+    if (candidates.includes("'image' file field is required")) return t('imageRequired');
+    if (error?.status === 502 || candidates.includes('Speech transcription is currently unavailable')) return t('voiceRecognitionUnavailable');
+    if (error?.status === 0) return t('voiceConnectionUnavailable');
+    return '';
+  }
+
+  function audioFilename(blob) {
+    const mimeType = String(blob?.type || '').toLowerCase();
+    if (mimeType.includes('ogg')) return 'urdu-symptoms.ogg';
+    if (mimeType.includes('mp4')) return 'urdu-symptoms.m4a';
+    if (mimeType.includes('mpeg')) return 'urdu-symptoms.mp3';
+    if (mimeType.includes('wav')) return 'urdu-symptoms.wav';
+    return 'urdu-symptoms.webm';
+  }
+
   async function submitAssessment(event) {
     event.preventDefault(); el.assessmentAlert.classList.add('hidden');
-    if (!el.assessmentForm.reportValidity()) return;
+    if (assessmentMode === 'typed' && !el.assessmentForm.reportValidity()) return;
     const image = selectedAssessmentImage();
     if (!image) { el.assessmentAlert.textContent = t('imageRequired'); el.assessmentAlert.classList.remove('hidden'); return; }
-    const data = new FormData(el.assessmentForm);
-    data.set('image', image, image.name || 'animal-photo.jpg');
     if (image.size > MAX_IMAGE_BYTES) { el.assessmentAlert.textContent = t('imageTooLarge'); el.assessmentAlert.classList.remove('hidden'); return; }
-    el.submitAssessment.disabled = true; el.submitAssessment.textContent = t('assessing');
+    if (assessmentMode === 'voice' && (!audioBlob || !audioBlob.size)) { el.assessmentAlert.textContent = t('audioRequired'); el.assessmentAlert.classList.remove('hidden'); return; }
+    const data = new FormData();
+    data.set('image', image, image.name || 'animal-photo.jpg');
+    if (assessmentMode === 'voice') data.set('audio', audioBlob, audioFilename(audioBlob));
+    else data.set('symptoms', el.symptomsInput.value.trim());
+    const submittedMode = assessmentMode;
+    assessmentSubmitting = true; renderVoiceState(); updateAssessmentSubmitButton();
     try {
-      const assessment = await api.createAssessment(animalId, data);
+      const response = submittedMode === 'voice'
+        ? await api.createVoiceAssessment(animalId, data)
+        : await api.createAssessment(animalId, data);
+      const assessment = submittedMode === 'voice' ? response?.assessment : response;
       if (!assessment || assessment.id === null || assessment.id === undefined || String(assessment.id).trim() === '') {
         throw new RequestError('Assessment id missing', 200);
+      }
+      if (submittedMode === 'voice' && typeof response.transcribed_symptoms !== 'string') {
+        throw new RequestError('Transcription missing', 200);
       }
       el.assessmentForm.reset();
       el.uploadInput.value = '';
@@ -333,9 +550,9 @@
       window.location.assign(`assessment-result.html?id=${encodeURIComponent(assessment.id)}`);
     } catch (error) {
       console.error(error);
-      el.assessmentAlert.textContent = assessmentImageErrorMessage(error) || t('couldNotAssess');
+      el.assessmentAlert.textContent = assessmentImageErrorMessage(error) || (submittedMode === 'voice' ? voiceAssessmentErrorMessage(error) : '') || t('couldNotAssess');
       el.assessmentAlert.classList.remove('hidden');
-    } finally { el.submitAssessment.disabled = false; el.submitAssessment.textContent = t('beginAssessment'); }
+    } finally { assessmentSubmitting = false; renderVoiceState(); updateAssessmentSubmitButton(); }
   }
 
   async function deleteAnimal() {
@@ -353,6 +570,8 @@
     if (languageButton) { language = window.MaweshiI18n.setLanguage(languageButton.dataset.language); translatePage(); }
     if (event.target.closest('[data-open-edit]')) openEdit();
     if (event.target.closest('[data-open-assessment]')) openAssessment();
+    const assessmentModeButton = event.target.closest('[data-assessment-mode]');
+    if (assessmentModeButton) setAssessmentMode(assessmentModeButton.dataset.assessmentMode);
     if (event.target.closest('[data-choose-upload]')) el.uploadInput.click();
     if (event.target.closest('[data-take-photo]')) el.cameraInput.click();
     if (event.target.closest('[data-open-delete]')) { el.deleteAlert.classList.add('hidden'); el.deleteDialog.showModal(); }
@@ -366,10 +585,18 @@
   el.assessmentForm.addEventListener('submit', submitAssessment);
   el.uploadInput.addEventListener('change', () => useSelectedImage(el.uploadInput, el.cameraInput));
   el.cameraInput.addEventListener('change', () => useSelectedImage(el.cameraInput, el.uploadInput));
+  el.startRecording.addEventListener('click', startVoiceRecording);
+  el.stopRecording.addEventListener('click', stopVoiceRecording);
+  el.rerecord.addEventListener('click', startVoiceRecording);
+  el.assessmentDialog.addEventListener('close', () => {
+    setAssessmentMode('typed');
+  });
   el.confirmDelete.addEventListener('click', deleteAnimal);
 
   el.historyLink.href = animalId ? `health-history.html?id=${encodeURIComponent(animalId)}` : 'index.html';
   el.preventiveLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+  el.passportLink.href = animalId ? `health-passport.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+  setAssessmentMode('typed');
   translatePage();
   loadProfile();
 })();

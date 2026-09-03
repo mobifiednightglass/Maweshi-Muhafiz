@@ -134,6 +134,42 @@
 
       <div id="animal-grid" class="hidden grid gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
     </section>
+
+    <section class="area-insights-section" aria-labelledby="area-insights-heading">
+      <div class="area-insights-heading">
+        <span class="area-insights-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2" stroke="currentColor" stroke-width="1.8"/></svg>
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="area-insights-kicker" data-i18n="areaInsightsKicker">آپ کے جانوروں کا ریکارڈ</p>
+          <h2 id="area-insights-heading" data-i18n="areaInsightsTitle">علاقے کے حساب سے صحت کی معلومات</h2>
+          <p data-i18n="areaInsightsSubtitle">آپ کے جانوروں کے صحت معائنے ان کے درج کیے گئے علاقے کے مطابق۔</p>
+        </div>
+        <button id="retry-area-insights" type="button" class="area-insights-refresh hidden" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+      </div>
+
+      <div id="area-insights-loading" class="area-insights-loading" data-i18n-aria-label="areaInsightsLoading" aria-label="علاقے کی صحت کی معلومات دیکھی جا رہی ہیں">
+        <span></span><span></span>
+      </div>
+
+      <div id="area-insights-error" class="area-insights-state hidden" role="status" aria-live="polite">
+        <strong id="area-insights-error-title">علاقے کی معلومات ابھی دستیاب نہیں ہیں۔</strong>
+        <p id="area-insights-error-message">رابطہ نہیں ہو سکا۔ کچھ دیر بعد دوبارہ کوشش کریں۔</p>
+      </div>
+
+      <div id="area-insights-empty" class="area-insights-state hidden" role="status">
+        <strong data-i18n="areaInsightsEmpty">ابھی علاقے کے حساب سے کوئی صحت ریکارڈ موجود نہیں ہے۔</strong>
+        <p data-i18n="areaInsightsEmptyHelp">صحت کا معائنہ محفوظ ہونے کے بعد اس کی گنتی یہاں نظر آئے گی۔</p>
+      </div>
+
+      <div id="area-insights-content" class="hidden">
+        <div id="area-insights-list" class="area-insights-list"></div>
+        <p class="area-insights-scope">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span data-i18n="areaInsightsScope">یہ گنتی صرف آپ کے اکاؤنٹ میں موجود جانوروں کے معائنوں کی ہے، پورے علاقے یا دوسرے کسانوں کی نہیں۔</span>
+        </p>
+      </div>
+    </section>
   </main>
 
   <footer class="mt-10 border-t border-sand bg-paper">
@@ -186,6 +222,10 @@
         <label class="field">
           <span data-i18n="weightKg">وزن (کلو)</span>
           <input name="weight" type="number" min="0.1" step="0.1" inputmode="decimal" data-i18n-placeholder="weightPlaceholder" placeholder="مثلاً 320">
+        </label>
+        <label class="field sm:col-span-2">
+          <span data-i18n="region">علاقہ</span>
+          <input name="region" type="text" maxlength="100" autocomplete="address-level2" data-i18n-placeholder="regionPlaceholder" placeholder="مثلاً لاہور">
         </label>
         <label class="field sm:col-span-2">
           <span data-i18n="currentHealth">موجودہ صحت</span>

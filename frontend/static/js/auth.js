@@ -5,7 +5,10 @@
   const USER_KEY = 'maweshi-auth-user';
   const LOGIN_URL = 'auth.html?view=login';
   const LANDING_URL = 'landing.html';
+  const ME_URL = 'http://127.0.0.1:5000/api/auth/me';
   let redirectingToLogin = false;
+  let sessionVerified = false;
+  let verificationPromise = null;
 
   class AuthRequestError extends Error {
     constructor(message, status, details, kind, payload = null) {
@@ -38,6 +41,8 @@
   function clearSession() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    sessionVerified = false;
+    verificationPromise = null;
   }
 
   function loginRedirect(reason) {
@@ -73,12 +78,84 @@
     return typeof payload.error === 'string' ? payload.error : typeof payload.message === 'string' ? payload.message : '';
   }
 
-  async function request(url, options = {}) {
+  function requiresSessionVerification() {
+    const page = window.location.pathname.split('/').pop().toLowerCase();
+    return page !== 'auth.html' && page !== 'landing.html';
+  }
+
+  function unauthorized(payload) {
+    clearSession();
+    loginRedirect('session-expired');
+    return new AuthRequestError('Session expired', 401, errorDetails(payload), 'unauthorized', payload);
+  }
+
+  async function performSessionVerification(token) {
+    const headers = new Headers({ Accept: 'application/json' });
+    headers.set('Authorization', `Bearer ${token}`);
+
+    let response;
+    try { response = await fetch(ME_URL, { method: 'GET', headers }); }
+    catch { throw new AuthRequestError('Connection unavailable', 0, '', 'connection'); }
+
+    let payload = null;
+    try { payload = await response.json(); }
+    catch { payload = null; }
+
+    if (response.status === 401) throw unauthorized(payload);
+    if (response.status === 403) {
+      showPermissionNotice();
+      throw new AuthRequestError('Permission denied', 403, errorDetails(payload), 'forbidden', payload);
+    }
+    if (!response.ok || payload?.success !== true) {
+      throw new AuthRequestError(payload?.message || 'Session verification failed', response.status, errorDetails(payload), 'request', payload);
+    }
+
+    const user = payload.data;
+    if (!user || typeof user !== 'object' || user.id === null || user.id === undefined || typeof user.name !== 'string' || typeof user.email !== 'string') {
+      throw new AuthRequestError('Unreadable response', response.status, '', 'response', payload);
+    }
+
+    saveSession(token, user);
+    return getUser();
+  }
+
+  function verifySession() {
+    if (!requiresSessionVerification()) return Promise.resolve(getUser());
+    if (sessionVerified) return Promise.resolve(getUser());
+    if (verificationPromise) return verificationPromise;
+
     const token = getToken();
+    if (!token) {
+      loginRedirect('login-required');
+      return Promise.reject(new AuthRequestError('Authentication required', 401, '', 'unauthorized'));
+    }
+
+    verificationPromise = performSessionVerification(token)
+      .then((user) => {
+        sessionVerified = true;
+        return user;
+      })
+      .catch((error) => {
+        if (error.status !== 401) verificationPromise = null;
+        throw error;
+      });
+    return verificationPromise;
+  }
+
+  async function authenticatedToken() {
+    let token = getToken();
     if (!token) {
       loginRedirect('login-required');
       throw new AuthRequestError('Authentication required', 401, '', 'unauthorized');
     }
+    if (requiresSessionVerification()) await verifySession();
+    token = getToken();
+    if (!token) throw new AuthRequestError('Authentication required', 401, '', 'unauthorized');
+    return token;
+  }
+
+  async function request(url, options = {}) {
+    const token = await authenticatedToken();
 
     const headers = new Headers(options.headers || {});
     headers.set('Authorization', `Bearer ${token}`);
@@ -92,9 +169,7 @@
     catch { throw new AuthRequestError('Unreadable response', response.status, '', 'response'); }
 
     if (response.status === 401) {
-      clearSession();
-      loginRedirect('session-expired');
-      throw new AuthRequestError('Session expired', 401, errorDetails(payload), 'unauthorized', payload);
+      throw unauthorized(payload);
     }
     if (response.status === 403) {
       showPermissionNotice();
@@ -107,11 +182,7 @@
   }
 
   async function requestBlob(url, options = {}) {
-    const token = getToken();
-    if (!token) {
-      loginRedirect('login-required');
-      throw new AuthRequestError('Authentication required', 401, '', 'unauthorized');
-    }
+    const token = await authenticatedToken();
 
     const headers = new Headers(options.headers || {});
     headers.set('Authorization', `Bearer ${token}`);
@@ -127,9 +198,7 @@
     catch { payload = null; }
 
     if (response.status === 401) {
-      clearSession();
-      loginRedirect('session-expired');
-      throw new AuthRequestError('Session expired', 401, errorDetails(payload), 'unauthorized', payload);
+      throw unauthorized(payload);
     }
     if (response.status === 403) {
       showPermissionNotice();
@@ -147,5 +216,11 @@
     if (event.target.closest('[data-logout]')) logout();
   });
 
-  window.MaweshiAuth = { saveSession, getToken, getUser, clearSession, request, requestBlob, logout, showPermissionNotice, AuthRequestError };
+  window.MaweshiAuth = { saveSession, getToken, getUser, clearSession, verifySession, request, requestBlob, logout, showPermissionNotice, AuthRequestError };
+
+  if (requiresSessionVerification()) {
+    verifySession().catch((error) => {
+      if (error.status !== 401) console.error('Session could not be verified.', error);
+    });
+  }
 })();
