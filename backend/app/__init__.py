@@ -31,6 +31,7 @@ def _register_blueprints(app):
     from app.routes.reminders import reminders_bp
     from app.routes.passport import passport_bp
     from app.routes.insights import insights_bp
+    from app.routes.health_card import health_card_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(animals_bp, url_prefix="/api")
@@ -40,6 +41,7 @@ def _register_blueprints(app):
     app.register_blueprint(reminders_bp, url_prefix="/api")
     app.register_blueprint(passport_bp, url_prefix="/api")
     app.register_blueprint(insights_bp, url_prefix="/api")
+    app.register_blueprint(health_card_bp, url_prefix="/api")
 
 
 def _wire_dependencies(app):
@@ -193,4 +195,13 @@ def _wire_dependencies(app):
     app.insight_service = InsightService(
         animal_service=app.animal_service,
         health_assessment_repo=health_assessment_repo,
+    )
+
+    # -- Health-card dependencies ------------------------------------------
+    from app.services.health_card_service import HealthCardService
+
+    app.health_card_service = HealthCardService(
+        animal_service=app.animal_service,
+        health_assessment_repo=health_assessment_repo,
+        reminder_repo=reminder_repo,
     )
