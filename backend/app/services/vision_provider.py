@@ -36,6 +36,10 @@ REQUIRED_RESULT_FIELDS = frozenset({
 
 VALID_URGENCY_LEVELS = frozenset({"low", "medium", "high"})
 
+# Thinking budget for Gemini calls (lower = faster, but may reduce quality).
+# Tune this if diagnosis quality suffers or response time is too slow.
+_THINKING_BUDGET = 512
+
 
 # ---------------------------------------------------------------------------
 # Safe fallback — returned whenever the AI call or parsing fails
@@ -67,6 +71,8 @@ def safe_fallback(reason: str | None = None) -> dict:
         ),
         "confidence_note": note,
         "urgency_level": "medium",
+        "image_too_blurry": False,
+        "contains_animal": True,
         # Urdu translations
         "possible_conditions_urdu": [],
         "explanation_urdu": (
@@ -124,7 +130,7 @@ reported by the farmer:
 
 \"\"\"{symptoms}\"\"\"
 
-Return a **JSON object** with exactly these seven keys.
+Return a **JSON object** with exactly these nine keys.
 
 IMPORTANT LANGUAGE RULES:
 - The fields "possible_conditions", "explanation", "confidence_note", and
@@ -141,6 +147,8 @@ Keys:
   It MUST explicitly say this is an AI-assisted preliminary assessment,
   not a medical diagnosis, and that uncertainty should be acknowledged.
 - "urgency_level": one of "low", "medium", or "high"
+- "image_too_blurry": a boolean — true if the animal in the photo cannot be clearly seen due to blur or being out of focus, false otherwise
+- "contains_animal": a boolean — true if the photo clearly shows an animal (of any species) as the main subject, false if it shows something else (a person, an object, a landscape with no animal, etc.) or if no clear animal is visible
 - "explanation_urdu": the same explanation translated into natural, simple Urdu that a farmer can easily understand. Use Urdu script.
 - "possible_conditions_urdu": a list of the same conditions translated into simple Urdu
 - "confidence_note_urdu": the same confidence note translated into simple Urdu. If urgency is "high", clearly state in Urdu that فوری طور پر ڈاکٹر (ویٹرنری) سے رجوع کرنا ضروری ہے (immediate veterinary attention is required).
@@ -165,6 +173,8 @@ Return this exact JSON structure:
   "explanation": "Your reasoning here in English only. No Urdu.",
   "confidence_note": "State in English only that this is an AI-assisted preliminary assessment, not a diagnosis, and acknowledge uncertainty.",
   "urgency_level": "low" | "medium" | "high",
+  "image_too_blurry": true | false,
+  "contains_animal": true | false,
   "explanation_urdu": "یہاں آسان اردو میں وضاحت لکھیں۔ اگر فوری ضرورت ہے تو واضح طور پر بتائیں کہ فوری ڈاکٹر سے ملنا ضروری ہے۔",
   "possible_conditions_urdu": ["حالت 1", "حالت 2"],
   "confidence_note_urdu": "یہاں آسان اردو میں اعتماد کی وضاحت لکھیں۔"
@@ -246,58 +256,6 @@ class GeminiVisionProvider(VisionAssessmentProvider):
             return safe_fallback(f"AI provider error: {exc}")
 
     # ------------------------------------------------------------------
-    # Blur pre-check (lightweight Gemini call)
-    # ------------------------------------------------------------------
-
-    _BLUR_PROMPT = (
-        "Is this image too blurry or out of focus to make out visible "
-        "details of the animal? Answer with only the single word YES or NO."
-    )
-
-    def check_blur(self, image_bytes: bytes, image_content_type: str) -> bool:
-        """Quick Gemini-based blur check.
-
-        Sends *only* the image with a minimal YES/NO prompt to determine
-        whether the photo is too blurry to analyse.
-
-        Returns
-        -------
-        bool
-            ``True``  — image IS too blurry (reject it).
-            ``False`` — image is acceptable **or** the API call failed
-            (fail-open: don't block the user when the pre-check itself
-            errors; let the full assessment handle quality instead).
-        """
-        try:
-            from google.genai import types  # noqa: WPS433
-
-            image_part = types.Part.from_bytes(
-                data=image_bytes,
-                mime_type=image_content_type,
-            )
-
-            response = self._client.models.generate_content(
-                model=self._model,
-                contents=[image_part, self._BLUR_PROMPT],
-                config=types.GenerateContentConfig(
-                    max_output_tokens=5,
-                ),
-            )
-
-            text = (response.text or "").strip().upper()
-            # Fail-safe: only a clear "NO" means the image is NOT blurry.
-            # Anything else (YES, empty, gibberish) → treat as blurry.
-            if text.startswith("NO"):
-                return False  # not blurry
-            return True  # blurry (or ambiguous → fail-safe)
-
-        except Exception as exc:
-            # API error → don't block the request; fall through to the
-            # full assessment which has its own error handling.
-            logger.warning("Gemini blur pre-check failed (falling through): %s", exc)
-            return False
-
-    # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
 
@@ -329,6 +287,7 @@ class GeminiVisionProvider(VisionAssessmentProvider):
             config=types.GenerateContentConfig(
                 system_instruction=_SYSTEM_INSTRUCTION,
                 response_mime_type="application/json",
+                thinking_config=types.ThinkingConfig(thinking_budget=_THINKING_BUDGET),
             ),
         )
         return response
@@ -390,5 +349,16 @@ class GeminiVisionProvider(VisionAssessmentProvider):
         # Ensure possible_conditions_urdu is a list
         if not isinstance(data["possible_conditions_urdu"], list):
             data["possible_conditions_urdu"] = [str(data["possible_conditions_urdu"])]
+
+        # Default image_too_blurry safely — must be a bool, default False
+        blur_value = data.get("image_too_blurry")
+        if not isinstance(blur_value, bool):
+            data["image_too_blurry"] = False
+
+        # Default contains_animal safely — must be a bool, default True
+        # (fail open: a missing/malformed field should not block the user)
+        animal_value = data.get("contains_animal")
+        if not isinstance(animal_value, bool):
+            data["contains_animal"] = True
 
         return data

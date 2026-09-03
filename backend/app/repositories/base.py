@@ -121,6 +121,14 @@ class HealthAssessmentRepository(ABC):
         The repository must refresh ``updated_at``.
         """
 
+    @abstractmethod
+    def delete(self, assessment_id: EntityId) -> bool:
+        """Delete a health-assessment record.
+
+        Returns ``True`` if a record was removed, ``False`` if the id
+        did not exist.
+        """
+
 
 # ---------------------------------------------------------------------------
 # Vet-ready case summary repository interface

@@ -93,3 +93,9 @@ class InMemoryHealthAssessmentRepository(HealthAssessmentRepository):
                 record[key] = data[key]
         record["updated_at"] = self._utcnow()
         return self._to_dict(record)
+
+    def delete(self, assessment_id: EntityId) -> bool:
+        int_id = self._to_int_id(assessment_id)
+        if int_id is None:
+            return False
+        return self._store.pop(int_id, None) is not None

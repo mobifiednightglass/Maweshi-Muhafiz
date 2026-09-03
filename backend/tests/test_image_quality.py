@@ -2,8 +2,8 @@
 Regression tests for ImageQualityService.
 
 Validates that darkness and resolution gates correctly reject unacceptable
-images. Blur detection has moved to a separate Gemini-based check
-(GeminiVisionProvider.check_blur) and is not covered here.
+images. Blur detection is now merged into the main Gemini assessment call
+(image_too_blurry field) and is not covered here.
 """
 
 import cv2

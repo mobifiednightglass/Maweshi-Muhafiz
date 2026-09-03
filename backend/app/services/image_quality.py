@@ -4,7 +4,8 @@ ImageQualityService — Pre-assessment image quality validation.
 Analyzes images for darkness and resolution issues before they're
 accepted for health assessment. Uses OpenCV for fast local checks.
 
-Blur detection is handled separately via Gemini (see vision_provider.check_blur).
+Blur detection is handled as part of the main Gemini assessment call
+(image_too_blurry field in the structured response).
 
 Usage:
     service = ImageQualityService()

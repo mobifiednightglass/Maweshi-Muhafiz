@@ -147,3 +147,10 @@ class MongoHealthAssessmentRepository(HealthAssessmentRepository):
             return_document=True,
         )
         return self._doc_to_dict(result) if result else None
+
+    def delete(self, assessment_id) -> bool:
+        oid = self._to_object_id(assessment_id)
+        if oid is None:
+            return False
+        result = self._collection.delete_one({"_id": oid})
+        return result.deleted_count > 0
