@@ -118,24 +118,6 @@ def _run_assessment_pipeline(animal_id, symptoms, image_file):
         return None, _error("An unexpected error occurred while checking image quality.", status=500)
 
     # -- 3. Save the image via ImageStorageService -------------------------
-    # -- 4b. Gemini-based blur check (second gate) ---------------------------
-    try:
-        is_blurry = current_app.vision_provider.check_blur(
-            image_data, image_file.content_type,
-        )
-        if is_blurry:
-            return _error(
-                "Image is too blurry to analyze. Please upload a clearer photo.",
-                status=400,
-            )
-    except Exception:
-        # Don't block the request if the blur pre-check itself errors —
-        # let the full assessment handle quality downstream.
-        logger.exception("Unexpected error during Gemini blur check for animal %s", animal_id)
-
-
-    # -- 5. Save the image via ImageStorageService --------------------------
-
     try:
         file_id = current_app.image_storage_service.save_image(
             file_stream=image_file.stream,
@@ -178,7 +160,7 @@ def _run_assessment_pipeline(animal_id, symptoms, image_file):
         logger.exception("Unexpected error running AI assessment")
         diagnosis_result = None
 
-    # -- 8b. Blur rejection (merged into the single Gemini call) -----------
+    # -- 7. Blur rejection (merged into the single Gemini call) -----------
     # If the AI flagged the image as too blurry, clean up and reject.
     if isinstance(diagnosis_result, dict) and diagnosis_result.get("image_too_blurry"):
         # Delete the pending assessment record
@@ -191,12 +173,12 @@ def _run_assessment_pipeline(animal_id, symptoms, image_file):
             current_app.image_storage_service.delete_image(file_id)
         except Exception:
             logger.exception("Failed to delete image %s after blur rejection", file_id)
-        return _error(
+        return None, _error(
             "Image is too blurry to analyze. Please upload a clearer photo.",
             status=400,
         )
 
-    # -- 8c. Animal-presence rejection (same single Gemini call) -----------
+    # -- 8. Animal-presence rejection (same single Gemini call) -----------
     # If the AI determined the photo does not contain an animal, clean up and reject.
     if isinstance(diagnosis_result, dict) and diagnosis_result.get("contains_animal") is False:
         try:
@@ -207,13 +189,12 @@ def _run_assessment_pipeline(animal_id, symptoms, image_file):
             current_app.image_storage_service.delete_image(file_id)
         except Exception:
             logger.exception("Failed to delete image %s after animal-presence rejection", file_id)
-        return _error(
+        return None, _error(
             "No animal was detected in this photo. Please upload a clear photo of the animal.",
             status=400,
         )
 
     # -- 9. Determine final status and red-flag state ----------------------
-    # -- 7. Determine final status and red-flag state ----------------------
     if diagnosis_result is None:
         status_value = "failed"
         diagnosis_result = {
