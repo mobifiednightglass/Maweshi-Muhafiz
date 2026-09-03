@@ -32,7 +32,7 @@
       noNotes: 'کوئی نوٹ درج نہیں کیا گیا۔', year: 'سال', kg: 'کلو', recordUpdated: 'جانور کی معلومات محفوظ ہو گئیں۔',
       assessmentSaved: 'صحت کا معائنہ ریکارڈ ہو گیا۔', couldNotSave: 'معلومات محفوظ نہیں ہو سکیں۔ دوبارہ کوشش کریں۔',
       couldNotAssess: 'معائنہ مکمل نہیں ہو سکا۔ دوبارہ کوشش کریں۔', couldNotDelete: 'ریکارڈ حذف نہیں ہو سکا۔ دوبارہ کوشش کریں۔',
-      imageTooLarge: 'تصویر 5 MB سے کم ہونی چاہیے۔', imageBlurry: 'تصویر دھندلی ہے۔ براہِ کرم صاف تصویر منتخب کر کے دوبارہ کوشش کریں۔', imageDark: 'تصویر بہت تاریک ہے۔ براہِ کرم بہتر روشنی میں تصویر لے کر دوبارہ کوشش کریں۔', imageLowResolution: 'تصویر کی کوالٹی بہت کم ہے۔ براہِ کرم زیادہ واضح تصویر منتخب کر کے دوبارہ کوشش کریں۔', imageUnreadable: 'تصویر پڑھی نہیں جا سکی۔ براہِ کرم دوسری JPG، PNG یا WebP تصویر منتخب کریں۔', imageInvalidType: 'تصویر کا فارمیٹ درست نہیں۔ براہِ کرم JPG، PNG یا WebP تصویر منتخب کریں۔',
+      imageTooLarge: 'تصویر 5 MB سے کم ہونی چاہیے۔', imageBlurry: 'تصویر دھندلی ہے۔ براہِ کرم صاف تصویر منتخب کر کے دوبارہ کوشش کریں۔', imageDark: 'تصویر بہت تاریک ہے۔ براہِ کرم بہتر روشنی میں تصویر لے کر دوبارہ کوشش کریں۔', imageLowResolution: 'تصویر کی کوالٹی بہت کم ہے۔ براہِ کرم زیادہ واضح تصویر منتخب کر کے دوبارہ کوشش کریں۔', imageUnreadable: 'تصویر پڑھی نہیں جا سکی۔ براہِ کرم دوسری JPG، PNG یا WebP تصویر منتخب کریں۔', imageInvalidType: 'تصویر کا فارمیٹ درست نہیں۔ براہِ کرم JPG، PNG یا WebP تصویر منتخب کریں۔', imageNotAnimal: 'اس تصویر میں جانور واضح نظر نہیں آ رہا۔ براہِ کرم جانور کی صاف تصویر منتخب کر کے دوبارہ کوشش کریں۔',
       statusPending: 'جاری ہے', statusCompleted: 'مکمل', statusFailed: 'مکمل نہیں ہوا',
       urgencyLow: 'معمولی توجہ', urgencyMedium: 'توجہ درکار', urgencyHigh: 'فوری توجہ', noConditionSummary: 'کوئی بیماری درج نہیں',
       preliminaryResult: 'ابتدائی نتیجہ', assessmentDate: 'معائنے کی تاریخ', symptomMethod: 'علامات بتانے کا طریقہ', typeSymptoms: 'علامات لکھیں', speakUrdu: 'اردو میں بولیں', recordingPreviewLabel: 'ریکارڈ کی گئی آواز سنیں',
@@ -66,7 +66,7 @@
       noNotes: 'No notes recorded.', year: 'yr', kg: 'kg', recordUpdated: 'Animal information was saved.',
       assessmentSaved: 'The health assessment was recorded.', couldNotSave: 'The information could not be saved. Please try again.',
       couldNotAssess: 'The assessment could not be completed. Please try again.', couldNotDelete: 'The record could not be deleted. Please try again.',
-      imageTooLarge: 'The image must be smaller than 5 MB. Please choose another image and try again.', imageBlurry: 'Image is too blurry to analyze. Please upload a clearer photo.', imageDark: 'Image is too dark. Please choose a brighter photo and try again.', imageLowResolution: 'Image resolution is too low. Please choose a clearer, higher-resolution photo and try again.', imageUnreadable: 'Image could not be processed. Please choose another JPG, PNG or WebP image.', imageInvalidType: 'This image format is not accepted. Please choose a JPG, PNG or WebP image.',
+      imageTooLarge: 'The image must be smaller than 5 MB. Please choose another image and try again.', imageBlurry: 'Image is too blurry to analyze. Please upload a clearer photo.', imageDark: 'Image is too dark. Please choose a brighter photo and try again.', imageLowResolution: 'Image resolution is too low. Please choose a clearer, higher-resolution photo and try again.', imageUnreadable: 'Image could not be processed. Please choose another JPG, PNG or WebP image.', imageInvalidType: 'This image format is not accepted. Please choose a JPG, PNG or WebP image.', imageNotAnimal: 'The animal is not clearly visible in this image. Please choose a clear photo of the animal and try again.',
       statusPending: 'Pending', statusCompleted: 'Completed', statusFailed: 'Not completed',
       urgencyLow: 'Low urgency', urgencyMedium: 'Needs attention', urgencyHigh: 'Urgent attention', noConditionSummary: 'No condition recorded',
       preliminaryResult: 'Preliminary result', assessmentDate: 'Assessment date', symptomMethod: 'How would you describe the symptoms?', typeSymptoms: 'Type Symptoms', speakUrdu: 'Speak in Urdu', recordingPreviewLabel: 'Listen to the recorded symptoms',
@@ -576,6 +576,7 @@
       const message = item.trim();
       if (!message) return;
       if (message === 'Image is too blurry to analyze. Please upload a clearer photo.') messages.push(t('imageBlurry'));
+      else if (message === 'No animal was detected in this photo. Please upload a clear photo of the animal.') messages.push(t('imageNotAnimal'));
       else if (message === 'Image is too dark') messages.push(t('imageDark'));
       else if (message === 'Image resolution is too low') messages.push(t('imageLowResolution'));
       else if (message === 'Image could not be processed') messages.push(t('imageUnreadable'));
