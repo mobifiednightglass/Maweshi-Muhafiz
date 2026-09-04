@@ -4,7 +4,7 @@
   const TOKEN_KEY = 'maweshi-auth-token';
   const USER_KEY = 'maweshi-auth-user';
   const LOGIN_URL = 'auth.html?view=login';
-  const LANDING_URL = 'landing.html';
+  const LANDING_URL = 'index.html';
   const ME_URL = 'http://127.0.0.1:5000/api/auth/me';
   let redirectingToLogin = false;
   let sessionVerified = false;
@@ -80,7 +80,7 @@
 
   function requiresSessionVerification() {
     const page = window.location.pathname.split('/').pop().toLowerCase();
-    return page !== 'auth.html' && page !== 'landing.html';
+    return page !== 'auth.html' && page !== 'index.html';
   }
 
   function unauthorized(payload) {

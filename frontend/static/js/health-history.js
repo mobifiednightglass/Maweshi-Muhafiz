@@ -62,7 +62,7 @@
   };
 
   function setProfileLinks() {
-    const destination = animalId && animalId.trim() ? `animal-profile.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+    const destination = animalId && animalId.trim() ? `animal-profile.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
     [el.profileLink, el.errorProfileLink, el.startLink].forEach((link) => { link.href = destination; });
   }
 

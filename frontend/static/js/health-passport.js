@@ -86,7 +86,7 @@
   }
 
   function setLinks() {
-    const profile = animalId ? `animal-profile.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+    const profile = animalId ? `animal-profile.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
     el.profileLink.href = profile;
     el.errorProfileLink.href = profile;
     el.historyLink.href = animalId ? `health-history.html?id=${encodeURIComponent(animalId)}` : profile;

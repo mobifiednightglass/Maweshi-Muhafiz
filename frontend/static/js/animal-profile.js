@@ -646,7 +646,7 @@
 
   async function deleteAnimal() {
     el.deleteAlert.classList.add('hidden'); el.confirmDelete.disabled = true; el.confirmDelete.textContent = t('deleting');
-    try { await api.deleteAnimal(animalId); window.location.assign('index.html'); }
+    try { await api.deleteAnimal(animalId); window.location.assign('dashboard.html'); }
     catch (error) {
       console.error(error); el.deleteAlert.textContent = t('couldNotDelete'); el.deleteAlert.classList.remove('hidden');
       el.confirmDelete.disabled = false; el.confirmDelete.textContent = t('confirmDelete');
@@ -682,10 +682,10 @@
   });
   el.confirmDelete.addEventListener('click', deleteAnimal);
 
-  el.historyLink.href = animalId ? `health-history.html?id=${encodeURIComponent(animalId)}` : 'index.html';
-  el.preventiveLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : 'index.html';
-  el.reminderListLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : 'index.html';
-  el.passportLink.href = animalId ? `health-passport.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+  el.historyLink.href = animalId ? `health-history.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
+  el.preventiveLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
+  el.reminderListLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
+  el.passportLink.href = animalId ? `health-passport.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
   setAssessmentMode('typed');
   translatePage();
   loadProfile();

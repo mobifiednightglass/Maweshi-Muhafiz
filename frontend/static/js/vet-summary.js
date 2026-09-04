@@ -69,7 +69,7 @@
   };
 
   function resultUrl() {
-    return assessmentId && assessmentId.trim() ? `assessment-result.html?id=${encodeURIComponent(assessmentId)}` : 'index.html';
+    return assessmentId && assessmentId.trim() ? `assessment-result.html?id=${encodeURIComponent(assessmentId)}` : 'dashboard.html';
   }
 
   function formatDate(raw) {

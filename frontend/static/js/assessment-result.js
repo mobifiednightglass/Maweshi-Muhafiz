@@ -81,7 +81,7 @@
   };
 
   function setProfileLinks(animalId) {
-    const destination = animalId === null || animalId === undefined || String(animalId).trim() === '' ? 'index.html' : `animal-profile.html?id=${encodeURIComponent(animalId)}`;
+    const destination = animalId === null || animalId === undefined || String(animalId).trim() === '' ? 'dashboard.html' : `animal-profile.html?id=${encodeURIComponent(animalId)}`;
     ['top-profile-link', 'error-profile-link', 'pending-profile-link', 'failed-profile-link', 'retry-assessment-link', 'primary-profile-link'].forEach((id) => {
       document.querySelector(`#${id}`).href = destination;
     });

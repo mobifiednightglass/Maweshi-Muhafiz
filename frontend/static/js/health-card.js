@@ -104,7 +104,7 @@
   }
 
   function setLinks() {
-    const destination = animalId ? `health-passport.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+    const destination = animalId ? `health-passport.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
     el.passportLink.href = destination;
     el.errorPassportLink.href = destination;
   }

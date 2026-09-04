@@ -59,7 +59,7 @@
   };
 
   function setHistoryLinks() {
-    const destination = validId(animalId) ? `health-history.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+    const destination = validId(animalId) ? `health-history.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
     el.historyLink.href = destination;
     el.errorHistoryLink.href = destination;
   }

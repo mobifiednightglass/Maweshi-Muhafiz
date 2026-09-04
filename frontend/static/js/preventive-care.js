@@ -66,7 +66,7 @@
   };
 
   function profileUrl() {
-    return animalId && animalId.trim() ? `animal-profile.html?id=${encodeURIComponent(animalId)}` : 'index.html';
+    return animalId && animalId.trim() ? `animal-profile.html?id=${encodeURIComponent(animalId)}` : 'dashboard.html';
   }
 
   function animalTypeIcon(type) {

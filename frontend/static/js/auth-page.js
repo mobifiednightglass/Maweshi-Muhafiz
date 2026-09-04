@@ -5,7 +5,7 @@
   login: 'http://127.0.0.1:5000/api/auth/login',
   signup: 'http://127.0.0.1:5000/api/auth/signup'
 };
-  const DASHBOARD_URL = 'index.html';
+  const DASHBOARD_URL = 'dashboard.html';
   const EMAIL_PATTERN = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
 
   const messages = {
