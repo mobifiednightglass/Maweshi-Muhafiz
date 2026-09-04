@@ -19,7 +19,7 @@
       formIntro: 'ضروری معلومات درج کریں۔ باقی خانے خالی چھوڑ سکتے ہیں۔', name: 'نام', namePlaceholder: 'مثلاً رانی',
       animalType: 'جانور کی قسم', typePlaceholder: 'مثلاً گائے', breed: 'نسل', breedPlaceholder: 'مثلاً ساہیوال',
       gender: 'جنس', selectGender: 'جنس منتخب کریں', female: 'مادہ', male: 'نر', ageYears: 'عمر (سال)', agePlaceholder: 'مثلاً 3',
-      weightKg: 'وزن (کلو)', weightPlaceholder: 'مثلاً 320', region: 'علاقہ', regionPlaceholder: 'مثلاً لاہور', currentHealth: 'موجودہ صحت', notRecorded: 'درج نہیں',
+      weightKg: 'وزن (کلو)', weightPlaceholder: 'مثلاً 320', color: 'رنگ', colorPlaceholder: 'مثلاً بھورا', region: 'علاقہ', regionPlaceholder: 'مثلاً لاہور', currentHealth: 'موجودہ صحت', notRecorded: 'درج نہیں',
       healthy: 'صحت مند', needsAttention: 'توجہ درکار', underTreatment: 'علاج جاری ہے', notes: 'اضافی باتیں',
       notesPlaceholder: 'پہچان کی علامت یا دیکھ بھال کی اہم بات', cancel: 'منسوخ کریں', saveAnimal: 'جانور محفوظ کریں', saving: 'محفوظ ہو رہا ہے…',
       emptyTitle: 'ابھی کوئی جانور شامل نہیں کیا گیا', emptyMessage: 'اپنا پہلا جانور شامل کریں اور اس کا ریکارڈ سنبھالنا شروع کریں۔',
@@ -44,7 +44,7 @@
       closeFormLabel: 'Close add animal form', formIntro: 'Start with the essential details. You can leave optional information blank.',
       name: 'Name', namePlaceholder: 'e.g. Rani', animalType: 'Animal type', typePlaceholder: 'e.g. Cow', breed: 'Breed',
       breedPlaceholder: 'e.g. Sahiwal', gender: 'Gender', selectGender: 'Select gender', female: 'Female', male: 'Male',
-      ageYears: 'Age in years', agePlaceholder: 'e.g. 3', weightKg: 'Weight in kg', weightPlaceholder: 'e.g. 320', region: 'Region', regionPlaceholder: 'e.g. Lahore',
+      ageYears: 'Age in years', agePlaceholder: 'e.g. 3', weightKg: 'Weight in kg', weightPlaceholder: 'e.g. 320', color: 'Color', colorPlaceholder: 'e.g. Brown', region: 'Region', regionPlaceholder: 'e.g. Lahore',
       currentHealth: 'Current health status', notRecorded: 'Not recorded', healthy: 'Healthy', needsAttention: 'Needs attention',
       underTreatment: 'Under treatment', notes: 'Notes', notesPlaceholder: 'Identification marks or useful care notes', cancel: 'Cancel',
       saveAnimal: 'Save animal', saving: 'Saving…', emptyTitle: 'No animals added yet',
@@ -273,7 +273,7 @@
   }
   function buildAnimalPayload(formData) {
     const payload = { name: String(formData.get('name') || '').trim(), animal_type: String(formData.get('animal_type') || '').trim() };
-    ['breed', 'gender', 'health_status', 'region', 'notes'].forEach((field) => {
+    ['breed', 'gender', 'color', 'health_status', 'region', 'notes'].forEach((field) => {
       const value = optionalString(formData, field);
       if (value !== null) payload[field] = value;
     });
