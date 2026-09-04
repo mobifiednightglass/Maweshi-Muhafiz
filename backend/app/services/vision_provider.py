@@ -40,6 +40,26 @@ VALID_URGENCY_LEVELS = frozenset({"low", "medium", "high"})
 # Tune this if diagnosis quality suffers or response time is too slow.
 _THINKING_BUDGET = 512
 
+# Unicode range for Devanagari script (Hindi).  Used as a safety net to
+# detect when the AI returns Hindi instead of Urdu in _urdu fields.
+_DEVANAGARI_RANGE = range(0x0900, 0x0980)
+
+# Safe Urdu fallback text used when Devanagari is detected in a _urdu field.
+_URDU_FALLBACK_EXPLANATION = (
+    "خودکار تصویری تشخیص کا نتیجہ دستیاب نہیں ہو سکا۔ "
+    "براہ کرم تجربہ کار ڈاکٹر (ویٹرنری) سے جانور کا معائنہ کروائیں۔"
+)
+_URDU_FALLBACK_CONFIDENCE = (
+    "خودکار تشخیص مکمل نہیں ہو سکی۔ "
+    "براہ کرم تجربہ کار ڈاکٹر (ویٹرنری) سے جانور کا معائنہ کروائیں۔"
+)
+_URDU_FALLBACK_CONDITIONS = ["حالت کی تشخیص دستیاب نہیں"]
+
+
+def _contains_devanagari(text: str) -> bool:
+    """Return True if *text* contains any Devanagari (Hindi) characters."""
+    return any(ord(ch) in _DEVANAGARI_RANGE for ch in text)
+
 
 # ---------------------------------------------------------------------------
 # Safe fallback — returned whenever the AI call or parsing fails
@@ -115,8 +135,13 @@ _SYSTEM_INSTRUCTION = (
     "You are NOT a substitute for professional veterinary diagnosis. "
     "Always acknowledge uncertainty and recommend consulting a qualified "
     "veterinarian. "
-    "You must respond in both English and Urdu. The Urdu text should be "
-    "natural, simple, and easy for a farmer to understand. "
+    "You must respond in both English and Urdu. "
+    "CRITICAL LANGUAGE RULE FOR URDU: All Urdu text MUST be written in "
+    "the Urdu/Arabic script (Nastaliq style). You MUST NOT use Hindi or "
+    "Devanagari script under any circumstances. Use natural, simple "
+    "Pakistani Urdu that an ordinary Pakistani farmer can easily "
+    "understand. Keep medical and animal-health terminology clear and "
+    "appropriate for a rural Pakistani audience. "
     "For high-urgency or emergency cases, the Urdu explanation and "
     "confidence note must clearly communicate that immediate veterinary "
     "attention is required. "
@@ -137,7 +162,9 @@ IMPORTANT LANGUAGE RULES:
   "urgency_level" MUST be written in English ONLY. Do NOT include any Urdu
   words, phrases, or script in these fields.
 - The fields "explanation_urdu", "possible_conditions_urdu", and
-  "confidence_note_urdu" MUST be written in Urdu ONLY (Urdu script).
+  "confidence_note_urdu" MUST be written in Urdu ONLY, using the
+  Urdu/Arabic script (Nastaliq). Do NOT use Hindi or Devanagari script.
+  Use natural, simple Pakistani Urdu that a farmer can easily understand.
 
 Keys:
 
@@ -164,7 +191,7 @@ Analyse the attached livestock photo and the following symptoms:
 
 LANGUAGE RULES:
 - "possible_conditions", "explanation", "confidence_note" MUST be in English ONLY. No Urdu text.
-- "explanation_urdu", "possible_conditions_urdu", "confidence_note_urdu" MUST be in Urdu script ONLY.
+- "explanation_urdu", "possible_conditions_urdu", "confidence_note_urdu" MUST be in Urdu/Arabic script ONLY. Do NOT use Hindi or Devanagari script. Use simple Pakistani Urdu.
 
 Return this exact JSON structure:
 
@@ -351,6 +378,22 @@ class GeminiVisionProvider(VisionAssessmentProvider):
         # Ensure possible_conditions_urdu is a list
         if not isinstance(data["possible_conditions_urdu"], list):
             data["possible_conditions_urdu"] = [str(data["possible_conditions_urdu"])]
+
+        # Safety net: reject Devanagari (Hindi) script in _urdu fields.
+        # If any _urdu field contains Devanagari characters, replace it
+        # with a safe Urdu fallback so the client never receives Hindi.
+        if _contains_devanagari(data.get("explanation_urdu", "")):
+            logger.warning("Devanagari detected in explanation_urdu; replacing with Urdu fallback.")
+            data["explanation_urdu"] = _URDU_FALLBACK_EXPLANATION
+        if _contains_devanagari(data.get("confidence_note_urdu", "")):
+            logger.warning("Devanagari detected in confidence_note_urdu; replacing with Urdu fallback.")
+            data["confidence_note_urdu"] = _URDU_FALLBACK_CONFIDENCE
+        if any(
+            _contains_devanagari(str(c))
+            for c in data.get("possible_conditions_urdu", [])
+        ):
+            logger.warning("Devanagari detected in possible_conditions_urdu; replacing with Urdu fallback.")
+            data["possible_conditions_urdu"] = _URDU_FALLBACK_CONDITIONS
 
         # Default image_too_blurry safely — must be a bool, default False
         blur_value = data.get("image_too_blurry")

@@ -225,6 +225,28 @@ def _run_assessment_pipeline(animal_id, symptoms, image_file):
     if ai_urgency_high:
         red_flag_reasons.append("AI assessed urgency as high")
 
+    # -- Update the animal's health_status from the latest completed assessment.
+    # health_status always reflects the most recent successfully completed
+    # assessment: high/medium urgency or any red-flag → "Needs Attention";
+    # only low urgency with no red flag → "Healthy".
+    # Failed assessments never alter the status.
+    if status_value == "completed":
+        needs_attention = (
+            diagnosis_result.get("urgency_level") in ("high", "medium")
+            or final_is_red_flag
+        )
+        new_status = "Needs Attention" if needs_attention else "Healthy"
+        try:
+            current_app.animal_service.update(
+                animal_id,
+                {"health_status": new_status},
+                user_id=g.user_id,
+            )
+        except Exception:
+            logger.exception(
+                "Failed to update health_status for animal %s", animal_id,
+            )
+
     # -- 8. Attach server-generated safe-next-steps guidance ----------------
     # Generated on the server (not by the AI) so the farmer always receives
     # safe handling advice, even when the AI assessment failed or fell back.
