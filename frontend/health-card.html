@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="A simplified livestock Health Card from Maweshi Muhafiz.">
+  <title>Maweshi Muhafiz | جانور کا ہیلتھ کارڈ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/health-card.css">
+</head>
+<body class="min-h-screen bg-cream text-ink antialiased">
+  <a class="skip-link print-hidden" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="border-b border-sand bg-paper print-hidden">
+    <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-logo-frame" aria-hidden="true">
+          <img class="brand-logo" src="static/images/maweshi-muhafiz-logo.png" alt="">
+        </span>
+        <span>
+          <span class="block text-[1.05rem] font-bold leading-tight tracking-tight text-forest">Maweshi Muhafiz</span>
+          <span class="block text-xs font-medium text-stone-500" lang="ur" dir="rtl">مویشی محافظ</span>
+        </span>
+      </a>
+      <div class="authenticated-nav-actions">
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+        <button type="button" class="logout-button" data-logout data-i18n="logout">لاگ آؤٹ</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="health-card-shell">
+    <div class="health-card-toolbar print-hidden">
+      <a id="passport-link" href="index.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="backToPassport">صحت پاسپورٹ پر واپس جائیں</span>
+      </a>
+      <div id="card-actions" class="health-card-actions hidden">
+        <button id="share-card" type="button" class="btn btn-secondary">
+          <span aria-hidden="true">↗</span>
+          <span data-i18n="share">شیئر کریں</span>
+        </button>
+        <button id="print-card" type="button" class="btn btn-primary">
+          <span aria-hidden="true">▣</span>
+          <span data-i18n="printSavePdf">پرنٹ / PDF محفوظ کریں</span>
+        </button>
+      </div>
+    </div>
+
+    <p id="share-feedback" class="share-feedback hidden print-hidden" role="status" aria-live="polite"></p>
+
+    <section id="health-card-loading" class="health-card-loading" data-i18n-aria-label="loadingLabel" aria-label="ہیلتھ کارڈ دیکھا جا رہا ہے">
+      <div class="health-card-loading-head"></div>
+      <div class="health-card-loading-row"><span></span><span></span></div>
+    </section>
+
+    <section id="health-card-error" class="health-card-state hidden" aria-live="polite">
+      <span class="health-card-state-icon" aria-hidden="true">!</span>
+      <h1 id="health-card-error-title"></h1>
+      <p id="health-card-error-message"></p>
+      <div class="health-card-state-actions">
+        <button id="retry-card" type="button" class="btn btn-primary" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+        <a id="error-passport-link" href="index.html" class="btn btn-secondary" data-i18n="backToPassport">صحت پاسپورٹ پر واپس جائیں</a>
+      </div>
+    </section>
+
+    <article id="health-card-page" class="health-card-document hidden" aria-labelledby="health-card-title">
+      <header class="health-card-document-header">
+        <div class="health-card-brand">
+          <img src="static/images/maweshi-muhafiz-logo.png" alt="" aria-hidden="true">
+          <div>
+            <strong>Maweshi Muhafiz</strong>
+            <span lang="ur" dir="rtl">مویشی محافظ</span>
+          </div>
+        </div>
+        <div class="health-card-heading">
+          <p class="health-card-kicker" data-i18n="buyerSummary">خریدار کے لیے آسان صحت خلاصہ</p>
+          <h1 id="health-card-title" data-i18n="healthCardTitle">جانور کا ہیلتھ کارڈ</h1>
+          <p class="generated-line"><span data-i18n="generatedOn">تیار کیا گیا</span>: <time id="generated-date"></time></p>
+        </div>
+      </header>
+
+      <section class="animal-strip" aria-labelledby="animal-heading">
+        <span id="animal-icon" class="health-card-animal-icon" aria-hidden="true">🐾</span>
+        <div class="min-w-0">
+          <p id="animal-heading" class="section-label" data-i18n="animal">جانور</p>
+          <h2 id="animal-name" dir="auto"></h2>
+          <p id="animal-type" dir="auto"></p>
+        </div>
+      </section>
+
+      <section class="card-section" aria-labelledby="preventive-heading">
+        <div class="card-section-heading">
+          <div>
+            <p class="section-label" data-i18n="careRecord">دیکھ بھال کی یاددہانیاں</p>
+            <h2 id="preventive-heading" data-i18n="preventiveCare">بیماری سے بچاؤ کی دیکھ بھال</h2>
+          </div>
+          <span id="preventive-overall" class="card-status"></span>
+        </div>
+
+        <div class="care-grid">
+          <article class="care-item">
+            <div class="care-item-title">
+              <span class="care-symbol" aria-hidden="true">✓</span>
+              <h3 data-i18n="vaccination">ویکسین کی یاددہانی</h3>
+            </div>
+            <p id="vaccination-status" class="care-status-text"></p>
+            <dl class="care-details">
+              <div><dt data-i18n="dueDate">مقررہ تاریخ</dt><dd id="vaccination-date"></dd></div>
+              <div id="vaccination-overdue-row" class="hidden"><dt data-i18n="overdueBy">کتنے دن گزرے</dt><dd id="vaccination-overdue"></dd></div>
+            </dl>
+          </article>
+
+          <article class="care-item">
+            <div class="care-item-title">
+              <span class="care-symbol" aria-hidden="true">✓</span>
+              <h3 data-i18n="deworming">کیڑے مار دوا کی یاددہانی</h3>
+            </div>
+            <p id="deworming-status" class="care-status-text"></p>
+            <dl class="care-details">
+              <div><dt data-i18n="dueDate">مقررہ تاریخ</dt><dd id="deworming-date"></dd></div>
+              <div id="deworming-overdue-row" class="hidden"><dt data-i18n="overdueBy">کتنے دن گزرے</dt><dd id="deworming-overdue"></dd></div>
+            </dl>
+          </article>
+        </div>
+
+        <section class="other-care" aria-labelledby="other-care-heading">
+          <h3 id="other-care-heading" data-i18n="otherCare">دوسری یاددہانیاں</h3>
+          <p id="other-care-empty" class="card-empty hidden" data-i18n="noOtherCare">کوئی دوسری یاددہانی درج نہیں۔</p>
+          <div id="other-care-list" class="other-care-list"></div>
+        </section>
+
+        <p class="reminder-disclaimer" data-i18n="reminderDisclaimer">یہ حیثیت محفوظ یاددہانی کی تاریخوں پر مبنی ہے؛ اس سے علاج مکمل ہونے کی تصدیق نہیں ہوتی۔</p>
+      </section>
+
+      <section id="warning-section" class="warning-section" aria-labelledby="warning-heading">
+        <span id="warning-icon" class="warning-icon" aria-hidden="true">✓</span>
+        <div>
+          <p class="section-label" data-i18n="latestHealthCheck">تازہ ترین صحت معائنہ</p>
+          <h2 id="warning-heading"></h2>
+          <p id="warning-description"></p>
+          <dl class="warning-details">
+            <div><dt data-i18n="urgency">فوری توجہ</dt><dd id="warning-urgency"></dd></div>
+            <div><dt data-i18n="lastAssessed">آخری معائنہ</dt><dd id="last-assessed"></dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <footer class="health-card-document-footer">
+        <p data-i18n="simplifiedRecord">یہ آسان صحت کارڈ ہے۔ مکمل ذاتی صحت ریکارڈ کسان کے پاس محفوظ رہتا ہے۔</p>
+        <strong>Maweshi Muhafiz</strong>
+      </footer>
+    </article>
+  </main>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/health-card.js" defer></script>
+</body>
+</html>

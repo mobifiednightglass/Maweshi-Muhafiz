@@ -17,7 +17,7 @@
       statusCompleted: 'مکمل', statusPending: 'جاری ہے', statusFailed: 'مکمل نہیں ہوا', urgencyLow: 'کم فوری توجہ', urgencyMedium: 'توجہ درکار', urgencyHigh: 'فوری توجہ', urgencyUnknown: 'فوری توجہ درج نہیں', noCondition: 'کوئی ممکنہ بیماری درج نہیں',
       carePlanning: 'دیکھ بھال کی منصوبہ بندی', preventiveCare: 'بیماری سے بچاؤ کی یاددہانی', manageReminders: 'یاددہانی سنبھالیں', upcoming: 'آنے والی', past: 'گزری ہوئی', noUpcomingReminders: 'کوئی آنے والی یاددہانی نہیں۔', noPastReminders: 'کوئی گزری ہوئی یاددہانی نہیں۔', dueDate: 'تاریخ', noNotes: 'کوئی نوٹ درج نہیں',
       vetRecords: 'ڈاکٹر کے لیے ریکارڈ', vetSummaries: 'ڈاکٹر کے لیے خلاصے', noSummaries: 'ابھی ڈاکٹر کے لیے کوئی خلاصہ موجود نہیں ہے۔', vetSummary: 'ڈاکٹر کے لیے صحت کا خلاصہ', viewSummary: 'خلاصہ دیکھیں',
-      footerCare: 'مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔', privateRecord: 'یہ کسان کا ذاتی صحت ریکارڈ ہے۔'
+      viewHealthCard: 'ہیلتھ کارڈ دیکھیں', footerCare: 'مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔', privateRecord: 'یہ کسان کا ذاتی صحت ریکارڈ ہے۔'
     },
     en: {
       skipLink: 'Skip to main content', homeLabel: 'Maweshi Muhafiz home', languageLabel: 'Choose language', logout: 'Logout', backToProfile: 'Back to Animal Profile',
@@ -31,7 +31,7 @@
       statusCompleted: 'Completed', statusPending: 'Pending', statusFailed: 'Not completed', urgencyLow: 'Low urgency', urgencyMedium: 'Needs attention', urgencyHigh: 'Urgent attention', urgencyUnknown: 'Urgency not recorded', noCondition: 'No possible condition recorded',
       carePlanning: 'Care planning', preventiveCare: 'Preventive Care Reminders', manageReminders: 'Manage reminders', upcoming: 'Upcoming', past: 'Past', noUpcomingReminders: 'No upcoming reminders.', noPastReminders: 'No past reminders.', dueDate: 'Due', noNotes: 'No notes recorded',
       vetRecords: 'Veterinary records', vetSummaries: 'Vet-Ready Summaries', noSummaries: 'No Vet-Ready Summaries yet.', vetSummary: 'Vet-Ready health summary', viewSummary: 'View Summary',
-      footerCare: 'Built to support better livestock care.', privateRecord: 'This is the farmer’s private health record.'
+      viewHealthCard: 'View Health Card', footerCare: 'Built to support better livestock care.', privateRecord: 'This is the farmer’s private health record.'
     }
   };
 
@@ -43,7 +43,7 @@
     assessmentCount: document.querySelector('#assessment-count'), latestAssessment: document.querySelector('#latest-assessment'), assessments: document.querySelector('#assessments-list'), assessmentsEmpty: document.querySelector('#assessments-empty'),
     upcoming: document.querySelector('#upcoming-list'), upcomingEmpty: document.querySelector('#upcoming-empty'), past: document.querySelector('#past-list'), pastEmpty: document.querySelector('#past-empty'),
     summaries: document.querySelector('#summaries-list'), summariesEmpty: document.querySelector('#summaries-empty'), profileLink: document.querySelector('#profile-link'), errorProfileLink: document.querySelector('#error-profile-link'),
-    historyLink: document.querySelector('#full-history-link'), preventiveLink: document.querySelector('#preventive-care-link')
+    historyLink: document.querySelector('#full-history-link'), preventiveLink: document.querySelector('#preventive-care-link'), healthCardLink: document.querySelector('#health-card-link')
   };
 
   let language = window.MaweshiI18n.getLanguage();
@@ -91,6 +91,7 @@
     el.errorProfileLink.href = profile;
     el.historyLink.href = animalId ? `health-history.html?id=${encodeURIComponent(animalId)}` : profile;
     el.preventiveLink.href = animalId ? `preventive-care.html?id=${encodeURIComponent(animalId)}` : profile;
+    el.healthCardLink.href = animalId ? `health-card.html?id=${encodeURIComponent(animalId)}` : profile;
   }
 
   function renderAnimal(animal) {
