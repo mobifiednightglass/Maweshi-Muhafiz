@@ -265,6 +265,12 @@
   }
   function activityStatus(record) { return t(record.status === 'completed' ? 'statusCompleted' : record.status === 'failed' ? 'statusFailed' : 'statusPending'); }
   function urgencyCopy(level) { return t(level === 'high' ? 'urgencyHigh' : level === 'low' ? 'urgencyLow' : 'urgencyMedium'); }
+  function localizedConditions(result) {
+    const english = Array.isArray(result?.possible_conditions) ? result.possible_conditions.filter(Boolean) : [];
+    if (language !== 'ur') return english;
+    const urdu = Array.isArray(result?.possible_conditions_urdu) ? result.possible_conditions_urdu.filter(Boolean) : [];
+    return urdu.length ? urdu : english;
+  }
 
   function renderAssessments() {
     clearActivityStates();
@@ -273,7 +279,7 @@
     const fragment = document.createDocumentFragment();
     sorted.forEach((record) => {
       const result = record.diagnosis_result && typeof record.diagnosis_result === 'object' ? record.diagnosis_result : null;
-      const conditions = result && Array.isArray(result.possible_conditions) ? result.possible_conditions.filter(Boolean).slice(0, 2).join('، ') : '';
+      const conditions = result ? localizedConditions(result).slice(0, 2).join('، ') : '';
       const article = document.createElement('article');
       article.className = 'activity-item';
       const top = document.createElement('div'); top.className = 'activity-item-top';
