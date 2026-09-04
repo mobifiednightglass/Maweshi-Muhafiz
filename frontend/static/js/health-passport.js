@@ -51,6 +51,7 @@
   let errorKind = null;
 
   function t(key) { return copy[language][key] || key; }
+  function reminderTypeLabel(value) { return window.MaweshiI18n.reminderTypeLabel(value, language); }
   function text(value, fallback = t('notRecorded')) { return value === null || value === undefined || String(value).trim() === '' ? fallback : String(value); }
   function stringList(value) { return Array.isArray(value) ? value.filter((item) => typeof item === 'string' && item.trim()) : []; }
   function translatedValue(value) { return { Female: t('female'), Male: t('male'), Healthy: t('healthy'), 'Needs attention': t('needsAttention'), 'Under treatment': t('underTreatment') }[value] || text(value); }
@@ -155,7 +156,7 @@
     empty.classList.toggle('hidden', sorted.length !== 0);
     sorted.forEach((record) => {
       const article = document.createElement('article'); article.className = 'reminder-record';
-      const title = document.createElement('strong'); title.dir = 'auto'; title.textContent = text(record.reminder_type);
+      const title = document.createElement('strong'); title.dir = 'auto'; title.textContent = reminderTypeLabel(record.reminder_type);
       const date = document.createElement('time'); date.className = 'reminder-date'; date.dateTime = record.due_date || ''; date.textContent = `${t('dueDate')}: ${formatDate(record.due_date)}`;
       article.append(title, date);
       if (record.notes && String(record.notes).trim()) { const notes = document.createElement('p'); notes.className = 'reminder-notes'; notes.dir = 'auto'; notes.textContent = record.notes; article.appendChild(notes); }

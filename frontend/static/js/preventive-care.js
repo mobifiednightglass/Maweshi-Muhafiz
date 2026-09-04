@@ -42,7 +42,7 @@
     errorTitle: document.querySelector('#care-error-title'), errorMessage: document.querySelector('#care-error-message'), retry: document.querySelector('#retry-care'),
     profileLink: document.querySelector('#profile-link'), errorProfileLink: document.querySelector('#error-profile-link'), animalIcon: document.querySelector('#animal-icon'), animalSummary: document.querySelector('#animal-summary'),
     list: document.querySelector('#reminder-list'), empty: document.querySelector('#reminders-empty'), count: document.querySelector('#reminder-count'), feedback: document.querySelector('#page-feedback'),
-    reminderDialog: document.querySelector('#reminder-dialog'), reminderForm: document.querySelector('#reminder-form'), reminderAlert: document.querySelector('#reminder-alert'), saveReminder: document.querySelector('#save-reminder'),
+    reminderDialog: document.querySelector('#reminder-dialog'), reminderForm: document.querySelector('#reminder-form'), reminderAlert: document.querySelector('#reminder-alert'), saveReminder: document.querySelector('#save-reminder'), reminderTypeInput: document.querySelector('[name="reminder_type"]'), reminderTypeSuggestions: document.querySelector('#reminder-type-suggestions'),
     deleteDialog: document.querySelector('#delete-reminder-dialog'), deleteName: document.querySelector('#delete-reminder-name'), deleteAlert: document.querySelector('#delete-alert'), confirmDelete: document.querySelector('#confirm-delete-reminder')
   };
 
@@ -55,6 +55,17 @@
 
   function t(key) { return copy[language][key] || key; }
   function hasValue(value) { return value !== null && value !== undefined && String(value).trim() !== ''; }
+  function reminderTypeLabel(value) { return window.MaweshiI18n.reminderTypeLabel(value, language); }
+
+  function updateReminderTypeChoices() {
+    const currentValue = el.reminderTypeInput.value;
+    const standardValues = new Set(['Vaccination', 'Deworming', 'Routine check-up']);
+    el.reminderTypeSuggestions.querySelectorAll('[data-reminder-type]').forEach((option) => {
+      option.value = reminderTypeLabel(option.dataset.reminderType);
+    });
+    const canonicalValue = window.MaweshiI18n.reminderTypeValue(currentValue);
+    if (standardValues.has(canonicalValue)) el.reminderTypeInput.value = reminderTypeLabel(canonicalValue);
+  }
 
   const api = {
     getAnimal: (id) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}`, { headers: { Accept: 'application/json' } }),
@@ -147,7 +158,7 @@
     dateCopy.append(time, statusLabel); dateArea.append(dateMark, dateCopy);
 
     const content = document.createElement('div'); content.className = 'reminder-content';
-    const title = document.createElement('h3'); title.textContent = record.reminder_type; title.dir = 'auto';
+    const title = document.createElement('h3'); title.textContent = reminderTypeLabel(record.reminder_type); title.dir = 'auto';
     const notes = document.createElement('p'); notes.textContent = hasValue(record.notes) ? record.notes : t('noNotes'); notes.dir = 'auto';
     content.append(title, notes);
 
@@ -221,7 +232,7 @@
   function reminderPayload() {
     const data = new FormData(el.reminderForm);
     const payload = {
-      reminder_type: String(data.get('reminder_type') || '').trim(),
+      reminder_type: window.MaweshiI18n.reminderTypeValue(data.get('reminder_type')),
       due_date: String(data.get('due_date') || '').trim()
     };
     const notes = String(data.get('notes') || '').trim();
@@ -268,7 +279,7 @@
   function openDeleteReminder(id) {
     deleteTarget = reminders.find((record) => String(record.id) === String(id)) || null;
     if (!deleteTarget) return;
-    el.deleteName.textContent = deleteTarget.reminder_type;
+    el.deleteName.textContent = reminderTypeLabel(deleteTarget.reminder_type);
     el.deleteAlert.classList.add('hidden');
     el.deleteDialog.showModal();
   }
@@ -302,8 +313,9 @@
 
   function applyLanguage(nextLanguage) {
     language = window.MaweshiI18n.applyPage(nextLanguage, copy).language;
+    updateReminderTypeChoices();
     render();
-    if (deleteTarget) el.deleteName.textContent = deleteTarget.reminder_type;
+    if (deleteTarget) el.deleteName.textContent = reminderTypeLabel(deleteTarget.reminder_type);
   }
 
   const destination = profileUrl();

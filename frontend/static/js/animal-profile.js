@@ -120,6 +120,7 @@
   }
 
   function t(key) { return copy[language][key] || key; }
+  function reminderTypeLabel(value) { return window.MaweshiI18n.reminderTypeLabel(value, language); }
 
   const api = {
     getAnimal: (id) => window.MaweshiAuth.request(`${API_BASE}/api/animals/${encodeURIComponent(id)}`, { headers: { Accept: 'application/json' } }),
@@ -221,7 +222,7 @@
       status.className = 'profile-reminder-status';
       status.textContent = reminderTimingLabel(days);
       const type = document.createElement('strong');
-      type.textContent = String(record.reminder_type).trim();
+      type.textContent = reminderTypeLabel(String(record.reminder_type).trim());
       const due = document.createElement('time');
       due.dateTime = String(record.due_date || '');
       due.textContent = formatReminderDate(date);

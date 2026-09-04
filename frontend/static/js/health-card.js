@@ -59,6 +59,10 @@
     return value === null || value === undefined || String(value).trim() === '' ? fallback : String(value);
   }
 
+  function reminderTypeLabel(value) {
+    return window.MaweshiI18n.reminderTypeLabel(value, language);
+  }
+
   function formatDate(raw) {
     if (!raw) return t('notRecorded');
     const date = new Date(raw);
@@ -129,7 +133,7 @@
       article.className = 'other-care-record';
       const name = document.createElement('strong');
       name.dir = 'auto';
-      name.textContent = text(record.reminder_type);
+      name.textContent = reminderTypeLabel(record.reminder_type) || t('notRecorded');
       const status = document.createElement('span');
       status.className = `other-care-status ${statusClass(record.status)}`;
       status.textContent = statusText(record.status);
