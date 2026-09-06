@@ -53,3 +53,18 @@ def get_area_insights():
         data=insights,
         message="Regional insights retrieved successfully.",
     )
+
+
+@insights_bp.route("/insights/area/outbreak", methods=["GET"])
+@require_auth
+def get_outbreak_insights():
+    try:
+        insights = current_app.insight_service.get_outbreak_insights()
+    except Exception:
+        logger.exception("Unexpected error building outbreak insights")
+        return _error("An unexpected error occurred.", status=500)
+
+    return _success(
+        data=insights,
+        message="Regional outbreak insights retrieved successfully.",
+    )
