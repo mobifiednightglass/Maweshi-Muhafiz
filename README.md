@@ -1,9 +1,9 @@
 # Maweshi Muhafiz |  مویشی محافظ 
-**AI-powered livestock health companion for farmers — built in Urdu-first, for the field.**
+**AI-powered livestock health companion for farmers, built in Urdu-first, for the field.**
 
 ## About the Project
 
-**Maweshi Muhafiz** ("Livestock Guardian") is an AI-assisted livestock health tracking platform built for farmers to keep track of their animals and monitor their health with the help of a vision-based AI assistant.
+**Maweshi Muhafiz** ("Livestock Guardian") is an AI-assisted livestock health tracking platform built for farmers to keep track of their animals and monitor their health with the help of a vision based AI assistant.
 
 A farmer photographs a sick animal, describes the symptoms (by typing **or speaking in Urdu**), and receives an AI generated preliminary health assessment in both **Urdu and English**, complete with urgency level, safe next steps, and when the case looks serious, an automatic emergency flag. Every animal gets a running health record: assessment history, vaccination/deworming reminders, a vet-ready case summary a doctor can review in seconds, and a simplified "health card" that can be shared when selling the animal.
 
@@ -61,7 +61,7 @@ The interface defaults to **Urdu (RTL layout)** and can be switched to **English
 | **Authentication** | JWT (`PyJWT`), password hashing (`werkzeug.security`) |
 | **AI — Vision** | Google Gemini (`google-genai`), multimodal image + text diagnosis |
 | **AI — Voice** | Google Gemini speech-to-text (Urdu transcription) & text-to-speech (Urdu narration) |
-| **Image Processing** | OpenCV (`opencv-python-headless`), NumPy — local blur/darkness/resolution checks |
+| **Image Processing** | OpenCV (`opencv-python-headless`), NumPy (blur/darkness/resolution checks) |
 | **Frontend** | Vanilla HTML5, CSS3, JavaScript (no framework/build step) |
 | **Testing** | `pytest`, `pytest-flask`, plus a standalone end-to-end script |
 | **CORS** | `Flask-Cors` |
@@ -72,74 +72,74 @@ The interface defaults to **Urdu (RTL layout)** and can be switched to **English
 
 ```
 Maweshi-Muhafiz/
-├── backend/                          # Flask REST API
+├── backend/                         
 │   ├── app/
-│   │   ├── __init__.py               # Application factory — registers blueprints,
-│   │   │                             # wires services/repositories (DI container)
-│   │   ├── config.py                 # Env-based config (Development/Testing/Production)
-│   │   ├── models/                   # Schemaless (MongoDB) — placeholder for future models
-│   │   ├── routes/                   # One Flask Blueprint per feature
-│   │   │   ├── auth.py               # POST /auth/signup, /auth/login, GET /auth/me
-│   │   │   ├── animals.py            # Animal CRUD
-│   │   │   ├── health_assessments.py # AI diagnosis, voice symptoms, images, speech, compare
-│   │   │   ├── vet_summary.py        # Vet-ready case summary
-│   │   │   ├── passport.py           # Animal health passport (full bundle)
-│   │   │   ├── health_card.py        # Buyer-facing redacted health card
-│   │   │   ├── reminders.py          # Preventive-care reminders CRUD
-│   │   │   ├── insights.py           # Regional health insights
-│   │   │   └── health.py             # GET /health — liveness check
-│   │   ├── services/                 # Business logic, decoupled from routes
-│   │   │   ├── vision_provider.py    # GeminiVisionProvider — AI diagnosis + safe fallback
-│   │   │   ├── voice_service.py      # Gemini STT/TTS for Urdu voice notes
-│   │   │   ├── red_flag_service.py   # Keyword-based emergency detection
-│   │   │   ├── next_steps_service.py # Server-generated safe-next-steps guidance
-│   │   │   ├── image_quality.py      # OpenCV pre-upload image quality checks
-│   │   │   ├── image_storage.py      # GridFS-backed image storage
-│   │   │   ├── animal_service.py     # Animal CRUD business logic
-│   │   │   ├── auth_service.py       # Signup/login, JWT issuance
+│   │   ├── __init__.py               
+│   │   │                            
+│   │   ├── config.py                 
+│   │   ├── models/                  
+│   │   ├── routes/                  
+│   │   │   ├── auth.py            
+│   │   │   ├── animals.py           
+│   │   │   ├── health_assessments.py 
+│   │   │   ├── vet_summary.py        
+│   │   │   ├── passport.py           
+│   │   │   ├── health_card.py        
+│   │   │   ├── reminders.py          
+│   │   │   ├── insights.py           
+│   │   │   └── health.py             
+│   │   ├── services/                 
+│   │   │   ├── vision_provider.py    
+│   │   │   ├── voice_service.py      
+│   │   │   ├── red_flag_service.py   
+│   │   │   ├── next_steps_service.py 
+│   │   │   ├── image_quality.py      
+│   │   │   ├── image_storage.py      
+│   │   │   ├── animal_service.py     
+│   │   │   ├── auth_service.py       
 │   │   │   ├── health_assessment_service.py
 │   │   │   ├── health_card_service.py
 │   │   │   ├── passport_service.py
 │   │   │   ├── insight_service.py
 │   │   │   ├── reminder_service.py
-│   │   │   └── *_validation.py       # Standalone input validators per resource
-│   │   ├── repositories/             # Data-access layer — see "Architecture" below
+│   │   │   └── *_validation.py       
+│   │   ├── repositories/             
 │   │   ├── utils/
-│   │   │   └── auth_middleware.py    # @require_auth JWT decorator
-│   ├── tests/                        # pytest suite (one file per feature)
-│   ├── e2e_test.py                   # Standalone end-to-end script against a running server
+│   │   │   └── auth_middleware.py    
+│   ├── tests/                        
+│   ├── e2e_test.py                   
 │   ├── requirements.txt
 │   ├── .env.example
-│   └── run.py                        # Entry point — `python run.py`
+│   └── run.py                       
 │
-├── frontend/                         # Static multi-page web client (no build step)
-│   ├── index.html                    # Landing page
-│   ├── auth.html                     # Login / signup
-│   ├── dashboard.html                # Animal records dashboard
-│   ├── animal-profile.html           # Single animal profile + new assessment
-│   ├── assessment-result.html        # AI diagnosis result view
-│   ├── assessment-compare.html       # Side-by-side assessment comparison
-│   ├── health-history.html           # Full assessment timeline for an animal
-│   ├── health-passport.html          # Complete animal health bundle
-│   ├── health-card.html              # Redacted buyer-facing health card
-│   ├── vet-summary.html              # Vet-ready case summary view
-│   ├── preventive-care.html          # Reminders (vaccination/deworming/check-ups)
+├── frontend/                         
+│   ├── index.html                   
+│   ├── auth.html                    
+│   ├── dashboard.html                
+│   ├── animal-profile.html           
+│   ├── assessment-result.html       
+│   ├── assessment-compare.html       
+│   ├── health-history.html           
+│   ├── health-passport.html          
+│   ├── health-card.html              
+│   ├── vet-summary.html              
+│   ├── preventive-care.html          
 │   └── static/
-│       ├── css/                      # One stylesheet per page + shared styles.css
-│       ├── js/                       # One script per page + shared app.js, auth.js, i18n.js
-│       └── images/                   # Logo and hero imagery
+│       ├── css/                      
+│       ├── js/                       
+│       └── images/                   
 │
-└── voice_scripts/                    # Standalone scripts used to prototype/test the voice
-    ├── speech_to_text.py             # feature (Gemini Urdu STT) independently of the API
-    ├── text_to_speech.py             # (Gemini Urdu TTS)
-    └── sample_urdu.txt / sample_output.wav / WhatsApp Audio sample — test fixtures
+└── voice_scripts/                    
+    ├── speech_to_text.py             
+    ├── text_to_speech.py            
+    └── sample_urdu.txt 
 ```
 
 ---
 
 ## Architecture
 
-The health assessment pipeline is the heart of the project. Both the **typed-symptoms** flow and the **Urdu voice-note** flow funnel into it:
+The health assessment pipeline is the heart of the project. Both the **typed symptoms** flow and the **Urdu voice note** flow funnel into it:
 
 ```
  Farmer input                                              Result
@@ -183,8 +183,9 @@ cd backend
 python -m venv venv
 
 # Activate the virtual environment
-source venv\bin\activate        # macOS / Linux
-source venv\Scripts\activate    # Windows (Git Bash)
+source venv/bin/activate        # macOS / Linux
+source venv/Scripts/activate    # Windows (Git Bash)
+venv\Scripts\activate           # Windows (Command Prompt)
 
 pip install -r requirements.txt
 cp .env.example .env
