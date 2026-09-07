@@ -59,8 +59,8 @@ The interface defaults to **Urdu (RTL layout)** and can be switched to **English
 | **Backend Framework** | Python 3.10+, Flask 3 (Application Factory + Blueprints) |
 | **Database** | MongoDB Atlas (via `pymongo`), GridFS for image storage |
 | **Authentication** | JWT (`PyJWT`), password hashing (`werkzeug.security`) |
-| **AI — Vision** | Google Gemini (`google-genai`), multimodal image + text diagnosis |
-| **AI — Voice** | Google Gemini speech-to-text (Urdu transcription) & text-to-speech (Urdu narration) |
+| **AI Vision** | Google Gemini (`google-genai`), multimodal image + text diagnosis |
+| **AI Voice** | Google Gemini speech-to-text (Urdu transcription) & text-to-speech (Urdu narration) |
 | **Image Processing** | OpenCV (`opencv-python-headless`), NumPy (blur/darkness/resolution checks) |
 | **Frontend** | Vanilla HTML5, CSS3, JavaScript (no framework/build step) |
 | **Testing** | `pytest`, `pytest-flask`, plus a standalone end-to-end script |
