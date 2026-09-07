@@ -4,6 +4,7 @@
   --paper: #fffdf8;
   --forest: #1f4d3a;
   --forest-dark: #173b2d;
+  --leaf: #6d8d72;
   --ink: #26312d;
   --sand: #e8dfcc;
   --muted: #6b716e;
@@ -327,6 +328,11 @@ html[dir="rtl"] .profile-action[aria-expanded="true"] svg { transform: scaleX(-1
 .area-insights-kicker { color: var(--forest); font-size: 0.7rem; font-weight: 900; letter-spacing: 0.055em; text-transform: uppercase; }
 .area-insights-heading h2 { margin-top: 0.2rem; color: var(--ink); font-size: 1.15rem; font-weight: 850; }
 .area-insights-heading div > p:last-child { margin-top: 0.3rem; color: var(--muted); font-size: 0.82rem; line-height: 1.55; }
+.area-insights-actions { display: flex; flex: none; align-items: center; gap: 0.55rem; }
+.area-insights-page-link { display: inline-flex; min-height: 2.5rem; align-items: center; justify-content: center; gap: 0.45rem; border: 1px solid var(--forest); border-radius: 0.38rem; background: var(--forest); padding: 0.45rem 0.75rem; color: #fff; font-size: 0.76rem; font-weight: 850; text-decoration: none; }
+.area-insights-page-link:hover { background: var(--forest-dark); }
+.area-insights-page-link .link-arrow { display: inline-block; }
+html[dir="rtl"] .area-insights-page-link .link-arrow { transform: scaleX(-1); }
 .area-insights-refresh { min-height: 2.5rem; flex: none; border: 1px solid #c9bda8; border-radius: 0.38rem; background: var(--paper); padding: 0.45rem 0.75rem; color: var(--forest); font-size: 0.76rem; font-weight: 850; }
 .area-insights-refresh:hover { border-color: var(--forest); background: #f1f5ef; }
 .area-insights-loading { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; margin-top: 1rem; }
@@ -474,7 +480,8 @@ html[dir="rtl"] .profile-action[aria-expanded="true"] svg { transform: scaleX(-1
   .voice-action { width: 100%; }
   .voice-status { align-items: flex-start; }
   .area-insights-heading { flex-wrap: wrap; }
-  .area-insights-refresh { width: 100%; }
+  .area-insights-actions { width: 100%; flex-direction: column; }
+  .area-insights-page-link, .area-insights-refresh { width: 100%; }
   .area-insights-loading, .area-insights-list { grid-template-columns: 1fr; }
   .area-insight-row { grid-template-columns: minmax(0, 1fr) auto; }
   .area-insight-region { grid-column: 1 / -1; }

@@ -30,7 +30,7 @@
       yearUnit: 'سال', kgUnit: 'کلو', noNotes: 'کوئی اضافی بات درج نہیں۔', viewProfile: 'پروفائل دیکھیں', closeProfile: 'پروفائل بند کریں', logout: 'لاگ آؤٹ',
       areaInsightsKicker: 'آپ کے جانوروں کا ریکارڈ', areaInsightsTitle: 'علاقے کے حساب سے صحت کی معلومات', areaInsightsSubtitle: 'آپ کے جانوروں کے صحت معائنے ان کے درج کیے گئے علاقے کے مطابق۔', areaInsightsLoading: 'علاقے کی صحت کی معلومات دیکھی جا رہی ہیں',
       areaInsightsUnavailable: 'علاقے کی معلومات ابھی دستیاب نہیں ہیں۔', areaInsightsErrorHelp: 'رابطہ نہیں ہو سکا۔ کچھ دیر بعد دوبارہ کوشش کریں۔', areaInsightsMalformed: 'علاقے کی معلومات دکھائی نہیں جا سکیں۔', areaInsightsMalformedHelp: 'ریکارڈ کی کچھ معلومات سمجھ نہیں آئیں۔ براہِ کرم دوبارہ کوشش کریں۔',
-      areaInsightsEmpty: 'ابھی علاقے کے حساب سے کوئی صحت ریکارڈ موجود نہیں ہے۔', areaInsightsEmptyHelp: 'صحت کا معائنہ محفوظ ہونے کے بعد اس کی گنتی یہاں نظر آئے گی۔', areaInsightsScope: 'یہ گنتی صرف آپ کے اکاؤنٹ میں موجود جانوروں کے معائنوں کی ہے، پورے علاقے یا دوسرے کسانوں کی نہیں۔', regionNotRecorded: 'علاقہ درج نہیں', totalHealthAssessments: 'کل صحت معائنے', urgentFlaggedAssessments: 'فوری توجہ والے معائنے'
+      areaInsightsEmpty: 'ابھی علاقے کے حساب سے کوئی صحت ریکارڈ موجود نہیں ہے۔', areaInsightsEmptyHelp: 'صحت کا معائنہ محفوظ ہونے کے بعد اس کی گنتی یہاں نظر آئے گی۔', areaInsightsScope: 'یہ گنتی صرف آپ کے اکاؤنٹ میں موجود جانوروں کے معائنوں کی ہے، پورے علاقے یا دوسرے کسانوں کی نہیں۔', regionNotRecorded: 'علاقہ درج نہیں', totalHealthAssessments: 'کل صحت معائنے', urgentFlaggedAssessments: 'فوری توجہ والے معائنے', viewCommunityInsights: 'علاقائی کمیونٹی معلومات دیکھیں'
     },
     en: {
       skipLink: 'Skip to main content', homeLabel: 'Maweshi Muhafiz home', languageLabel: 'Choose language',
@@ -55,7 +55,7 @@
       noNotes: 'No additional notes recorded.', viewProfile: 'View Profile', closeProfile: 'Close Profile', logout: 'Logout',
       areaInsightsKicker: 'Your animals’ records', areaInsightsTitle: 'Health insights by recorded area', areaInsightsSubtitle: 'Health assessments for your animals, grouped by the area saved on their records.', areaInsightsLoading: 'Loading area health insights',
       areaInsightsUnavailable: 'Area insights are unavailable right now.', areaInsightsErrorHelp: 'We could not connect. Please try again in a little while.', areaInsightsMalformed: 'Area insights could not be displayed.', areaInsightsMalformedHelp: 'Some record information could not be understood. Please try again.',
-      areaInsightsEmpty: 'No area-based health activity yet.', areaInsightsEmptyHelp: 'Assessment counts will appear here after a health assessment is saved.', areaInsightsScope: 'These counts only use assessments for animals in your account. They are not statistics for the wider area or other farmers.', regionNotRecorded: 'Region not recorded', totalHealthAssessments: 'Total assessments', urgentFlaggedAssessments: 'Urgent or flagged'
+      areaInsightsEmpty: 'No area-based health activity yet.', areaInsightsEmptyHelp: 'Assessment counts will appear here after a health assessment is saved.', areaInsightsScope: 'These counts only use assessments for animals in your account. They are not statistics for the wider area or other farmers.', regionNotRecorded: 'Region not recorded', totalHealthAssessments: 'Total assessments', urgentFlaggedAssessments: 'Urgent or flagged', viewCommunityInsights: 'View community area insights'
     }
   };
 

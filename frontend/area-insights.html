@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="description" content="An anonymized community livestock assessment snapshot grouped by recorded region.">
+  <link rel="icon" type="images/png" href="images/logo.png.png" alt="Maweshi Muhafiz Logo">
+  <title>Maweshi Muhafiz | علاقائی صحت کی معلومات</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#f8f5ed', paper: '#fffdf8', forest: '#1f4d3a', 'forest-dark': '#173b2d', sand: '#e8dfcc', ink: '#26312d' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="static/css/area-insights.css">
+</head>
+<body class="min-h-screen bg-cream text-ink antialiased">
+  <a class="skip-link" href="#main-content" data-i18n="skipLink">مرکزی حصے پر جائیں</a>
+
+  <header class="border-b border-sand bg-paper">
+    <div class="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <a href="dashboard.html" class="flex items-center gap-3" data-i18n-aria-label="homeLabel" aria-label="مویشی محافظ کا مرکزی صفحہ">
+        <span class="brand-logo-frame" aria-hidden="true">
+          <img class="brand-logo" src="static/images/maweshi-muhafiz-logo.png" alt="">
+        </span>
+        <span>
+          <span class="block text-[1.05rem] font-bold leading-tight tracking-tight text-forest">Maweshi Muhafiz</span>
+          <span class="block text-xs font-medium text-stone-500" lang="ur" dir="rtl">مویشی محافظ</span>
+        </span>
+      </a>
+      <div class="authenticated-nav-actions">
+        <div class="language-switch" role="group" data-i18n-aria-label="languageLabel" aria-label="زبان منتخب کریں">
+          <button type="button" class="language-option is-active" data-language="ur" lang="ur" aria-pressed="true">اردو</button>
+          <button type="button" class="language-option" data-language="en" lang="en" aria-pressed="false">English</button>
+        </div>
+        <button type="button" class="logout-button" data-logout data-i18n="logout">لاگ آؤٹ</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="community-insights-shell">
+    <a href="dashboard.html" class="back-link community-back-link">
+      <span aria-hidden="true">←</span>
+      <span data-i18n="backToDashboard">ڈیش بورڈ پر واپس جائیں</span>
+    </a>
+
+    <section class="community-hero" aria-labelledby="page-heading">
+      <div>
+        <p class="community-kicker" data-i18n="kicker">گمنام کمیونٹی خلاصہ</p>
+        <h1 id="page-heading" data-i18n="pageTitle">علاقے کے حساب سے صحت معائنوں کی معلومات</h1>
+        <p data-i18n="pageIntro">رجسٹرڈ جانوروں کے محفوظ شدہ صحت معائنوں کا علاقائی خلاصہ۔ یہ اعداد کسی جانور یا مالک کی شناخت ظاہر نہیں کرتے۔</p>
+      </div>
+      <div class="community-scope-badge">
+        <span class="scope-dot" aria-hidden="true"></span>
+        <span data-i18n="allTimeScope">تمام محفوظ شدہ معائنے</span>
+      </div>
+    </section>
+
+    <section id="insights-loading" class="community-loading" data-i18n-aria-label="loadingLabel" aria-label="علاقائی معلومات دیکھی جا رہی ہیں">
+      <div class="community-loading-summary"><span></span><span></span><span></span><span></span></div>
+      <div class="community-loading-panel"></div>
+    </section>
+
+    <section id="insights-error" class="community-state hidden" aria-live="polite">
+      <span class="community-state-mark" aria-hidden="true">!</span>
+      <h2 id="error-title"></h2>
+      <p id="error-message"></p>
+      <button id="retry-insights" type="button" class="btn btn-primary" data-i18n="tryAgain">دوبارہ کوشش کریں</button>
+    </section>
+
+    <section id="insights-empty" class="community-state hidden" aria-live="polite">
+      <span class="community-state-mark is-neutral" aria-hidden="true">—</span>
+      <h2 data-i18n="emptyTitle">ابھی کمیونٹی معائنوں کی معلومات موجود نہیں</h2>
+      <p data-i18n="emptyMessage">صحت معائنے محفوظ ہونے کے بعد علاقائی خلاصہ یہاں نظر آئے گا۔</p>
+      <a href="dashboard.html" class="btn btn-secondary" data-i18n="backToDashboard">ڈیش بورڈ پر واپس جائیں</a>
+    </section>
+
+    <div id="insights-content" class="hidden">
+      <section class="community-controls" data-i18n-aria-label="filtersLabel" aria-label="معلومات کے فلٹر">
+        <label for="region-filter">
+          <span data-i18n="regionFilter">علاقہ منتخب کریں</span>
+          <select id="region-filter"></select>
+        </label>
+        <button id="refresh-insights" type="button" class="btn btn-secondary" data-i18n="refresh">تازہ کریں</button>
+      </section>
+
+      <section class="community-summary" data-i18n-aria-label="summaryLabel" aria-label="علاقائی صحت معائنوں کا خلاصہ">
+        <article class="community-summary-card">
+          <span data-i18n="regionGroups">علاقائی گروپ</span>
+          <strong id="region-count">0</strong>
+        </article>
+        <article class="community-summary-card">
+          <span data-i18n="totalAssessments">کل معائنے</span>
+          <strong id="assessment-count">0</strong>
+        </article>
+        <article class="community-summary-card is-flagged">
+          <span data-i18n="flaggedAssessments">فوری یا نشان زدہ</span>
+          <strong id="flagged-count">0</strong>
+        </article>
+        <article class="community-summary-card">
+          <span data-i18n="flaggedShare">نشان زدہ معائنوں کا حصہ</span>
+          <strong id="flagged-share">0%</strong>
+        </article>
+      </section>
+
+      <section id="activity-notice" class="activity-notice" aria-live="polite">
+        <span class="activity-notice-mark" aria-hidden="true">!</span>
+        <div>
+          <h2 id="activity-title"></h2>
+          <p id="activity-message"></p>
+        </div>
+      </section>
+
+      <div class="community-grid">
+        <section class="community-panel" aria-labelledby="region-chart-heading">
+          <div class="community-panel-heading">
+            <div>
+              <p class="section-eyebrow" data-i18n="assessmentVolume">معائنوں کی تعداد</p>
+              <h2 id="region-chart-heading" data-i18n="regionalComparison">علاقائی موازنہ</h2>
+            </div>
+            <div class="chart-legend" aria-hidden="true">
+              <span><i class="legend-normal"></i><b data-i18n="notFlagged">نشان زدہ نہیں</b></span>
+              <span><i class="legend-flagged"></i><b data-i18n="flaggedShort">نشان زدہ</b></span>
+            </div>
+          </div>
+          <p class="community-panel-intro" data-i18n="comparisonHelp">یہ چارٹ صرف محفوظ شدہ معائنوں کی تعداد دکھاتا ہے، بیماری کی شرح یا علاقائی خطرہ نہیں۔</p>
+          <div id="region-chart" class="region-chart"></div>
+        </section>
+
+        <section class="community-panel" aria-labelledby="conditions-heading">
+          <div class="community-panel-heading">
+            <div>
+              <p class="section-eyebrow" data-i18n="possibleConditions">ممکنہ حالتیں</p>
+              <h2 id="conditions-heading" data-i18n="conditionMentions">زیادہ درج ہونے والی ممکنہ حالتیں</h2>
+            </div>
+          </div>
+          <p class="community-panel-intro" data-i18n="conditionsHelp">یہ ابتدائی AI معائنوں میں درج ممکنہ حالتیں ہیں، تصدیق شدہ بیماریاں نہیں۔ ایک معائنے میں ایک سے زیادہ حالتیں ہو سکتی ہیں۔</p>
+          <div id="conditions-list" class="conditions-list"></div>
+          <p id="conditions-empty" class="conditions-empty hidden" data-i18n="noConditions">منتخب معلومات میں ممکنہ حالتیں درج نہیں ہیں۔</p>
+        </section>
+      </div>
+
+      <aside class="community-disclaimer" aria-labelledby="scope-heading">
+        <span class="disclaimer-mark" aria-hidden="true">i</span>
+        <div>
+          <h2 id="scope-heading" data-i18n="scopeTitle">ان اعداد کو کیسے سمجھیں</h2>
+          <p data-i18n="scopeMessage">یہ گمنام مجموعی اعداد تمام صارفین کے جانوروں کے محفوظ شدہ معائنوں سے بنتے ہیں۔ یہ منفرد جانوروں یا کسانوں کی تعداد، بیماری کی شرح، وقت کے ساتھ رجحان یا وبا کی تصدیق نہیں کرتے۔</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="mt-10 border-t border-sand bg-paper">
+    <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm text-stone-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+      <p data-i18n="footerCare">مویشیوں کی بہتر دیکھ بھال میں آپ کی مدد کے لیے۔</p>
+      <p data-i18n="footerDisclaimer">AI کی رائے ابتدائی رہنمائی ہے، ڈاکٹر کا متبادل نہیں۔</p>
+    </div>
+  </footer>
+
+  <script src="static/js/i18n.js" defer></script>
+  <script src="static/js/auth.js" defer></script>
+  <script src="static/js/area-insights.js" defer></script>
+</body>
+</html>
